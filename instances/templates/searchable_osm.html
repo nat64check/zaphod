@@ -1,0 +1,57 @@
+{% extends "gis/admin/osm.html" %}
+{% load i18n %}
+{% block extrastyle %}
+    {{ block.super }}
+    {% if editable %}
+        <script type="text/javascript">
+            function {{ module }}_search_nominatim() {
+                // Give this a local name so the template parser doesn't get confused
+                var osm = {{ module }};
+
+                // Collect input, and don't search on empty strings
+                var search_input = django.jQuery('#{{ module }}_nominatim_search');
+                var search_text = search_input.val().trim();
+                if (search_text === '') {
+                    return;
+                }
+
+                // Ask nominatim where this might be
+                django.jQuery.ajax('http://nominatim.openstreetmap.org/search/', {
+                    data: {
+                        // We could limit searching to the provided country, but it might confuse, so let's not
+                        // countrycodes: django.jQuery('#id_country').val(),
+                        q: search_text,
+                        format: 'jsonv2'
+                    }
+                }).done(function (data, textStatus, jqXHR) {
+                    if (data.length < 1) {
+                        alert('{% trans 'Location not found' %}');
+                        return;
+                    }
+
+                    // We need to transform coordinates, but EPSG:3857 doesn't seem to work
+                    var fromProjection = new OpenLayers.Projection("EPSG:4326");    // Transform from WGS 1984
+                    var toProjection = new OpenLayers.Projection("EPSG:900913");    // to Spherical Mercator Projection
+                    var position = new OpenLayers.LonLat(data[0].lon, data[0].lat).transform(fromProjection, toProjection);
+
+                    // Use the method that GeoDjango itself also uses
+                    osm.deleteFeatures();
+
+                    var admin_geom = osm.read_wkt("POINT (" + position.lon + " " + position.lat + ")");
+                    osm.write_wkt(admin_geom);
+                    osm.layers.vector.addFeatures([admin_geom]);
+
+                    // And center the map
+                    osm.map.setCenter(position, {{ point_zoom }});
+                });
+            }
+        </script>
+
+        <div>
+            <button type="button" onclick="{{ module }}_search_nominatim()">{% trans 'Search' %}</button>
+            <input type="search" autocomplete="street-address" placeholder="{% trans 'Address' %}"
+                   id="{{ module }}_nominatim_search" style="vertical-align: baseline"
+                   onkeypress="if (event.charCode === 13) { event.preventDefault(); {{ module }}_search_nominatim(); }">
+        </div>
+    {% endif %}
+{% endblock %}
