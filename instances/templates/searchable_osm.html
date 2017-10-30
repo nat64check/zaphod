@@ -23,7 +23,7 @@
                         q: search_text,
                         format: 'jsonv2'
                     }
-                }).done(function (data, textStatus, jqXHR) {
+                }).done(function (data) {
                     if (data.length < 1) {
                         alert('{% trans 'Location not found' %}');
                         return;
