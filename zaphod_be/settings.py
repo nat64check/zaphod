@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django_countries',
 
     'instances.apps.InstancesConfig',
+    'world.apps.WorldConfig',
 ]
 
 if DEBUG:

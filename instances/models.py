@@ -1,30 +1,20 @@
+from django.conf import settings
 from django.contrib.gis.db import models
+from django.core.validators import RegexValidator, URLValidator
+from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 
 
 class Trillian(models.Model):
     name = models.CharField(max_length=100)
+    hostname = models.CharField(max_length=127, validators=[
+        RegexValidator(URLValidator.host_re, message=_("Please provide a valid host name"))
+    ])
+    version = models.PositiveSmallIntegerField()
+    admin = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+
     country = CountryField()
     location = models.PointField(geography=True)
 
-    @property
-    def country_flag(self):
-        return self.country.unicode_flag if self.country else ''
-
-
-class Region(models.Model):
-    code = models.PositiveIntegerField(primary_key=True)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
-    level = models.PositiveSmallIntegerField()
-    name = models.CharField(max_length=100)
-
     def __str__(self):
         return self.name
-
-    class Meta:
-        ordering = ('name',)
-
-
-class CountryRegion(models.Model):
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
-    country = CountryField()

@@ -2,14 +2,12 @@ import csv
 import os
 
 from django.db import migrations
-from django_countries.fields import Country
 
 
 # noinspection PyPep8Naming
-def import_country_regions(apps, schema_editor):
+def import_regions(apps, schema_editor):
     # Database references
-    Region = apps.get_model("instances", "Region")
-    CountryRegion = apps.get_model("instances", "CountryRegion")
+    Region = apps.get_model("world", "Region")
     db_alias = schema_editor.connection.alias
 
     # Where is data stored
@@ -37,13 +35,6 @@ def import_country_regions(apps, schema_editor):
 
         return already_created[code]
 
-    def create_country_region(containing_region, country_code):
-        if not containing_region:
-            return
-
-        country = Country(country_code)
-        CountryRegion.objects.using(db_alias).get_or_create(region=containing_region, country=country)
-
     country_code_filename = os.path.join(data_dir, 'country-codes-20171030.csv')
 
     with open(country_code_filename, newline='') as csv_file:
@@ -60,26 +51,34 @@ def import_country_regions(apps, schema_editor):
             int_region = create_region(country_line['Intermediate Region Code'],
                                        country_line['Intermediate Region Name'], sub_region)
 
-            create_country_region(region, country_line['ISO3166-1-Alpha-2'])
-            create_country_region(sub_region, country_line['ISO3166-1-Alpha-2'])
-            create_country_region(int_region, country_line['ISO3166-1-Alpha-2'])
+            country = country_line['ISO3166-1-Alpha-2']
+
+            if region and country not in region.countries:
+                region.countries = region.countries + [country]
+                region.save()
+
+            if sub_region and country not in sub_region.countries:
+                sub_region.countries = sub_region.countries + [country]
+                sub_region.save()
+
+            if int_region and country not in int_region.countries:
+                int_region.countries = int_region.countries + [country]
+                int_region.save()
 
 
 # noinspection PyPep8Naming
-def delete_country_regions(apps, schema_editor):
-    Region = apps.get_model("instances", "Region")
-    CountryRegion = apps.get_model("instances", "CountryRegion")
+def delete_regions(apps, schema_editor):
+    Region = apps.get_model("world", "Region")
     db_alias = schema_editor.connection.alias
 
-    CountryRegion.objects.using(db_alias).delete()
     Region.objects.using(db_alias).delete()
 
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('instances', '0001_initial'),
+        ('world', '0001_initial'),
     ]
 
     operations = [
-        migrations.RunPython(import_country_regions, delete_country_regions)
+        migrations.RunPython(import_regions, delete_regions)
     ]
