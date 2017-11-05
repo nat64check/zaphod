@@ -12,13 +12,17 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
-# SECURITY WARNING: keep the secret key used in production secret!
 from .local_settings import DEBUG, SECRET_KEY
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ALLOWED_HOSTS = []
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+    '::1',
+]
 
 # Application definition
 # noinspection PyUnresolvedReferences
@@ -37,11 +41,6 @@ INSTALLED_APPS = [
     'world.apps.WorldConfig',
 ]
 
-if DEBUG:
-    INSTALLED_APPS += [
-        'django_extensions',
-    ]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -51,6 +50,22 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if DEBUG:
+    INSTALLED_APPS += [
+        'django_extensions',
+        'debug_toolbar',
+    ]
+
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
+
+    from debug_toolbar.settings import PANELS_DEFAULTS
+
+    DEBUG_TOOLBAR_PANELS = PANELS_DEFAULTS + [
+        'channels_panel.panel.ChannelsDebugPanel'
+    ]
 
 ROOT_URLCONF = 'zaphod_be.urls'
 
@@ -116,5 +131,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# noinspection PyUnresolvedReferences
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 RUNSERVERPLUS_SERVER_ADDRESS_PORT = '[::]:8000'
