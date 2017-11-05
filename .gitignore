@@ -1,6 +1,5 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
 *$py.class
 
 # C extensions
@@ -78,3 +77,6 @@ ENV/
 # Backup files
 *~
 *.bak
+
+# Generated files
+/zaphod.png
