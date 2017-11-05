@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.core.validators import RegexValidator, URLValidator
+from django.utils.formats import date_format
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 
@@ -32,9 +33,9 @@ class TestSchedule(models.Model):
 
     trillians = models.ManyToManyField(Trillian)
 
+    time = models.TimeField()
     start = models.DateField()
     end = models.DateField(blank=True, null=True)
-    time = models.TimeField()
     frequency = models.CharField(max_length=1, choices=[
         ('D', _('Every day')),
         ('W', _('Every week')),
@@ -43,10 +44,16 @@ class TestSchedule(models.Model):
 
     is_public = models.BooleanField(default=True)
 
+    class Meta:
+        unique_together = (('owner', 'name'),)
+
+    def __str__(self):
+        return self.name
+
 
 class TestRun(models.Model):
-    schedule = models.ForeignKey(TestSchedule, blank=True, null=True, on_delete=models.PROTECT)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.PROTECT)
+    schedule = models.ForeignKey(TestSchedule, blank=True, null=True, on_delete=models.PROTECT)
 
     url = models.URLField(db_index=True)
 
@@ -55,6 +62,14 @@ class TestRun(models.Model):
     finished = models.DateTimeField(blank=True, null=True, db_index=True)
 
     is_public = models.BooleanField(default=True)
+
+    def __str__(self):
+        if self.finished:
+            return '{url} completed on {when}'.format(url=self.url, when=date_format(self.finished, 'DATETIME_FORMAT'))
+        elif self.started:
+            return '{url} started on {when}'.format(url=self.url, when=date_format(self.started, 'DATETIME_FORMAT'))
+        else:
+            return '{url} requested on {when}'.format(url=self.url, when=date_format(self.requested, 'DATETIME_FORMAT'))
 
 
 class TestResult(models.Model):
@@ -66,3 +81,9 @@ class TestResult(models.Model):
     requested = models.DateTimeField(blank=True, null=True, db_index=True)
     started = models.DateTimeField(blank=True, null=True, db_index=True)
     finished = models.DateTimeField(blank=True, null=True, db_index=True)
+
+    class Meta:
+        unique_together = (('testrun', 'trillian'),)
+
+    def __str__(self):
+        return '{testrun} on {trillian}'.format(testrun=self.testrun, trillian=self.trillian)
