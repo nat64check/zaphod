@@ -4,8 +4,8 @@ from django.forms.models import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django_countries.widgets import CountrySelectWidget
 
-from instances.filters import TrillianRegionFilter
-from instances.models import Trillian
+from zaphod.filters import TrillianRegionFilter
+from zaphod.models import Trillian
 
 
 class SearchableGeoAdmin(OSMGeoAdmin):
