@@ -61,12 +61,6 @@ if DEBUG:
         'debug_toolbar.middleware.DebugToolbarMiddleware',
     ]
 
-    from debug_toolbar.settings import PANELS_DEFAULTS
-
-    DEBUG_TOOLBAR_PANELS = PANELS_DEFAULTS + [
-        'channels_panel.panel.ChannelsDebugPanel'
-    ]
-
 ROOT_URLCONF = 'zaphod_be.urls'
 
 TEMPLATES = [
