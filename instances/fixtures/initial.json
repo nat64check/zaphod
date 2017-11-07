@@ -1,0 +1,160 @@
+[
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$100000$jDOlTnnjuhmf$MCT5THfjOecVGFYvWkSo1HSNTlfQwygvU0bAepdoHNs=",
+      "last_login": "2017-11-07T10:18:31.131Z",
+      "is_superuser": true,
+      "username": "sander",
+      "first_name": "Sander",
+      "last_name": "Steffann",
+      "email": "sander@steffann.nl",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2017-11-05T19:43:30Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$100000$GGq5KiX5EWte$zjuzEqKEIJejDyGbGrURYtNV2d4D1aH4MiMFpavVMzU=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "jan",
+      "first_name": "Jan",
+      "last_name": "\u017dor\u017e",
+      "email": "jan@go6.si",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2017-11-05T19:48:13Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "instances.trillian",
+    "fields": {
+      "name": "Steffann",
+      "admin": [
+        "sander"
+      ],
+      "hostname": "nat64check.steffann.nl",
+      "is_active": true,
+      "version": 0,
+      "country": "NL",
+      "location": "SRID=4326;POINT (6.00116019916463 52.24708259475945)"
+    }
+  },
+  {
+    "model": "instances.trillian",
+    "fields": {
+      "name": "Go6Lab",
+      "admin": [
+        "jan"
+      ],
+      "hostname": "nat64check.go6lab.si",
+      "is_active": true,
+      "version": 0,
+      "country": "SI",
+      "location": "SRID=4326;POINT (14.32640777315219 46.17201201492624)"
+    }
+  },
+  {
+    "model": "instances.marvin",
+    "fields": {
+      "trillian": [
+        "Steffann"
+      ],
+      "name": "ipv4-1",
+      "hostname": "v4only.proxy.ipv6-lab.net",
+      "type": "Chrome Marvin",
+      "version": "[\"1\", \"0\", \"0\"]",
+      "browser_name": "Chromium",
+      "browser_version": "[\"62\", \"0\", \"3170\", \"2\"]",
+      "instance_type": "ipv4",
+      "addresses": "[\"185.54.92.130\"]"
+    }
+  },
+  {
+    "model": "instances.marvin",
+    "fields": {
+      "trillian": [
+        "Steffann"
+      ],
+      "name": "ipv6-1",
+      "hostname": "v6only.proxy.ipv6-lab.net",
+      "type": "Chrome Marvin",
+      "version": "[\"1\", \"0\", \"0\"]",
+      "browser_name": "Chromium",
+      "browser_version": "[\"62\", \"0\", \"3170\", \"2\"]",
+      "instance_type": "ipv6",
+      "addresses": "[\"2a00:8642:1000:101::6\"]"
+    }
+  },
+  {
+    "model": "instances.marvin",
+    "fields": {
+      "trillian": [
+        "Steffann"
+      ],
+      "name": "nat64-1",
+      "hostname": "nat64.proxy.ipv6-lab.net",
+      "type": "Chrome Marvin",
+      "version": "[\"1\", \"0\", \"0\"]",
+      "browser_name": "Chromium",
+      "browser_version": "[\"62\", \"0\", \"3170\", \"2\"]",
+      "instance_type": "nat64",
+      "addresses": "[\"2a00:8642:1000:101::64\"]"
+    }
+  },
+  {
+    "model": "instances.marvin",
+    "fields": {
+      "trillian": [
+        "Go6Lab"
+      ],
+      "name": "ipv4-1",
+      "hostname": "nat64check-v4only.go6lab.si",
+      "type": "Chrome Marvin",
+      "version": "[\"1\", \"0\", \"0\"]",
+      "browser_name": "Chromium",
+      "browser_version": "[\"62\", \"0\", \"3170\", \"2\"]",
+      "instance_type": "ipv4",
+      "addresses": "[\"91.239.96.20\"]"
+    }
+  },
+  {
+    "model": "instances.marvin",
+    "fields": {
+      "trillian": [
+        "Go6Lab"
+      ],
+      "name": "ipv6-1",
+      "hostname": "nat64check-v6only.go6lab.si",
+      "type": "Chrome Marvin",
+      "version": "[\"1\", \"0\", \"0\"]",
+      "browser_name": "Chromium",
+      "browser_version": "[\"62\", \"0\", \"3170\", \"2\"]",
+      "instance_type": "ipv6",
+      "addresses": "[\"2001:67c:27e4::666\"]"
+    }
+  },
+  {
+    "model": "instances.marvin",
+    "fields": {
+      "trillian": [
+        "Go6Lab"
+      ],
+      "name": "nat64-1",
+      "hostname": "nat64check-nat64.go6lab.si",
+      "type": "Chrome Marvin",
+      "version": "[\"1\", \"0\", \"0\"]",
+      "browser_name": "Chromium",
+      "browser_version": "[\"62\", \"0\", \"3170\", \"2\"]",
+      "instance_type": "nat64",
+      "addresses": "[\"2001:67c:27e4::664\"]"
+    }
+  }
+]

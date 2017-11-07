@@ -4,8 +4,8 @@ from django.forms.models import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django_countries.widgets import CountrySelectWidget
 
-from zaphod.filters import TrillianRegionFilter
-from zaphod.models import Trillian, TestSchedule, TestRun, TestResult
+from instances.filters import TrillianRegionFilter, VersionFilter
+from instances.models import Trillian, Marvin
 
 
 class SearchableGeoAdmin(OSMGeoAdmin):
@@ -41,16 +41,8 @@ class TrillianAdmin(SearchableGeoAdmin):
     admin_full_name.admin_order_field = 'admin__first_name'
 
 
-@admin.register(TestSchedule)
-class TestScheduleAdmin(admin.ModelAdmin):
-    list_display = ('name', 'url', 'owner', 'time', 'start', 'end', 'frequency', 'is_public')
-
-
-@admin.register(TestRun)
-class TestRunAdmin(admin.ModelAdmin):
-    list_display = ('url', 'owner', 'schedule', 'requested', 'started', 'finished')
-
-
-@admin.register(TestResult)
-class TestResultAdmin(admin.ModelAdmin):
-    list_display = ('testrun', 'trillian', 'id_on_trillian', 'requested', 'started', 'finished')
+@admin.register(Marvin)
+class MarvinAdmin(admin.ModelAdmin):
+    list_display = ('trillian', 'name', 'hostname', 'type', 'display_version', 'addresses')
+    list_filter = (('trillian', admin.RelatedOnlyFieldListFilter), 'type', VersionFilter)
+    ordering = ('trillian', 'name')

@@ -1,5 +1,0 @@
--r requirements.txt
-django-debug-toolbar
-django-extensions
-werkzeug
-pygraphviz

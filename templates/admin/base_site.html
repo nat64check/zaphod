@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+{% load countries %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></h1>
+{% endblock %}
+
+{% block userlinks %}
+    <form action="{% url 'set_language' %}" method="post"
+          style="display: inline-block; margin-left: 15px; margin-right: 2px">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.get_full_path }}"/>
+
+        <!--suppress HtmlFormInputWithoutLabel -->
+        <select name="language" onchange="form.submit()" style="font-size: 11px; height: 20px">
+            {% get_language_info_list for LANGUAGES as languages %}
+            {% for language in languages %}
+                <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                    {{ language.name_local }} ({{ language.code }})
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+    /
+    {{ block.super }}
+{% endblock %}

@@ -14,4 +14,6 @@ class Region(models.Model):
         return self.name
 
     class Meta:
+        verbose_name = _('region')
+        verbose_name_plural = _('regions')
         ordering = ('name',)

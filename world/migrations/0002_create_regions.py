@@ -6,6 +6,7 @@ from django.db import migrations
 from django_countries.fields import Country
 
 
+# noinspection PyPep8Naming
 def import_regions(apps, schema_editor):
     # Database references
     Region = apps.get_model("world", "Region")
@@ -55,15 +56,15 @@ def import_regions(apps, schema_editor):
             country = Country(country_line['ISO3166-1-Alpha-2'])
 
             if region and country not in region.countries:
-                region.countries = sorted(region.countries + [country], key=lambda country: country.code)
+                region.countries = sorted(region.countries + [country], key=lambda c: c.code)
                 region.save()
 
             if sub_region and country not in sub_region.countries:
-                sub_region.countries = sorted(sub_region.countries + [country], key=lambda country: country.code)
+                sub_region.countries = sorted(sub_region.countries + [country], key=lambda c: c.code)
                 sub_region.save()
 
             if int_region and country not in int_region.countries:
-                int_region.countries = sorted(int_region.countries + [country], key=lambda country: country.code)
+                int_region.countries = sorted(int_region.countries + [country], key=lambda c: c.code)
                 int_region.save()
 
 

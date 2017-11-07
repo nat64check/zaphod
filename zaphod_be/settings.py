@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+from django.utils.translation import ugettext_lazy as _
+
 from .local_settings import DEBUG, SECRET_KEY, ALLOWED_HOSTS
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -35,13 +37,15 @@ INSTALLED_APPS = [
 
     'django_countries',
 
-    'zaphod.apps.InstancesConfig',
-    'world.apps.WorldConfig',
+    'instances',
+    'measurements',
+    'world',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -71,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.i18n',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -114,6 +119,16 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('nl', _('Dutch')),
+    ('sl', _('Slovenian')),
+]
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
