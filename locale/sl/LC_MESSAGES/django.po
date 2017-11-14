@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-07 18:53+0000\n"
+"POT-Creation-Date: 2017-11-14 16:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,7 +36,7 @@ msgstr ""
 msgid "version"
 msgstr ""
 
-#: instances/models.py:17 instances/models.py:49 measurements/models.py:14
+#: instances/models.py:17 instances/models.py:49 measurements/models.py:24
 #: world/models.py:10
 msgid "name"
 msgstr ""
@@ -57,7 +57,7 @@ msgstr ""
 msgid "location"
 msgstr ""
 
-#: instances/models.py:47 measurements/models.py:81
+#: instances/models.py:47 measurements/models.py:103
 msgid "Trillian"
 msgstr ""
 
@@ -118,163 +118,199 @@ msgstr ""
 msgid "Measurement data"
 msgstr ""
 
-#: measurements/models.py:12 measurements/models.py:40
-msgid "owner"
+#: measurements/models.py:13
+msgid "Critical"
 msgstr ""
 
-#: measurements/models.py:15 measurements/models.py:44
-msgid "URL"
-msgstr ""
-
-#: measurements/models.py:17
-msgid "Trillians"
-msgstr ""
-
-#: measurements/models.py:19
-msgid "time"
-msgstr ""
-
-#: measurements/models.py:20
-msgid "start"
-msgstr ""
-
-#: measurements/models.py:21
-msgid "end"
-msgstr ""
-
-#: measurements/models.py:22
-msgid "frequency"
-msgstr ""
-
-#: measurements/models.py:23
-msgid "Every day"
-msgstr ""
-
-#: measurements/models.py:24
-msgid "Every week"
-msgstr ""
-
-#: measurements/models.py:25
-msgid "Every month"
-msgstr ""
-
-#: measurements/models.py:28 measurements/models.py:50
-msgid "is public"
-msgstr ""
-
-#: measurements/models.py:31 measurements/models.py:42
-msgid "schedule"
-msgstr ""
-
-#: measurements/models.py:32
-msgid "schedules"
-msgstr ""
-
-#: measurements/models.py:46 measurements/models.py:85
-msgid "requested"
-msgstr ""
-
-#: measurements/models.py:47 measurements/models.py:86
-msgid "started"
-msgstr ""
-
-#: measurements/models.py:48 measurements/models.py:87
-msgid "finished"
-msgstr ""
-
-#: measurements/models.py:52
-msgid "image score"
-msgstr ""
-
-#: measurements/models.py:53
-msgid "resource score"
-msgstr ""
-
-#: measurements/models.py:54
-msgid "overall score"
-msgstr ""
-
-#: measurements/models.py:56
-msgid "feedback category"
-msgstr ""
-
-#: measurements/models.py:57
+#: measurements/models.py:14
 msgid "Error"
 msgstr ""
 
-#: measurements/models.py:58
+#: measurements/models.py:15
 msgid "Warning"
 msgstr ""
 
-#: measurements/models.py:59
-msgid "Good"
+#: measurements/models.py:16
+msgid "Info"
 msgstr ""
 
-#: measurements/models.py:61
-msgid "feedback text"
+#: measurements/models.py:17
+msgid "Debug"
 msgstr ""
 
-#: measurements/models.py:64 measurements/models.py:80
+#: measurements/models.py:22 measurements/models.py:50
+msgid "owner"
+msgstr ""
+
+#: measurements/models.py:25 measurements/models.py:54
+msgid "URL"
+msgstr ""
+
+#: measurements/models.py:27
+msgid "Trillians"
+msgstr ""
+
+#: measurements/models.py:29
+msgid "time"
+msgstr ""
+
+#: measurements/models.py:30
+msgid "start"
+msgstr ""
+
+#: measurements/models.py:31
+msgid "end"
+msgstr ""
+
+#: measurements/models.py:32
+msgid "frequency"
+msgstr ""
+
+#: measurements/models.py:33
+msgid "Every day"
+msgstr ""
+
+#: measurements/models.py:34
+msgid "Every week"
+msgstr ""
+
+#: measurements/models.py:35
+msgid "Every month"
+msgstr ""
+
+#: measurements/models.py:38 measurements/models.py:60
+msgid "is public"
+msgstr ""
+
+#: measurements/models.py:41 measurements/models.py:52
+msgid "schedule"
+msgstr ""
+
+#: measurements/models.py:42
+msgid "schedules"
+msgstr ""
+
+#: measurements/models.py:56 measurements/models.py:107
+msgid "requested"
+msgstr ""
+
+#: measurements/models.py:57 measurements/models.py:108
+msgid "started"
+msgstr ""
+
+#: measurements/models.py:58 measurements/models.py:109
+msgid "finished"
+msgstr ""
+
+#: measurements/models.py:62 measurements/models.py:113
+msgid "image score"
+msgstr ""
+
+#: measurements/models.py:63 measurements/models.py:114
+msgid "image feedback"
+msgstr ""
+
+#: measurements/models.py:65 measurements/models.py:116
+msgid "resource score"
+msgstr ""
+
+#: measurements/models.py:66 measurements/models.py:117
+msgid "resource feedback"
+msgstr ""
+
+#: measurements/models.py:68 measurements/models.py:119
+msgid "overall score"
+msgstr ""
+
+#: measurements/models.py:69 measurements/models.py:120
+msgid "overall feedback"
+msgstr ""
+
+#: measurements/models.py:72 measurements/models.py:102
 msgid "test run"
 msgstr ""
 
-#: measurements/models.py:65
+#: measurements/models.py:73
 msgid "test runs"
 msgstr ""
 
-#: measurements/models.py:69
+#: measurements/models.py:77
 #, python-brace-format
 msgid "{url} completed on {when}"
 msgstr ""
 
-#: measurements/models.py:72
+#: measurements/models.py:80
 #, python-brace-format
 msgid "{url} started on {when}"
 msgstr ""
 
-#: measurements/models.py:75
+#: measurements/models.py:83
 #, python-brace-format
 msgid "{url} requested on {when}"
 msgstr ""
 
-#: measurements/models.py:82
-msgid "ID on Trillian"
-msgstr ""
-
-#: measurements/models.py:83
-msgid "callback auth code"
-msgstr ""
-
-#: measurements/models.py:89
-msgid "DNS results"
-msgstr ""
-
-#: measurements/models.py:92 measurements/models.py:101
-msgid "instance"
+#: measurements/models.py:89 measurements/models.py:133
+msgid "severity"
 msgstr ""
 
 #: measurements/models.py:93
-msgid "instances"
+msgid "test run message"
 msgstr ""
 
-#: measurements/models.py:97
+#: measurements/models.py:94
+msgid "test run messages"
+msgstr ""
+
+#: measurements/models.py:104
+msgid "ID on Trillian"
+msgstr ""
+
+#: measurements/models.py:105
+msgid "callback auth code"
+msgstr ""
+
+#: measurements/models.py:111
+msgid "DNS results"
+msgstr ""
+
+#: measurements/models.py:123
+msgid "instance run"
+msgstr ""
+
+#: measurements/models.py:124
+msgid "instance runs"
+msgstr ""
+
+#: measurements/models.py:128
 #, python-brace-format
 msgid "{testrun} on {trillian}"
 msgstr ""
 
-#: measurements/models.py:102
+#: measurements/models.py:137
+msgid "instance run message"
+msgstr ""
+
+#: measurements/models.py:138
+msgid "instance run messages"
+msgstr ""
+
+#: measurements/models.py:146
+msgid "instance"
+msgstr ""
+
+#: measurements/models.py:147
 msgid "Marvin"
 msgstr ""
 
-#: measurements/models.py:108
-msgid "instance result"
+#: measurements/models.py:153
+msgid "instance run result"
 msgstr ""
 
-#: measurements/models.py:109
-msgid "instance results"
+#: measurements/models.py:154
+msgid "instance run results"
 msgstr ""
 
-#: measurements/models.py:112
+#: measurements/models.py:157
 #, python-brace-format
 msgid "{testrun} on {marvin}"
 msgstr ""
