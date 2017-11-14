@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
@@ -6,6 +8,14 @@ from django.utils.translation import gettext_lazy as _
 
 from instances.models import Trillian, Marvin
 from measurements.utils import generate_random_token
+
+severities = (
+    (logging.CRITICAL, _('Critical')),
+    (logging.ERROR, _('Error')),
+    (logging.WARNING, _('Warning')),
+    (logging.INFO, _('Info')),
+    (logging.DEBUG, _('Debug')),
+)
 
 
 class Schedule(models.Model):
@@ -50,15 +60,13 @@ class TestRun(models.Model):
     is_public = models.BooleanField(_('is public'), default=True)
 
     image_score = models.FloatField(_('image score'), blank=True, null=True, db_index=True)
-    resource_score = models.FloatField(_('resource score'), blank=True, null=True, db_index=True)
-    overall_score = models.FloatField(_('overall score'), blank=True, null=True, db_index=True)
+    image_feedback = models.TextField(_('image feedback'), blank=True)
 
-    feedback_category = models.PositiveSmallIntegerField(_('feedback category'), blank=True, null=True, choices=[
-        (1, _('Error')),
-        (5, _('Warning')),
-        (10, _('Good')),
-    ])
-    feedback_text = models.TextField(_('feedback text'), blank=True)
+    resource_score = models.FloatField(_('resource score'), blank=True, null=True, db_index=True)
+    resource_feedback = models.TextField(_('resource feedback'), blank=True)
+
+    overall_score = models.FloatField(_('overall score'), blank=True, null=True, db_index=True)
+    overall_feedback = models.TextField(_('overall feedback'), blank=True)
 
     class Meta:
         verbose_name = _('test run')
@@ -76,7 +84,21 @@ class TestRun(models.Model):
                                                          when=date_format(self.requested, 'DATETIME_FORMAT'))
 
 
-class Instance(models.Model):
+class TestRunMessage(models.Model):
+    testrun = models.ForeignKey(TestRun, on_delete=models.CASCADE)
+    severity = models.PositiveSmallIntegerField(_('severity'), choices=severities)
+    message = models.CharField(max_length=200)
+
+    class Meta:
+        verbose_name = _('test run message')
+        verbose_name_plural = _('test run messages')
+        ordering = ('testrun', '-severity')
+
+    def __str__(self):
+        return '{obj.testrun}: {obj.message} [{obj.severity}]'.format(obj=self)
+
+
+class InstanceRun(models.Model):
     testrun = models.ForeignKey(TestRun, verbose_name=_('test run'), on_delete=models.CASCADE)
     trillian = models.ForeignKey(Trillian, verbose_name=_('Trillian'), on_delete=models.PROTECT)
     id_on_trillian = models.PositiveIntegerField(_('ID on Trillian'), blank=True, null=True)
@@ -88,25 +110,48 @@ class Instance(models.Model):
 
     dns_results = ArrayField(models.GenericIPAddressField(), verbose_name=_('DNS results'), blank=True, default=list)
 
+    image_score = models.FloatField(_('image score'), blank=True, null=True, db_index=True)
+    image_feedback = models.TextField(_('image feedback'), blank=True)
+
+    resource_score = models.FloatField(_('resource score'), blank=True, null=True, db_index=True)
+    resource_feedback = models.TextField(_('resource feedback'), blank=True)
+
+    overall_score = models.FloatField(_('overall score'), blank=True, null=True, db_index=True)
+    overall_feedback = models.TextField(_('overall feedback'), blank=True)
+
     class Meta:
-        verbose_name = _('instance')
-        verbose_name_plural = _('instances')
+        verbose_name = _('instance run')
+        verbose_name_plural = _('instance runs')
         unique_together = (('testrun', 'trillian'),)
 
     def __str__(self):
         return _('{testrun} on {trillian}').format(testrun=self.testrun, trillian=self.trillian)
 
 
-class InstanceResult(models.Model):
-    instance = models.ForeignKey(Instance, verbose_name=_('instance'), on_delete=models.CASCADE)
+class InstanceRunMessage(models.Model):
+    instancerun = models.ForeignKey(InstanceRun, on_delete=models.CASCADE)
+    severity = models.PositiveSmallIntegerField(_('severity'), choices=severities)
+    message = models.CharField(max_length=200)
+
+    class Meta:
+        verbose_name = _('instance run message')
+        verbose_name_plural = _('instance run messages')
+        ordering = ('instancerun', '-severity')
+
+    def __str__(self):
+        return '{obj.testrun}: {obj.message} [{obj.severity}]'.format(obj=self)
+
+
+class InstanceRunResult(models.Model):
+    instance = models.ForeignKey(InstanceRun, verbose_name=_('instance'), on_delete=models.CASCADE)
     marvin = models.ForeignKey(Marvin, verbose_name=_('Marvin'), on_delete=models.PROTECT)
 
     pings = JSONField()
     web_response = JSONField()
 
     class Meta:
-        verbose_name = _('instance result')
-        verbose_name_plural = _('instance results')
+        verbose_name = _('instance run result')
+        verbose_name_plural = _('instance run results')
 
     def __str__(self):
         return _('{testrun} on {marvin}').format(testrun=self.instance.testrun, marvin=self.marvin)

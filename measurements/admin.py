@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from measurements.models import Schedule, TestRun, Instance, InstanceResult
+from measurements.models import Schedule, TestRun, InstanceRun, InstanceRunResult, TestRunMessage, InstanceRunMessage
 
 
 @admin.register(Schedule)
@@ -10,16 +10,25 @@ class TestScheduleAdmin(admin.ModelAdmin):
     search_fields = ('url', 'owner__first_name', 'owner__last_name', 'owner__email', 'name')
 
 
+class TestRunMessageAdmin(admin.TabularInline):
+    model = TestRunMessage
+
+
 @admin.register(TestRun)
 class TestRunAdmin(admin.ModelAdmin):
     list_display = ('url', 'owner', 'schedule', 'requested', 'started', 'finished')
     list_filter = (('owner', admin.RelatedOnlyFieldListFilter),)
     date_hierarchy = 'requested'
     search_fields = ('url', 'owner__first_name', 'owner__last_name', 'owner__email', 'schedule__name')
+    inlines = (TestRunMessageAdmin,)
 
 
-@admin.register(Instance)
-class InstanceAdmin(admin.ModelAdmin):
+class InstanceRunMessageAdmin(admin.TabularInline):
+    model = InstanceRunMessage
+
+
+@admin.register(InstanceRun)
+class InstanceRunAdmin(admin.ModelAdmin):
     list_display = ('testrun', 'trillian', 'id_on_trillian', 'requested', 'started', 'finished')
     list_filter = (('trillian', admin.RelatedOnlyFieldListFilter),)
     date_hierarchy = 'requested'
@@ -28,10 +37,11 @@ class InstanceAdmin(admin.ModelAdmin):
                      'testrun__schedule__name',
                      'trillian__name',)
     autocomplete_fields = ('testrun',)
+    inlines = (InstanceRunMessageAdmin,)
 
 
-@admin.register(InstanceResult)
-class InstanceResultAdmin(admin.ModelAdmin):
+@admin.register(InstanceRunResult)
+class InstanceRunResultAdmin(admin.ModelAdmin):
     list_display = ('instance', 'marvin')
     list_filter = (('marvin', admin.RelatedOnlyFieldListFilter),)
     date_hierarchy = 'instance__requested'
