@@ -7,8 +7,8 @@ help:
 
 graph: zaphod.png
 
-zaphod.png:
-	./manage.py graph_models --output zaphod.png --disable-sort-fields --group-models zaphod
+zaphod.png: */models.py
+	./manage.py graph_models --output zaphod.png --disable-sort-fields --group-models instances measurements world
 
 reset-db:
 	./manage.py reset_db
