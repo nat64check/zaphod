@@ -36,6 +36,10 @@ INSTALLED_APPS = [
     'django.contrib.gis',
 
     'django_countries',
+    'django_filters',
+    'rest_framework',
+    'rest_framework_filters',
+    'rest_framework_swagger',
 
     'instances',
     'measurements',
@@ -138,3 +142,23 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = '/static/'
 
 RUNSERVERPLUS_SERVER_ADDRESS_PORT = '[::]:8000'
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework_filters.backends.DjangoFilterBackend',
+    ),
+    'URL_FIELD_NAME': '_url',
+}
+
+SWAGGER_SETTINGS = {
+    'DOC_EXPANSION': 'list',
+    'JSON_EDITOR': True,
+}
+
+LOGIN_URL = 'rest_framework:login'
+LOGOUT_URL = 'rest_framework:logout'
