@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.utils.datetime_safe import date
 from django.utils.formats import date_format
 from django.utils.translation import gettext_lazy as _
 
@@ -21,21 +22,25 @@ severities = (
 class Schedule(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('owner'), on_delete=models.PROTECT)
 
-    name = models.CharField(_('name'), max_length=100)
-    url = models.URLField(_('URL'), db_index=True)
+    name = models.CharField(_('name'), max_length=100, help_text=_('Name your test schedule, must be unique'))
+    url = models.URLField(_('URL'), db_index=True, help_text=_('The URL you want to test'))
 
-    trillians = models.ManyToManyField(Trillian, verbose_name=_('Trillians'))
+    trillians = models.ManyToManyField(Trillian, verbose_name=_('Trillians'),
+                                       help_text=_('The data centres from where you want this URL to be tested'))
 
-    time = models.TimeField(_('time'))
-    start = models.DateField(_('start'))
-    end = models.DateField(_('end'), blank=True, null=True)
+    time = models.TimeField(_('time'), help_text=_('The time of day in UTC when you want the tests to be scheduled'))
+    start = models.DateField(_('start'), default=date.today,
+                             help_text=_('The first day that you want the tests to be run'))
+    end = models.DateField(_('end'), blank=True, null=True,
+                           help_text=_('The last day that you want the tests to be run'))
     frequency = models.CharField(_('frequency'), max_length=1, choices=[
         ('D', _('Every day')),
         ('W', _('Every week')),
         ('M', _('Every month')),
-    ])
+    ], help_text=_('Frequency to schedule the tests. Can be "D" (daily), "W" (weekly) or "M" (monthly)'))
 
-    is_public = models.BooleanField(_('is public'), default=True)
+    is_public = models.BooleanField(_('is public'), default=True,
+                                    help_text=_('Whether the test results should be publicly visible'))
 
     class Meta:
         verbose_name = _('schedule')
@@ -97,6 +102,18 @@ class TestRunMessage(models.Model):
     def __str__(self):
         return '{obj.testrun}: {obj.message} [{obj.severity}]'.format(obj=self)
 
+    @property
+    def owner(self):
+        return self.testrun.owner
+
+    @property
+    def owner_id(self):
+        return self.testrun.owner_id
+
+    @property
+    def is_public(self):
+        return self.testrun.is_public
+
 
 class InstanceRun(models.Model):
     testrun = models.ForeignKey(TestRun, verbose_name=_('test run'), on_delete=models.CASCADE)
@@ -127,6 +144,18 @@ class InstanceRun(models.Model):
     def __str__(self):
         return _('{testrun} on {trillian}').format(testrun=self.testrun, trillian=self.trillian)
 
+    @property
+    def owner(self):
+        return self.testrun.owner
+
+    @property
+    def owner_id(self):
+        return self.testrun.owner_id
+
+    @property
+    def is_public(self):
+        return self.testrun.is_public
+
 
 class InstanceRunMessage(models.Model):
     instancerun = models.ForeignKey(InstanceRun, on_delete=models.CASCADE)
@@ -141,9 +170,21 @@ class InstanceRunMessage(models.Model):
     def __str__(self):
         return '{obj.testrun}: {obj.message} [{obj.severity}]'.format(obj=self)
 
+    @property
+    def owner(self):
+        return self.instancerun.owner
+
+    @property
+    def owner_id(self):
+        return self.instancerun.owner_id
+
+    @property
+    def is_public(self):
+        return self.instancerun.is_public
+
 
 class InstanceRunResult(models.Model):
-    instance = models.ForeignKey(InstanceRun, verbose_name=_('instance'), on_delete=models.CASCADE)
+    instancerun = models.ForeignKey(InstanceRun, verbose_name=_('instance'), on_delete=models.CASCADE)
     marvin = models.ForeignKey(Marvin, verbose_name=_('Marvin'), on_delete=models.PROTECT)
 
     pings = JSONField()
@@ -154,4 +195,16 @@ class InstanceRunResult(models.Model):
         verbose_name_plural = _('instance run results')
 
     def __str__(self):
-        return _('{testrun} on {marvin}').format(testrun=self.instance.testrun, marvin=self.marvin)
+        return _('{instancerun} on {marvin}').format(instancerun=self.instancerun, marvin=self.marvin)
+
+    @property
+    def owner(self):
+        return self.instancerun.owner
+
+    @property
+    def owner_id(self):
+        return self.instancerun.owner_id
+
+    @property
+    def is_public(self):
+        return self.instancerun.is_public

@@ -4,7 +4,7 @@ from measurements.models import Schedule, TestRun, InstanceRun, InstanceRunResul
 
 
 @admin.register(Schedule)
-class TestScheduleAdmin(admin.ModelAdmin):
+class ScheduleAdmin(admin.ModelAdmin):
     list_display = ('name', 'url', 'owner', 'time', 'start', 'end', 'frequency', 'is_public')
     list_filter = (('owner', admin.RelatedOnlyFieldListFilter),)
     search_fields = ('url', 'owner__first_name', 'owner__last_name', 'owner__email', 'name')
@@ -42,12 +42,12 @@ class InstanceRunAdmin(admin.ModelAdmin):
 
 @admin.register(InstanceRunResult)
 class InstanceRunResultAdmin(admin.ModelAdmin):
-    list_display = ('instance', 'marvin')
+    list_display = ('instancerun', 'marvin')
     list_filter = (('marvin', admin.RelatedOnlyFieldListFilter),)
-    date_hierarchy = 'instance__requested'
-    search_fields = ('instance__testrun__url',
-                     'instance__testrun__owner__first_name', 'instance__testrun__owner__last_name',
-                     'instance__testrun__owner__email',
-                     'instance__testrun__schedule__name',
+    date_hierarchy = 'instancerun__requested'
+    search_fields = ('instancerun__testrun__url',
+                     'instancerun__testrun__owner__first_name', 'instancerun__testrun__owner__last_name',
+                     'instancerun__testrun__owner__email',
+                     'instancerun__testrun__schedule__name',
                      'marvin__trillian__name',)
-    autocomplete_fields = ('instance',)
+    autocomplete_fields = ('instancerun',)
