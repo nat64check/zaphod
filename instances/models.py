@@ -65,6 +65,7 @@ class Marvin(models.Model):
     addresses = ArrayField(models.GenericIPAddressField(), verbose_name=_('addresses'), default=list)
 
     class Meta:
+        ordering = ('trillian', 'name',)
         unique_together = (('trillian', 'name'),)
 
     def __str__(self):
