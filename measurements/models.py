@@ -121,7 +121,7 @@ class TestRunMessage(models.Model):
 
 
 class InstanceRun(models.Model):
-    testrun = models.ForeignKey(TestRun, verbose_name=_('test run'), on_delete=models.CASCADE)
+    testrun = models.ForeignKey(TestRun, verbose_name=_('test run'), related_name='instances', on_delete=models.CASCADE)
     trillian = models.ForeignKey(Trillian, verbose_name=_('Trillian'), on_delete=models.PROTECT)
     id_on_trillian = models.PositiveIntegerField(_('ID on Trillian'), blank=True, null=True)
     callback_auth_code = models.CharField(_('callback auth code'), max_length=50, default=generate_random_token)
@@ -163,7 +163,7 @@ class InstanceRun(models.Model):
 
 
 class InstanceRunMessage(models.Model):
-    instancerun = models.ForeignKey(InstanceRun, on_delete=models.CASCADE)
+    instancerun = models.ForeignKey(InstanceRun, related_name='messages', on_delete=models.CASCADE)
     severity = models.PositiveSmallIntegerField(_('severity'), choices=severities)
     message = models.CharField(max_length=200)
 
@@ -189,7 +189,8 @@ class InstanceRunMessage(models.Model):
 
 
 class InstanceRunResult(models.Model):
-    instancerun = models.ForeignKey(InstanceRun, verbose_name=_('instance'), on_delete=models.CASCADE)
+    instancerun = models.ForeignKey(InstanceRun, verbose_name=_('instance'), related_name='results',
+                                    on_delete=models.CASCADE)
     marvin = models.ForeignKey(Marvin, verbose_name=_('Marvin'), on_delete=models.PROTECT)
 
     pings = JSONField()
