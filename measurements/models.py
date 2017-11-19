@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.utils import timezone
 from django.utils.datetime_safe import date
 from django.utils.formats import date_format
 from django.utils.translation import gettext_lazy as _
@@ -62,7 +63,7 @@ class TestRun(models.Model):
 
     url = models.URLField(_('URL'), db_index=True)
 
-    requested = models.DateTimeField(_('requested'), db_index=True)
+    requested = models.DateTimeField(_('requested'), db_index=True, default=timezone.now)
     started = models.DateTimeField(_('started'), blank=True, null=True, db_index=True)
     finished = models.DateTimeField(_('finished'), blank=True, null=True, db_index=True)
 
@@ -94,7 +95,7 @@ class TestRun(models.Model):
 
 
 class TestRunMessage(models.Model):
-    testrun = models.ForeignKey(TestRun, on_delete=models.CASCADE)
+    testrun = models.ForeignKey(TestRun, related_name='messages', on_delete=models.CASCADE)
     severity = models.PositiveSmallIntegerField(_('severity'), choices=severities)
     message = models.CharField(max_length=200)
 
