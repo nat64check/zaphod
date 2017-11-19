@@ -2,8 +2,9 @@ from django.db.models.query_utils import Q
 from rest_framework import viewsets
 
 from measurements.models import Schedule, TestRun
-from measurements.permissions import OwnerOrPublicBasedPermission, OwnerBasedPermission
-from measurements.serializers import ScheduleSerializer, TestRunSerializer
+from measurements.permissions import OwnerBasedPermission, CreatePublicBasedPermission
+from measurements.serializers import ScheduleSerializer, TestRunSerializer, CreateTestRunSerializer, \
+    CreatePublicTestRunSerializer
 
 
 class ScheduleViewSet(viewsets.ModelViewSet):
@@ -18,15 +19,15 @@ class ScheduleViewSet(viewsets.ModelViewSet):
     Schedule a new recurring test.
 
     delete:
-    Remove a scheduled recurring test.
+    Remove a schedule.
     This is only possible if no tests have been run yet. If tests have already been run because of this schedule then
     the schedule will not be deleted but the end date will automatically be set to that of the last test run.
 
     partial_update:
-    Change one or more settings of a scheduled recurring test.
+    Change one or more settings of a schedule.
 
     update:
-    Update all the settings of a scheduled recurring test.
+    Update all the settings of a schedule.
     """
     permission_classes = (OwnerBasedPermission,)
     serializer_class = ScheduleSerializer
@@ -48,11 +49,45 @@ class ScheduleViewSet(viewsets.ModelViewSet):
 
 
 class TestRunViewSet(viewsets.ModelViewSet):
-    permission_classes = (OwnerOrPublicBasedPermission,)
-    serializer_class = TestRunSerializer
+    """
+    list:
+    Retrieve a list of test runs.
+
+    retrieve:
+    Retrieve the details of a single test run.
+
+    create:
+    Request a new test run.
+
+    delete:
+    Remove a test run.
+
+    partial_update:
+    Change one or more settings of a test run.
+
+    update:
+    Update all the settings of a test run.
+    """
+    permission_classes = (CreatePublicBasedPermission,)
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST' and not self.request.user.is_superuser:
+            # Special create serializers except for superusers, they can create anything
+            if self.request.user.is_anonymous:
+                # Anonymous users can only create public tests
+                return CreatePublicTestRunSerializer
+            else:
+                # The rest may create private ones
+                return CreateTestRunSerializer
+        else:
+            # Exposing all attributes when not creating
+            return TestRunSerializer
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        if self.request.user.is_anonymous:
+            serializer.save(owner=None, is_public=True)
+        else:
+            serializer.save(owner=self.request.user)
 
     def get_queryset(self):
         if self.request.user.is_anonymous:
