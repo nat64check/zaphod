@@ -26,7 +26,7 @@ from measurements.urls import measurements_router
 from zaphod_be.views import UserViewSet
 
 router = DefaultRouter()
-router.register('users', UserViewSet)
+router.register('users', UserViewSet, base_name='user')
 router.registry.extend(measurements_router.registry)
 router.registry.extend(instances_router.registry)
 

@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import viewsets, serializers, permissions, response, status, decorators
 
 from zaphod_be.filters import UserFilter
-from zaphod_be.serializers import UserSerializer
+from zaphod_be.serializers import UserSerializer, UserAdminSerializer
 
 user_model = get_user_model()
 
@@ -14,10 +14,24 @@ class PasswordSerializer(serializers.Serializer):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = user_model.objects.all()
-    permission_classes = (permissions.IsAdminUser,)
-    serializer_class = UserSerializer
+    permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
     filter_class = UserFilter
+
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            # Admin sees all
+            return UserAdminSerializer
+        else:
+            # Others only see minimal details
+            return UserSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            # Admin sees all
+            return user_model.objects.all()
+        else:
+            # Others see active users
+            return user_model.objects.filter(is_active=True)
 
     # noinspection PyUnusedLocal
     @decorators.detail_route(methods=['post'],
@@ -36,3 +50,7 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return response.Response(serializer.errors,
                                      status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save()
