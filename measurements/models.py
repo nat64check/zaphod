@@ -45,10 +45,14 @@ class Schedule(models.Model):
     class Meta:
         verbose_name = _('schedule')
         verbose_name_plural = _('schedules')
+        ordering = ('start', 'end')
         unique_together = (('owner', 'name'),)
 
     def __str__(self):
         return self.name
+
+    def trillian_ids(self):
+        return self.trillians.values_list('pk', flat=True)
 
 
 class TestRun(models.Model):

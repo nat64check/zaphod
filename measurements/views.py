@@ -19,8 +19,8 @@ class ScheduleViewSet(viewsets.ModelViewSet):
 
     delete:
     Remove a scheduled recurring test.
-    This is only possible if no tests have been run yet. If you want to stop a scheduled recurring test please set its
-    end date.
+    This is only possible if no tests have been run yet. If tests have already been run because of this schedule then
+    the schedule will not be deleted but the end date will automatically be set to that of the last test run.
 
     partial_update:
     Change one or more settings of a scheduled recurring test.
@@ -35,10 +35,16 @@ class ScheduleViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
-        if self.request.user.is_anonymous:
-            return Schedule.objects.none()
+        return Schedule.objects.filter(owner=self.request.user).prefetch_related('trillians')
+
+    def perform_destroy(self, instance):
+        assert isinstance(instance, Schedule)
+        if instance.testrun_set.exists():
+            last_testrun_date = instance.testrun_set.order_by('-requested').values_list('requested', flat=True).first()
+            instance.end = last_testrun_date.date()
+            instance.save()
         else:
-            return Schedule.objects.filter(owner=self.request.user)
+            instance.delete()
 
 
 class TestRunViewSet(viewsets.ModelViewSet):

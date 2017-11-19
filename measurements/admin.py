@@ -1,13 +1,19 @@
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 from measurements.models import Schedule, TestRun, InstanceRun, InstanceRunResult, TestRunMessage, InstanceRunMessage
 
 
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ('name', 'url', 'owner', 'time', 'start', 'end', 'frequency', 'is_public')
+    list_display = ('name', 'url', 'owner', 'time', 'start', 'end', 'frequency', 'admin_trillians', 'is_public')
     list_filter = (('owner', admin.RelatedOnlyFieldListFilter),)
     search_fields = ('url', 'owner__first_name', 'owner__last_name', 'owner__email', 'name')
+
+    def admin_trillians(self, schedule):
+        return ', '.join([trillian.name for trillian in schedule.trillians.all()]) or '-'
+
+    admin_trillians.short_description = _('Trillians')
 
 
 class TestRunMessageAdmin(admin.TabularInline):
