@@ -14,6 +14,30 @@ class PasswordSerializer(serializers.Serializer):
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """
+    Management of API users.
+
+    list:
+    Retrieve a list of users.
+
+    create:
+    Create a new user.
+
+    retrieve:
+    Retrieve the details of a single user.
+
+    update:
+    Update all the properties of a user.
+
+    partial_update:
+    Change one or more properties of a user.
+
+    destroy:
+    Deactivate a user.
+
+    set_password:
+    Set a new password for the specified user.
+    """
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
 
     @property
@@ -46,9 +70,6 @@ class UserViewSet(viewsets.ModelViewSet):
                              permission_classes=[permissions.IsAdminUser],
                              get_serializer_class=lambda: PasswordSerializer)
     def set_password(self, request, pk=None):
-        """
-        Set a new password for the specified user.
-        """
         user = self.get_object()
         serializer = PasswordSerializer(data=request.data)
         if serializer.is_valid():
