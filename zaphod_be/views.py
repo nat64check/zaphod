@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from rest_framework import viewsets, serializers, permissions, response, status, decorators
 
-from zaphod_be.filters import UserFilter
+from zaphod_be.filters import UserFilter, UserAdminFilter
 from zaphod_be.serializers import UserSerializer, UserAdminSerializer
 
 user_model = get_user_model()
@@ -15,7 +15,15 @@ class PasswordSerializer(serializers.Serializer):
 
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.DjangoModelPermissionsOrAnonReadOnly,)
-    filter_class = UserFilter
+
+    @property
+    def filter_class(self):
+        if self.request.user.is_staff:
+            # Admin can filter on many properties
+            return UserAdminFilter
+        else:
+            # Others can only filter on exact username
+            return UserFilter
 
     def get_serializer_class(self):
         if self.request.user.is_staff:
@@ -36,7 +44,7 @@ class UserViewSet(viewsets.ModelViewSet):
     # noinspection PyUnusedLocal
     @decorators.detail_route(methods=['post'],
                              permission_classes=[permissions.IsAdminUser],
-                             serializer_class=PasswordSerializer)
+                             get_serializer_class=lambda: PasswordSerializer)
     def set_password(self, request, pk=None):
         """
         Set a new password for the specified user.
