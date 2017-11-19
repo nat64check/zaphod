@@ -35,6 +35,9 @@ class Trillian(models.Model):
     def natural_key(self):
         return self.name,
 
+    def marvin_ids(self):
+        return self.marvins.values_list('id', flat=True)
+
 
 class MarvinManager(models.Manager):
     def get_by_natural_key(self, trillian_name, name):
@@ -44,7 +47,7 @@ class MarvinManager(models.Manager):
 class Marvin(models.Model):
     objects = MarvinManager()
 
-    trillian = models.ForeignKey(Trillian, verbose_name=_('Trillian'), on_delete=models.PROTECT)
+    trillian = models.ForeignKey(Trillian, verbose_name=_('Trillian'), related_name='marvins', on_delete=models.PROTECT)
 
     name = models.CharField(_('name'), max_length=100)
     hostname = models.CharField(_('hostname'), max_length=127, unique=True, validators=[
@@ -66,7 +69,6 @@ class Marvin(models.Model):
 
     class Meta:
         ordering = ('trillian', 'name',)
-        unique_together = (('trillian', 'name'),)
 
     def __str__(self):
         return _('{trillian}: {name}').format(name=self.name, trillian=self.trillian)
