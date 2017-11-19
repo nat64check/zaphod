@@ -50,6 +50,10 @@ class UserViewSet(viewsets.ModelViewSet):
             return UserFilter
 
     def get_serializer_class(self):
+        if not self.request:
+            # Docs get the serializer without having a request
+            return UserAdminSerializer
+
         if self.request.user.is_staff:
             # Admin sees all
             return UserAdminSerializer

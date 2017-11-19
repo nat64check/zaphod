@@ -71,6 +71,10 @@ class TestRunViewSet(viewsets.ModelViewSet):
     permission_classes = (CreatePublicBasedPermission,)
 
     def get_serializer_class(self):
+        if not self.request:
+            # Docs get the serializer without having a request
+            return TestRunSerializer
+
         if self.request.method == 'POST' and not self.request.user.is_superuser:
             # Special create serializers except for superusers, they can create anything
             if self.request.user.is_anonymous:
