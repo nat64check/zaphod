@@ -23,7 +23,7 @@ from rest_framework_swagger.views import get_swagger_view
 
 from instances.urls import instances_router
 from measurements.urls import measurements_router
-from zaphod_be.views import UserViewSet
+from zaphod_be.api.views import UserViewSet
 
 router = DefaultRouter()
 router.register('users', UserViewSet, base_name='user')
