@@ -38,6 +38,9 @@ class Trillian(models.Model):
     def marvin_ids(self):
         return self.marvins.values_list('id', flat=True)
 
+    def flag(self):
+        return self.country.unicode_flag
+
 
 class MarvinManager(models.Manager):
     def get_by_natural_key(self, trillian_name, name):

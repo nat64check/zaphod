@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
+from instances.api.serializers import TrillianSerializer, MarvinSerializer
 from instances.models import Trillian, Marvin
-from instances.serializers import TrillianSerializer, MarvinSerializer
 
 
 class TrillianViewSet(viewsets.ReadOnlyModelViewSet):

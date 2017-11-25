@@ -4,7 +4,7 @@ from django.forms.models import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django_countries.widgets import CountrySelectWidget
 
-from instances.filters import TrillianRegionFilter, VersionFilter
+from instances.admin_filters import TrillianRegionFilter, VersionFilter
 from instances.models import Trillian, Marvin
 
 

@@ -55,11 +55,15 @@ class Schedule(models.Model):
     def trillian_ids(self):
         return self.trillians.values_list('pk', flat=True)
 
+    def testrun_ids(self):
+        return self.testruns.values_list('pk', flat=True)
+
 
 class TestRun(models.Model):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('owner'), blank=True, null=True,
-                              on_delete=models.PROTECT)
-    schedule = models.ForeignKey(Schedule, verbose_name=_('schedule'), blank=True, null=True, on_delete=models.PROTECT)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='testruns', verbose_name=_('owner'), blank=True,
+                              null=True, on_delete=models.PROTECT)
+    schedule = models.ForeignKey(Schedule, related_name='testruns', verbose_name=_('schedule'), blank=True, null=True,
+                                 on_delete=models.PROTECT)
 
     url = models.URLField(_('URL'), db_index=True)
 
@@ -121,7 +125,8 @@ class TestRunMessage(models.Model):
 
 
 class InstanceRun(models.Model):
-    testrun = models.ForeignKey(TestRun, verbose_name=_('test run'), related_name='instances', on_delete=models.CASCADE)
+    testrun = models.ForeignKey(TestRun, verbose_name=_('test run'), related_name='instanceruns',
+                                on_delete=models.CASCADE)
     trillian = models.ForeignKey(Trillian, verbose_name=_('Trillian'), on_delete=models.PROTECT)
     id_on_trillian = models.PositiveIntegerField(_('ID on Trillian'), blank=True, null=True)
     callback_auth_code = models.CharField(_('callback auth code'), max_length=50, default=generate_random_token)
@@ -147,7 +152,7 @@ class InstanceRun(models.Model):
         unique_together = (('testrun', 'trillian'),)
 
     def __str__(self):
-        return _('{testrun} on {trillian}').format(testrun=self.testrun, trillian=self.trillian)
+        return _('{obj.testrun} on {obj.trillian}').format(obj=self)
 
     @property
     def owner(self):
@@ -156,6 +161,10 @@ class InstanceRun(models.Model):
     @property
     def owner_id(self):
         return self.testrun.owner_id
+
+    @property
+    def url(self):
+        return self.testrun.url
 
     @property
     def is_public(self):
@@ -173,7 +182,7 @@ class InstanceRunMessage(models.Model):
         ordering = ('instancerun', '-severity')
 
     def __str__(self):
-        return '{obj.testrun}: {obj.message} [{obj.severity}]'.format(obj=self)
+        return '{obj.instancerun}: {obj.message} [{obj.severity}]'.format(obj=self)
 
     @property
     def owner(self):
@@ -189,7 +198,7 @@ class InstanceRunMessage(models.Model):
 
 
 class InstanceRunResult(models.Model):
-    instancerun = models.ForeignKey(InstanceRun, verbose_name=_('instance'), related_name='results',
+    instancerun = models.ForeignKey(InstanceRun, verbose_name=_('instancerun'), related_name='results',
                                     on_delete=models.CASCADE)
     marvin = models.ForeignKey(Marvin, verbose_name=_('Marvin'), on_delete=models.PROTECT)
 
@@ -201,7 +210,7 @@ class InstanceRunResult(models.Model):
         verbose_name_plural = _('instance run results')
 
     def __str__(self):
-        return _('{instancerun} on {marvin}').format(instancerun=self.instancerun, marvin=self.marvin)
+        return _('{obj.instancerun} on {obj.marvin}').format(obj=self)
 
     @property
     def owner(self):
@@ -214,3 +223,7 @@ class InstanceRunResult(models.Model):
     @property
     def is_public(self):
         return self.instancerun.is_public
+
+    @property
+    def instance_type(self):
+        return self.marvin.instance_type

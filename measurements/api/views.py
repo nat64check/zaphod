@@ -1,10 +1,10 @@
 from django.db.models.query_utils import Q
 from rest_framework import viewsets
 
-from measurements.models import Schedule, TestRun
-from measurements.permissions import OwnerBasedPermission, CreatePublicBasedPermission
-from measurements.serializers import ScheduleSerializer, TestRunSerializer, CreateTestRunSerializer, \
-    CreatePublicTestRunSerializer
+from measurements.api.permissions import OwnerBasedPermission, CreatePublicBasedPermission
+from measurements.api.serializers import ScheduleSerializer, TestRunSerializer, CreateTestRunSerializer, \
+    CreatePublicTestRunSerializer, InstanceRunSerializer
+from measurements.models import Schedule, TestRun, InstanceRun
 
 
 class ScheduleViewSet(viewsets.ModelViewSet):
@@ -36,7 +36,10 @@ class ScheduleViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
-        return Schedule.objects.filter(owner=self.request.user).prefetch_related('trillians')
+        if self.request.user.is_superuser:
+            return Schedule.objects.all()
+        else:
+            return Schedule.objects.filter(owner=self.request.user).prefetch_related('trillians')
 
     def perform_destroy(self, instance):
         assert isinstance(instance, Schedule)
@@ -96,5 +99,27 @@ class TestRunViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_anonymous:
             return TestRun.objects.filter(is_public=True)
+        elif self.request.user.is_superuser:
+            return TestRun.objects.all()
         else:
             return TestRun.objects.filter(Q(is_public=True) | Q(owner=self.request.user))
+
+
+class InstanceRunViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    list:
+    Retrieve a list of instance runs.
+
+    retrieve:
+    Retrieve the details of a single instance run.
+    """
+    permission_classes = (OwnerBasedPermission,)
+    serializer_class = InstanceRunSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return InstanceRun.objects.filter(testrun__is_public=True)
+        elif self.request.user.is_superuser:
+            return InstanceRun.objects.all()
+        else:
+            return InstanceRun.objects.filter(Q(testrun__is_public=True) | Q(testrun__owner=self.request.user))
