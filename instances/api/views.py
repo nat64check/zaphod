@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 
+from instances.api.filters import TrillianFilter, MarvinFilter
 from instances.api.serializers import TrillianSerializer, MarvinSerializer
 from instances.models import Trillian, Marvin
 
@@ -14,7 +15,7 @@ class TrillianViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Trillian.objects.all().prefetch_related('marvins')
     serializer_class = TrillianSerializer
-
+    filter_class = TrillianFilter
 
 class MarvinViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -28,3 +29,4 @@ class MarvinViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Marvin.objects.all().prefetch_related('trillian')
     serializer_class = MarvinSerializer
+    filter_class = MarvinFilter

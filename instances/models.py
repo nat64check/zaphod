@@ -23,7 +23,7 @@ class Trillian(models.Model):
     is_active = models.BooleanField(_('is active'), default=True)
     version = models.PositiveSmallIntegerField(_('version'))
 
-    country = CountryField(_('country'))
+    country = CountryField(_('country'), db_index=True)
     location = models.PointField(_('location'), geography=True)
 
     class Meta:
