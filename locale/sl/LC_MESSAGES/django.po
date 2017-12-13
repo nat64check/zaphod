@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-14 16:20+0000\n"
+"POT-Creation-Date: 2017-12-13 14:31+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,25 +27,25 @@ msgstr ""
 msgid "admin"
 msgstr ""
 
+#: instances/admin_filters.py:12 instances/models.py:24 instances/models.py:60
+#: instances/models.py:85 measurements/admin_filters.py:6
+msgid "version"
+msgstr ""
+
 #: instances/apps.py:7
 msgid "Test-cluster instances"
 msgstr ""
 
-#: instances/filters.py:12 instances/models.py:24 instances/models.py:54
-#: instances/models.py:79 measurements/filters.py:6
-msgid "version"
-msgstr ""
-
-#: instances/models.py:17 instances/models.py:49 measurements/models.py:24
+#: instances/models.py:17 instances/models.py:55 measurements/models.py:26
 #: world/models.py:10
 msgid "name"
 msgstr ""
 
-#: instances/models.py:19 instances/models.py:50
+#: instances/models.py:19 instances/models.py:56
 msgid "hostname"
 msgstr ""
 
-#: instances/models.py:20 instances/models.py:51
+#: instances/models.py:20 instances/models.py:57
 msgid "Please provide a valid host name"
 msgstr ""
 
@@ -57,47 +57,47 @@ msgstr ""
 msgid "location"
 msgstr ""
 
-#: instances/models.py:47 measurements/models.py:103
+#: instances/models.py:53 measurements/models.py:130
 msgid "Trillian"
 msgstr ""
 
-#: instances/models.py:53
+#: instances/models.py:59
 msgid "type"
 msgstr ""
 
-#: instances/models.py:56
+#: instances/models.py:62
 msgid "browser name"
 msgstr ""
 
-#: instances/models.py:57 instances/models.py:85
+#: instances/models.py:63 instances/models.py:91
 msgid "browser version"
 msgstr ""
 
-#: instances/models.py:59
+#: instances/models.py:65
 msgid "instance type"
 msgstr ""
 
-#: instances/models.py:60
+#: instances/models.py:66
 msgid "IPv4-only"
 msgstr ""
 
-#: instances/models.py:61
+#: instances/models.py:67
 msgid "IPv6-only"
 msgstr ""
 
-#: instances/models.py:62
+#: instances/models.py:68
 msgid "Dual-Stack"
 msgstr ""
 
-#: instances/models.py:63
+#: instances/models.py:69
 msgid "IPv6 with NAT64"
 msgstr ""
 
-#: instances/models.py:65
+#: instances/models.py:71
 msgid "addresses"
 msgstr ""
 
-#: instances/models.py:71
+#: instances/models.py:77
 #, python-brace-format
 msgid "{trillian}: {name}"
 msgstr ""
@@ -114,205 +114,241 @@ msgstr ""
 msgid "Address"
 msgstr ""
 
+#: measurements/admin.py:16 measurements/models.py:29
+msgid "Trillians"
+msgstr ""
+
 #: measurements/apps.py:7
 msgid "Measurement data"
 msgstr ""
 
-#: measurements/models.py:13
+#: measurements/models.py:15
 msgid "Critical"
 msgstr ""
 
-#: measurements/models.py:14
+#: measurements/models.py:16
 msgid "Error"
 msgstr ""
 
-#: measurements/models.py:15
+#: measurements/models.py:17
 msgid "Warning"
 msgstr ""
 
-#: measurements/models.py:16
+#: measurements/models.py:18
 msgid "Info"
 msgstr ""
 
-#: measurements/models.py:17
+#: measurements/models.py:19
 msgid "Debug"
 msgstr ""
 
-#: measurements/models.py:22 measurements/models.py:50
+#: measurements/models.py:24 measurements/models.py:63
 msgid "owner"
 msgstr ""
 
-#: measurements/models.py:25 measurements/models.py:54
+#: measurements/models.py:26
+msgid "Name your test schedule, must be unique"
+msgstr ""
+
+#: measurements/models.py:27 measurements/models.py:68
 msgid "URL"
 msgstr ""
 
 #: measurements/models.py:27
-msgid "Trillians"
-msgstr ""
-
-#: measurements/models.py:29
-msgid "time"
+msgid "The URL you want to test"
 msgstr ""
 
 #: measurements/models.py:30
-msgid "start"
-msgstr ""
-
-#: measurements/models.py:31
-msgid "end"
+msgid "The data centres from where you want this URL to be tested"
 msgstr ""
 
 #: measurements/models.py:32
-msgid "frequency"
+msgid "time"
+msgstr ""
+
+#: measurements/models.py:32
+msgid "The time of day in UTC when you want the tests to be scheduled"
 msgstr ""
 
 #: measurements/models.py:33
-msgid "Every day"
+msgid "start"
 msgstr ""
 
 #: measurements/models.py:34
-msgid "Every week"
+msgid "The first day that you want the tests to be run"
 msgstr ""
 
 #: measurements/models.py:35
+msgid "end"
+msgstr ""
+
+#: measurements/models.py:36
+msgid "The last day that you want the tests to be run"
+msgstr ""
+
+#: measurements/models.py:37
+msgid "frequency"
+msgstr ""
+
+#: measurements/models.py:38
+msgid "Every day"
+msgstr ""
+
+#: measurements/models.py:39
+msgid "Every week"
+msgstr ""
+
+#: measurements/models.py:40
 msgid "Every month"
 msgstr ""
 
-#: measurements/models.py:38 measurements/models.py:60
+#: measurements/models.py:41
+msgid ""
+"Frequency to schedule the tests. Can be \"D\" (daily), \"W\" (weekly) or \"M"
+"\" (monthly)"
+msgstr ""
+
+#: measurements/models.py:43 measurements/models.py:74
 msgid "is public"
 msgstr ""
 
-#: measurements/models.py:41 measurements/models.py:52
+#: measurements/models.py:44
+msgid "Whether the test results should be publicly visible"
+msgstr ""
+
+#: measurements/models.py:47 measurements/models.py:65
 msgid "schedule"
 msgstr ""
 
-#: measurements/models.py:42
+#: measurements/models.py:48
 msgid "schedules"
 msgstr ""
 
-#: measurements/models.py:56 measurements/models.py:107
+#: measurements/models.py:70 measurements/models.py:134
 msgid "requested"
 msgstr ""
 
-#: measurements/models.py:57 measurements/models.py:108
+#: measurements/models.py:71 measurements/models.py:135
 msgid "started"
 msgstr ""
 
-#: measurements/models.py:58 measurements/models.py:109
+#: measurements/models.py:72 measurements/models.py:136
 msgid "finished"
 msgstr ""
 
-#: measurements/models.py:62 measurements/models.py:113
+#: measurements/models.py:76 measurements/models.py:140
 msgid "image score"
 msgstr ""
 
-#: measurements/models.py:63 measurements/models.py:114
+#: measurements/models.py:77 measurements/models.py:141
 msgid "image feedback"
 msgstr ""
 
-#: measurements/models.py:65 measurements/models.py:116
+#: measurements/models.py:79 measurements/models.py:143
 msgid "resource score"
 msgstr ""
 
-#: measurements/models.py:66 measurements/models.py:117
+#: measurements/models.py:80 measurements/models.py:144
 msgid "resource feedback"
 msgstr ""
 
-#: measurements/models.py:68 measurements/models.py:119
+#: measurements/models.py:82 measurements/models.py:146
 msgid "overall score"
 msgstr ""
 
-#: measurements/models.py:69 measurements/models.py:120
+#: measurements/models.py:83 measurements/models.py:147
 msgid "overall feedback"
 msgstr ""
 
-#: measurements/models.py:72 measurements/models.py:102
+#: measurements/models.py:86 measurements/models.py:102
+#: measurements/models.py:128
 msgid "test run"
 msgstr ""
 
-#: measurements/models.py:73
+#: measurements/models.py:87
 msgid "test runs"
 msgstr ""
 
-#: measurements/models.py:77
+#: measurements/models.py:91
 #, python-brace-format
 msgid "{url} completed on {when}"
 msgstr ""
 
-#: measurements/models.py:80
+#: measurements/models.py:94
 #, python-brace-format
 msgid "{url} started on {when}"
 msgstr ""
 
-#: measurements/models.py:83
+#: measurements/models.py:97
 #, python-brace-format
 msgid "{url} requested on {when}"
 msgstr ""
 
-#: measurements/models.py:89 measurements/models.py:133
+#: measurements/models.py:103 measurements/models.py:177
 msgid "severity"
 msgstr ""
 
-#: measurements/models.py:93
+#: measurements/models.py:104 measurements/models.py:178
+msgid "message"
+msgstr ""
+
+#: measurements/models.py:107
 msgid "test run message"
 msgstr ""
 
-#: measurements/models.py:94
+#: measurements/models.py:108
 msgid "test run messages"
 msgstr ""
 
-#: measurements/models.py:104
+#: measurements/models.py:131
 msgid "ID on Trillian"
 msgstr ""
 
-#: measurements/models.py:105
+#: measurements/models.py:132
 msgid "callback auth code"
 msgstr ""
 
-#: measurements/models.py:111
+#: measurements/models.py:138
 msgid "DNS results"
 msgstr ""
 
-#: measurements/models.py:123
+#: measurements/models.py:150 measurements/models.py:175
+#: measurements/models.py:202
 msgid "instance run"
 msgstr ""
 
-#: measurements/models.py:124
+#: measurements/models.py:151
 msgid "instance runs"
 msgstr ""
 
-#: measurements/models.py:128
+#: measurements/models.py:155
 #, python-brace-format
-msgid "{testrun} on {trillian}"
+msgid "{obj.testrun} on {obj.trillian}"
 msgstr ""
 
-#: measurements/models.py:137
+#: measurements/models.py:181
 msgid "instance run message"
 msgstr ""
 
-#: measurements/models.py:138
+#: measurements/models.py:182
 msgid "instance run messages"
 msgstr ""
 
-#: measurements/models.py:146
-msgid "instance"
-msgstr ""
-
-#: measurements/models.py:147
+#: measurements/models.py:204
 msgid "Marvin"
 msgstr ""
 
-#: measurements/models.py:153
+#: measurements/models.py:210
 msgid "instance run result"
 msgstr ""
 
-#: measurements/models.py:154
+#: measurements/models.py:211
 msgid "instance run results"
 msgstr ""
 
-#: measurements/models.py:157
+#: measurements/models.py:214
 #, python-brace-format
-msgid "{testrun} on {marvin}"
+msgid "{obj.instancerun} on {obj.marvin}"
 msgstr ""
 
 #: templates/admin/base_site.html:5
@@ -351,14 +387,18 @@ msgstr ""
 msgid "regions"
 msgstr ""
 
-#: zaphod_be/settings.py:124
+#: zaphod_be/api/views.py:13
+msgid "The new password for this user"
+msgstr ""
+
+#: zaphod_be/settings.py:128
 msgid "English"
 msgstr ""
 
-#: zaphod_be/settings.py:125
+#: zaphod_be/settings.py:129
 msgid "Dutch"
 msgstr ""
 
-#: zaphod_be/settings.py:126
+#: zaphod_be/settings.py:130
 msgid "Slovenian"
 msgstr ""

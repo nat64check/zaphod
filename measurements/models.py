@@ -60,9 +60,9 @@ class Schedule(models.Model):
 
 
 class TestRun(models.Model):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='testruns', verbose_name=_('owner'), blank=True,
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('owner'), related_name='testruns', blank=True,
                               null=True, on_delete=models.PROTECT)
-    schedule = models.ForeignKey(Schedule, related_name='testruns', verbose_name=_('schedule'), blank=True, null=True,
+    schedule = models.ForeignKey(Schedule, verbose_name=_('schedule'), related_name='testruns', blank=True, null=True,
                                  on_delete=models.PROTECT)
 
     url = models.URLField(_('URL'), db_index=True)
@@ -99,9 +99,9 @@ class TestRun(models.Model):
 
 
 class TestRunMessage(models.Model):
-    testrun = models.ForeignKey(TestRun, related_name='messages', on_delete=models.CASCADE)
+    testrun = models.ForeignKey(TestRun, verbose_name=_('test run'), related_name='messages', on_delete=models.CASCADE)
     severity = models.PositiveSmallIntegerField(_('severity'), choices=severities)
-    message = models.CharField(max_length=200)
+    message = models.CharField(_('message'), max_length=200)
 
     class Meta:
         verbose_name = _('test run message')
@@ -172,9 +172,10 @@ class InstanceRun(models.Model):
 
 
 class InstanceRunMessage(models.Model):
-    instancerun = models.ForeignKey(InstanceRun, related_name='messages', on_delete=models.CASCADE)
+    instancerun = models.ForeignKey(InstanceRun, verbose_name=_('instance run'), related_name='messages',
+                                    on_delete=models.CASCADE)
     severity = models.PositiveSmallIntegerField(_('severity'), choices=severities)
-    message = models.CharField(max_length=200)
+    message = models.CharField(_('message'), max_length=200)
 
     class Meta:
         verbose_name = _('instance run message')
@@ -198,7 +199,7 @@ class InstanceRunMessage(models.Model):
 
 
 class InstanceRunResult(models.Model):
-    instancerun = models.ForeignKey(InstanceRun, verbose_name=_('instancerun'), related_name='results',
+    instancerun = models.ForeignKey(InstanceRun, verbose_name=_('instance run'), related_name='results',
                                     on_delete=models.CASCADE)
     marvin = models.ForeignKey(Marvin, verbose_name=_('Marvin'), on_delete=models.PROTECT)
 
