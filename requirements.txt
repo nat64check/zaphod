@@ -9,7 +9,7 @@ decorator==4.1.2
 Django==2.0rc1
 django-countries==5.0
 django-debug-toolbar==1.9.1
-django-extensions==1.9.7
+django-extensions==1.9.8
 django-filter==1.1.0
 django-rest-swagger==2.1.2
 djangorestframework==3.7.3
@@ -20,11 +20,11 @@ ipython-genutils==0.2.0
 itypes==1.1.0
 jedi==0.11.0
 Jinja2==2.10
-Markdown==2.6.9
+Markdown==2.6.10
 MarkupSafe==1.0
 openapi-codec==1.3.2
 parso==0.1.1
-pexpect==4.3.0
+pexpect==4.3.1
 pickleshare==0.7.4
 prompt-toolkit==1.0.15
 psycopg2==2.7.3.2
@@ -34,7 +34,7 @@ pygraphviz==1.3.1
 pytz==2017.3
 requests==2.18.4
 simplegeneric==0.8.1
-simplejson==3.12.0
+simplejson==3.13.2
 six==1.11.0
 sqlparse==0.2.4
 traitlets==4.3.2
@@ -42,4 +42,4 @@ typing==3.6.2
 uritemplate==3.0.0
 urllib3==1.22
 wcwidth==0.1.7
-Werkzeug==0.12.2
+Werkzeug==0.13
