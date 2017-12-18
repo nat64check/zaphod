@@ -14,10 +14,18 @@ import os
 
 from django.utils.translation import ugettext_lazy as _
 
-from .local_settings import DEBUG, SECRET_KEY, ALLOWED_HOSTS
+ADMINS = [
+    ('Sander Steffann', 'sander@steffann.nl'),
+]
+
+MANAGERS = ADMINS
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+DEBUG = False
+
+ALLOWED_HOSTS = ['localhost', '::1', '127.0.0.1']
 
 INTERNAL_IPS = [
     '127.0.0.1',
@@ -57,16 +65,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if DEBUG:
-    INSTALLED_APPS += [
-        'django_extensions',
-        'debug_toolbar',
-    ]
-
-    MIDDLEWARE += [
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    ]
-
 ROOT_URLCONF = 'zaphod_be.urls'
 
 TEMPLATES = [
@@ -78,8 +76,9 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.i18n',
+                'django.template.context_processors.tz',
+                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -94,8 +93,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'zaphod_be',
+        'CONN_MAX_AGE': 900,
     }
 }
+
+# Use cache as a front-end for database cache storage
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -160,5 +163,40 @@ SWAGGER_SETTINGS = {
     'JSON_EDITOR': True,
 }
 
+# Dump email to console for testing
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_TIMEOUT = 30
+EMAIL_SUBJECT_PREFIX = '[NAT64Check] '
+
 LOGIN_URL = 'rest_framework:login'
 LOGOUT_URL = 'rest_framework:logout'
+
+# Enable these when running over TLS
+SECURE_HSTS_SECONDS = 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
+# Tell browsers not to guess content-types but to trust us
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Tell browsers to (try to) detect XSS attacks
+SECURE_BROWSER_XSS_FILTER = True
+
+# Refuse to be framed
+X_FRAME_OPTIONS = 'DENY'
+
+# Override default setting with local settings
+from .local_settings import *
+
+if DEBUG:
+    INSTALLED_APPS += [
+        'django_extensions',
+        'debug_toolbar',
+    ]
+
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
