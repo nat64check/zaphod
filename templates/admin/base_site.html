@@ -2,10 +2,10 @@
 {% load i18n %}
 {% load countries %}
 
-{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+{% block title %}{{ title }} | {{ site_title|default:_('NAT64Check Zaphod admin') }}{% endblock %}
 
 {% block branding %}
-    <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></h1>
+    <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Zaphod administration') }}</a></h1>
 {% endblock %}
 
 {% block userlinks %}
