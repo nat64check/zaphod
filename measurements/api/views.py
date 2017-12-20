@@ -43,8 +43,8 @@ class ScheduleViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         assert isinstance(instance, Schedule)
-        if instance.testrun_set.exists():
-            last_testrun_date = instance.testrun_set.order_by('-requested').values_list('requested', flat=True).first()
+        if instance.testruns.exists():
+            last_testrun_date = instance.testruns.order_by('-requested').values_list('requested', flat=True).first()
             instance.end = last_testrun_date.date()
             instance.save()
         else:
