@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-13 14:31+0000\n"
+"POT-Creation-Date: 2017-12-20 14:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -352,11 +352,11 @@ msgid "{obj.instancerun} on {obj.marvin}"
 msgstr ""
 
 #: templates/admin/base_site.html:5
-msgid "Django site admin"
+msgid "NAT64Check Zaphod admin"
 msgstr ""
 
 #: templates/admin/base_site.html:8
-msgid "Django administration"
+msgid "Zaphod administration"
 msgstr ""
 
 #: world/admin.py:15 world/models.py:11
@@ -391,14 +391,14 @@ msgstr ""
 msgid "The new password for this user"
 msgstr ""
 
-#: zaphod_be/settings.py:128
+#: zaphod_be/settings.py:131
 msgid "English"
 msgstr ""
 
-#: zaphod_be/settings.py:129
+#: zaphod_be/settings.py:132
 msgid "Dutch"
 msgstr ""
 
-#: zaphod_be/settings.py:130
+#: zaphod_be/settings.py:133
 msgid "Slovenian"
 msgstr ""

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-13 14:31+0000\n"
-"PO-Revision-Date: 2017-12-13 15:33+0100\n"
+"PO-Revision-Date: 2017-12-20 15:08+0100\n"
 "Last-Translator: Sander Steffann <sander@steffann.nl>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -352,12 +352,12 @@ msgid "{obj.instancerun} on {obj.marvin}"
 msgstr "{obj.instancerun} op {obj.marvin}"
 
 #: templates/admin/base_site.html:5
-msgid "Django site admin"
-msgstr "Django site beheer"
+msgid "NAT64Check Zaphod admin"
+msgstr "NAT64Check Zaphod beheer"
 
 #: templates/admin/base_site.html:8
-msgid "Django administration"
-msgstr "Django beheer"
+msgid "Zaphod administration"
+msgstr "Zaphod beheer"
 
 #: world/admin.py:15 world/models.py:11
 msgid "countries"
@@ -391,14 +391,17 @@ msgstr "regio's"
 msgid "The new password for this user"
 msgstr "Het nieuwe wachtwoord voor deze gebruiker"
 
-#: zaphod_be/settings.py:128
+#: zaphod_be/settings.py:131
 msgid "English"
 msgstr "Engels"
 
-#: zaphod_be/settings.py:129
+#: zaphod_be/settings.py:132
 msgid "Dutch"
 msgstr "Nederlands"
 
-#: zaphod_be/settings.py:130
+#: zaphod_be/settings.py:133
 msgid "Slovenian"
 msgstr "Sloveens"
+
+#~ msgid "Django site admin"
+#~ msgstr "Django site beheer"
