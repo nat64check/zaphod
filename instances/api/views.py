@@ -17,6 +17,7 @@ class TrillianViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TrillianSerializer
     filter_class = TrillianFilter
 
+
 class MarvinViewSet(viewsets.ReadOnlyModelViewSet):
     """
     list:

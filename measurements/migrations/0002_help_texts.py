@@ -25,7 +25,8 @@ class Migration(migrations.Migration):
             model_name='schedule',
             name='frequency',
             field=models.CharField(choices=[('D', 'Every day'), ('W', 'Every week'), ('M', 'Every month')],
-                                   help_text='Frequency to schedule the tests. Can be "D" (daily), "W" (weekly) or "M" (monthly)',
+                                   help_text='Frequency to schedule the tests. '
+                                             'Can be "D" (daily), "W" (weekly) or "M" (monthly)',
                                    max_length=1, verbose_name='frequency'),
         ),
         migrations.AlterField(
