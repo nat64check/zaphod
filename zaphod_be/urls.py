@@ -14,7 +14,7 @@ Including another URL conf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.conf.urls import url, include
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 from rest_framework.documentation import include_docs_urls
@@ -36,9 +36,10 @@ urlpatterns = [
 
     url(r'^admin/', admin.site.urls),
     url(r'^i18n/', include('django.conf.urls.i18n')),
+
     url(r'^api-auth/', include('rest_framework.urls')),
-    url(r'^api/$', RedirectView.as_view(url='v1')),
     url(r'^api/v1/', include(router.urls)),
+    url(r'^api/$', RedirectView.as_view(url='v1')),
 ]
 
 if settings.DEBUG:
