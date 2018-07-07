@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 
-from instances.api.filters import TrillianFilter, MarvinFilter
-from instances.api.serializers import TrillianSerializer, MarvinSerializer
-from instances.models import Trillian, Marvin
+from instances.api.filters import MarvinFilter, TrillianFilter
+from instances.api.serializers import MarvinSerializer, TrillianSerializer
+from instances.models import Marvin, Trillian
 
 
 class TrillianViewSet(viewsets.ReadOnlyModelViewSet):

@@ -1,7 +1,7 @@
-from django.conf.urls import url, include
+from django.conf.urls import include, url
 from rest_framework import routers
 
-from measurements.api.views import ScheduleViewSet, TestRunViewSet, InstanceRunViewSet
+from measurements.api.views import InstanceRunViewSet, ScheduleViewSet, TestRunViewSet
 
 # Routers provide an easy way of automatically determining the URL conf.
 measurements_router = routers.SimpleRouter()

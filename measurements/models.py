@@ -8,7 +8,7 @@ from django.utils.datetime_safe import date
 from django.utils.formats import date_format
 from django.utils.translation import gettext_lazy as _
 
-from instances.models import Trillian, Marvin
+from instances.models import Marvin, Trillian
 from measurements.utils import generate_random_token
 
 severities = (

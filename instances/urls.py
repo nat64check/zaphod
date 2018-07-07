@@ -1,7 +1,7 @@
-from django.conf.urls import url, include
+from django.conf.urls import include, url
 from rest_framework import routers
 
-from instances.api.views import TrillianViewSet, MarvinViewSet
+from instances.api.views import MarvinViewSet, TrillianViewSet
 
 # Routers provide an easy way of automatically determining the URL conf.
 instances_router = routers.SimpleRouter()

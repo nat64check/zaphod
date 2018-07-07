@@ -1,16 +1,17 @@
 import django_filters
 
-from instances.models import Trillian, Marvin
+from instances.models import Marvin, Trillian
 
 
 class TrillianFilter(django_filters.FilterSet):
+    having_admin = django_filters.Filter(name="admins", lookup_type='in')
+
     class Meta:
         model = Trillian
         fields = {
             'name': ['exact', 'contains'],
             'hostname': ['exact', 'contains'],
-            'admin': ['exact'],
-            'is_active': ['exact'],
+            'alive': ['exact'],
             'country': ['exact'],
         }
 

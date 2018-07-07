@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django_countries.widgets import CountrySelectWidget
 
 from instances.admin_filters import TrillianRegionFilter, VersionFilter
-from instances.models import Trillian, Marvin
+from instances.models import Marvin, Trillian
 
 
 class SearchableGeoAdmin(OSMGeoAdmin):
@@ -24,7 +24,7 @@ class TrillianAdminForm(ModelForm):
 @admin.register(Trillian)
 class TrillianAdmin(SearchableGeoAdmin):
     form = TrillianAdminForm
-    list_display = ('name', 'hostname', 'version', 'admin_country', 'admin_full_name')
+    list_display = ('name', 'hostname', 'display_version', 'admin_country', 'admin_full_names')
     list_filter = (TrillianRegionFilter,)
     ordering = ('name',)
 
@@ -34,11 +34,11 @@ class TrillianAdmin(SearchableGeoAdmin):
     admin_country.short_description = _('country')
     admin_country.admin_order_field = 'country'
 
-    def admin_full_name(self, trillian):
-        return trillian.admin.get_full_name()
+    def admin_full_names(self, trillian):
+        return ', '.join([trillian_admin.get_full_name() for trillian_admin in trillian.admins.all()])
 
-    admin_full_name.short_description = _('admin')
-    admin_full_name.admin_order_field = 'admin__first_name'
+    admin_full_names.short_description = _('admins')
+    admin_full_names.admin_order_field = 'admins__first_name'
 
 
 @admin.register(Marvin)

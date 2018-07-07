@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from measurements.models import Schedule, TestRun, TestRunMessage, InstanceRunMessage, InstanceRun, InstanceRunResult
+from measurements.models import InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun, TestRunMessage
 
 
 class ScheduleSerializer(serializers.HyperlinkedModelSerializer):

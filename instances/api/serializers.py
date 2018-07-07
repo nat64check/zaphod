@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from instances.models import Trillian, Marvin
+from instances.models import Marvin, Trillian
 
 
 class TrillianSerializer(serializers.HyperlinkedModelSerializer):

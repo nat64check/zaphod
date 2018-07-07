@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from measurements.models import Schedule, TestRun, InstanceRun, InstanceRunResult, TestRunMessage, InstanceRunMessage
+from measurements.models import InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun, TestRunMessage
 
 
 @admin.register(Schedule)

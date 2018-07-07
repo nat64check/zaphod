@@ -15,7 +15,8 @@ import os
 from django.utils.translation import ugettext_lazy as _
 
 ADMINS = [
-    ('Sander Steffann', 'sander@steffann.nl'),
+    ('Sander Steffann', 'sander@nat64check.org'),
+    ('Jan Žorž', 'jan@nat64check.org'),
 ]
 
 MANAGERS = ADMINS
@@ -23,9 +24,10 @@ MANAGERS = ADMINS
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DEBUG = False
+DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
-ALLOWED_HOSTS = ['localhost', '::1', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '::1', '127.0.0.1', '*']
 
 INTERNAL_IPS = [
     '127.0.0.1',
@@ -43,15 +45,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
 
+    'instances',
+    'measurements',
+    'world',
+
+    'prettyjson',
     'django_countries',
     'django_filters',
     'rest_framework',
     'rest_framework_filters',
     'rest_framework_swagger',
-
-    'instances',
-    'measurements',
-    'world',
 ]
 
 MIDDLEWARE = [
@@ -80,6 +83,7 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'zaphod_be.context_processors.app_version'
             ],
         },
     },
@@ -92,8 +96,18 @@ WSGI_APPLICATION = 'zaphod_be.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'zaphod_be',
+        'HOST': os.environ.get('PGHOST', ''),
+        'NAME': os.environ.get('PGDATABASE', 'zaphod'),
+        'USER': os.environ.get('PGUSER', 'zaphod'),
+        'PASSWORD': os.environ.get('PGPASSWORD', ''),
         'CONN_MAX_AGE': 900,
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': 'memcached:11211',
     }
 }
 
@@ -188,8 +202,11 @@ SECURE_BROWSER_XSS_FILTER = True
 # Refuse to be framed
 X_FRAME_OPTIONS = 'DENY'
 
-# Override default setting with local settings
-from .local_settings import *
+try:
+    # Override default setting with local settings
+    from .local_settings import *
+except ImportError:
+    pass
 
 if DEBUG:
     INSTALLED_APPS += [
