@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-20 14:05+0000\n"
+"POT-Creation-Date: 2018-07-09 12:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,16 +19,17 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3);\n"
 
-#: instances/admin.py:34 instances/models.py:26
+#: instances/admin.py:34 instances/models.py:30
 msgid "country"
 msgstr ""
 
-#: instances/admin.py:40 instances/models.py:18
-msgid "admin"
+#: instances/admin.py:40 instances/models.py:19
+msgid "admins"
 msgstr ""
 
-#: instances/admin_filters.py:12 instances/models.py:24 instances/models.py:60
-#: instances/models.py:85 measurements/admin_filters.py:6
+#: instances/admin_filters.py:12 instances/models.py:28 instances/models.py:51
+#: instances/models.py:76 instances/models.py:109
+#: measurements/admin_filters.py:6
 msgid "version"
 msgstr ""
 
@@ -36,70 +37,79 @@ msgstr ""
 msgid "Test-cluster instances"
 msgstr ""
 
-#: instances/models.py:17 instances/models.py:55 measurements/models.py:26
+#: instances/models.py:18 instances/models.py:71 measurements/models.py:26
 #: world/models.py:10
 msgid "name"
 msgstr ""
 
-#: instances/models.py:19 instances/models.py:56
+#: instances/models.py:20 instances/models.py:72
 msgid "hostname"
 msgstr ""
 
-#: instances/models.py:20 instances/models.py:57
+#: instances/models.py:21 instances/models.py:73
 msgid "Please provide a valid host name"
 msgstr ""
 
-#: instances/models.py:23
-msgid "is active"
+#: instances/models.py:24 instances/models.py:88
+msgid "first seen"
 msgstr ""
 
-#: instances/models.py:27
+#: instances/models.py:25 instances/models.py:57 instances/models.py:89
+#: instances/models.py:121
+msgid "last seen"
+msgstr ""
+
+#: instances/models.py:27 instances/models.py:91 instances/models.py:101
+msgid "alive"
+msgstr ""
+
+#: instances/models.py:31
 msgid "location"
 msgstr ""
 
-#: instances/models.py:53 measurements/models.py:130
+#: instances/models.py:69 measurements/models.py:131
 msgid "Trillian"
 msgstr ""
 
-#: instances/models.py:59
+#: instances/models.py:75
 msgid "type"
 msgstr ""
 
-#: instances/models.py:62
+#: instances/models.py:78
 msgid "browser name"
 msgstr ""
 
-#: instances/models.py:63 instances/models.py:91
+#: instances/models.py:79 instances/models.py:115
 msgid "browser version"
 msgstr ""
 
-#: instances/models.py:65
+#: instances/models.py:81
 msgid "instance type"
 msgstr ""
 
-#: instances/models.py:66
+#: instances/models.py:82
 msgid "IPv4-only"
 msgstr ""
 
-#: instances/models.py:67
+#: instances/models.py:83
 msgid "IPv6-only"
 msgstr ""
 
-#: instances/models.py:68
-msgid "Dual-Stack"
-msgstr ""
-
-#: instances/models.py:69
+#: instances/models.py:84
 msgid "IPv6 with NAT64"
 msgstr ""
 
-#: instances/models.py:71
+#: instances/models.py:86
 msgid "addresses"
 msgstr ""
 
-#: instances/models.py:77
+#: instances/models.py:98
 #, python-brace-format
-msgid "{trillian}: {name}"
+msgid "{name} ({type}: {alive})"
+msgstr ""
+
+#: instances/models.py:101
+msgid "dead"
 msgstr ""
 
 #: instances/templates/searchable_osm.html:28
@@ -208,7 +218,7 @@ msgid ""
 "\" (monthly)"
 msgstr ""
 
-#: measurements/models.py:43 measurements/models.py:74
+#: measurements/models.py:43 measurements/models.py:75
 msgid "is public"
 msgstr ""
 
@@ -224,7 +234,7 @@ msgstr ""
 msgid "schedules"
 msgstr ""
 
-#: measurements/models.py:70 measurements/models.py:134
+#: measurements/models.py:70
 msgid "requested"
 msgstr ""
 
@@ -236,117 +246,121 @@ msgstr ""
 msgid "finished"
 msgstr ""
 
-#: measurements/models.py:76 measurements/models.py:140
-msgid "image score"
+#: measurements/models.py:73 measurements/models.py:137
+msgid "analysed"
 msgstr ""
 
 #: measurements/models.py:77 measurements/models.py:141
+msgid "image score"
+msgstr ""
+
+#: measurements/models.py:78 measurements/models.py:142
 msgid "image feedback"
 msgstr ""
 
-#: measurements/models.py:79 measurements/models.py:143
+#: measurements/models.py:80 measurements/models.py:144
 msgid "resource score"
 msgstr ""
 
-#: measurements/models.py:80 measurements/models.py:144
+#: measurements/models.py:81 measurements/models.py:145
 msgid "resource feedback"
 msgstr ""
 
-#: measurements/models.py:82 measurements/models.py:146
+#: measurements/models.py:83 measurements/models.py:147
 msgid "overall score"
 msgstr ""
 
-#: measurements/models.py:83 measurements/models.py:147
+#: measurements/models.py:84 measurements/models.py:148
 msgid "overall feedback"
 msgstr ""
 
-#: measurements/models.py:86 measurements/models.py:102
-#: measurements/models.py:128
+#: measurements/models.py:87 measurements/models.py:103
+#: measurements/models.py:129
 msgid "test run"
 msgstr ""
 
-#: measurements/models.py:87
+#: measurements/models.py:88
 msgid "test runs"
 msgstr ""
 
-#: measurements/models.py:91
+#: measurements/models.py:92
 #, python-brace-format
 msgid "{url} completed on {when}"
 msgstr ""
 
-#: measurements/models.py:94
+#: measurements/models.py:95
 #, python-brace-format
 msgid "{url} started on {when}"
 msgstr ""
 
-#: measurements/models.py:97
+#: measurements/models.py:98
 #, python-brace-format
 msgid "{url} requested on {when}"
 msgstr ""
 
-#: measurements/models.py:103 measurements/models.py:177
+#: measurements/models.py:104 measurements/models.py:182
 msgid "severity"
 msgstr ""
 
-#: measurements/models.py:104 measurements/models.py:178
+#: measurements/models.py:105 measurements/models.py:183
 msgid "message"
 msgstr ""
 
-#: measurements/models.py:107
+#: measurements/models.py:108
 msgid "test run message"
 msgstr ""
 
-#: measurements/models.py:108
+#: measurements/models.py:109
 msgid "test run messages"
 msgstr ""
 
-#: measurements/models.py:131
+#: measurements/models.py:132
 msgid "ID on Trillian"
 msgstr ""
 
-#: measurements/models.py:132
+#: measurements/models.py:133
 msgid "callback auth code"
 msgstr ""
 
-#: measurements/models.py:138
+#: measurements/models.py:139
 msgid "DNS results"
 msgstr ""
 
-#: measurements/models.py:150 measurements/models.py:175
-#: measurements/models.py:202
+#: measurements/models.py:151 measurements/models.py:180
+#: measurements/models.py:207
 msgid "instance run"
 msgstr ""
 
-#: measurements/models.py:151
+#: measurements/models.py:152
 msgid "instance runs"
 msgstr ""
 
-#: measurements/models.py:155
+#: measurements/models.py:156
 #, python-brace-format
 msgid "{obj.testrun} on {obj.trillian}"
 msgstr ""
 
-#: measurements/models.py:181
+#: measurements/models.py:186
 msgid "instance run message"
 msgstr ""
 
-#: measurements/models.py:182
+#: measurements/models.py:187
 msgid "instance run messages"
 msgstr ""
 
-#: measurements/models.py:204
+#: measurements/models.py:209
 msgid "Marvin"
 msgstr ""
 
-#: measurements/models.py:210
+#: measurements/models.py:215
 msgid "instance run result"
 msgstr ""
 
-#: measurements/models.py:211
+#: measurements/models.py:216
 msgid "instance run results"
 msgstr ""
 
-#: measurements/models.py:214
+#: measurements/models.py:219
 #, python-brace-format
 msgid "{obj.instancerun} on {obj.marvin}"
 msgstr ""
@@ -391,14 +405,14 @@ msgstr ""
 msgid "The new password for this user"
 msgstr ""
 
-#: zaphod_be/settings.py:131
+#: zaphod_be/settings.py:145
 msgid "English"
 msgstr ""
 
-#: zaphod_be/settings.py:132
+#: zaphod_be/settings.py:146
 msgid "Dutch"
 msgstr ""
 
-#: zaphod_be/settings.py:133
+#: zaphod_be/settings.py:147
 msgid "Slovenian"
 msgstr ""
