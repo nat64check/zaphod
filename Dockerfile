@@ -15,6 +15,6 @@ RUN pip3 install -r /app/requirements.txt
 
 COPY . .
 
-RUN ./manage.py compile_pyc
+RUN DJANGO_SECRET_KEY=dummy ./manage.py compile_pyc
 
 CMD ["uwsgi", "--ini", "/app/uwsgi.ini"]
