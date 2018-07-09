@@ -70,6 +70,7 @@ class TestRun(models.Model):
     requested = models.DateTimeField(_('requested'), db_index=True, default=timezone.now)
     started = models.DateTimeField(_('started'), blank=True, null=True, db_index=True)
     finished = models.DateTimeField(_('finished'), blank=True, null=True, db_index=True)
+    analysed = models.DateTimeField(_('analysed'), blank=True, null=True, db_index=True)
 
     is_public = models.BooleanField(_('is public'), default=True)
 
@@ -133,6 +134,7 @@ class InstanceRun(models.Model):
 
     started = models.DateTimeField(_('started'), blank=True, null=True, db_index=True)
     finished = models.DateTimeField(_('finished'), blank=True, null=True, db_index=True)
+    analysed = models.DateTimeField(_('analysed'), blank=True, null=True, db_index=True)
 
     dns_results = ArrayField(models.GenericIPAddressField(), verbose_name=_('DNS results'), blank=True, default=list)
 
