@@ -37,7 +37,7 @@ class InstanceRunMessageAdmin(admin.TabularInline):
 class InstanceRunAdmin(admin.ModelAdmin):
     list_display = ('testrun', 'trillian', 'id_on_trillian', 'requested', 'started', 'finished')
     list_filter = (('trillian', admin.RelatedOnlyFieldListFilter),)
-    date_hierarchy = 'requested'
+    date_hierarchy = 'testrun__requested'
     search_fields = ('testrun__url',
                      'testrun__owner__first_name', 'testrun__owner__last_name', 'testrun__owner__email',
                      'testrun__schedule__name',
@@ -50,7 +50,7 @@ class InstanceRunAdmin(admin.ModelAdmin):
 class InstanceRunResultAdmin(admin.ModelAdmin):
     list_display = ('instancerun', 'marvin')
     list_filter = (('marvin', admin.RelatedOnlyFieldListFilter),)
-    date_hierarchy = 'instancerun__requested'
+    date_hierarchy = 'instancerun__testrun__requested'
     search_fields = ('instancerun__testrun__url',
                      'instancerun__testrun__owner__first_name', 'instancerun__testrun__owner__last_name',
                      'instancerun__testrun__owner__email',

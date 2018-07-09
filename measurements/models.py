@@ -131,7 +131,6 @@ class InstanceRun(models.Model):
     id_on_trillian = models.PositiveIntegerField(_('ID on Trillian'), blank=True, null=True)
     callback_auth_code = models.CharField(_('callback auth code'), max_length=50, default=generate_random_token)
 
-    requested = models.DateTimeField(_('requested'), blank=True, null=True, db_index=True)
     started = models.DateTimeField(_('started'), blank=True, null=True, db_index=True)
     finished = models.DateTimeField(_('finished'), blank=True, null=True, db_index=True)
 
@@ -153,6 +152,10 @@ class InstanceRun(models.Model):
 
     def __str__(self):
         return _('{obj.testrun} on {obj.trillian}').format(obj=self)
+
+    @property
+    def requested(self):
+        return self.testrun.requested
 
     @property
     def owner(self):
