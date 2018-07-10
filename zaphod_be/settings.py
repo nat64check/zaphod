@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
 
+    'generic',
     'instances',
     'measurements',
     'world',
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_filters',
     'rest_framework',
+    'rest_framework.authtoken',
     'rest_framework_filters',
     'rest_framework_swagger',
 
@@ -92,8 +94,8 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'generic.context_processors.uwsgi_context',
                 'zaphod_be.context_processors.app_version',
-                'zaphod_be.context_processors.uwsgi_context',
             ],
         },
     },

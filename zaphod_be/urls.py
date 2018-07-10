@@ -21,10 +21,10 @@ from rest_framework.documentation import include_docs_urls
 from rest_framework.routers import DefaultRouter
 from rest_framework_swagger.views import get_swagger_view
 
+from generic.api.views import UserViewSet
+from generic.views import reload_uwsgi
 from instances.urls import instances_router
 from measurements.urls import measurements_router
-from zaphod_be.api.views import UserViewSet
-from zaphod_be.views import reload_uwsgi
 
 router = DefaultRouter()
 router.register('users', UserViewSet, base_name='user')

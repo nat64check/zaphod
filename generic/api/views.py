@@ -2,8 +2,8 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from rest_framework import viewsets, serializers, permissions, response, status, decorators
 
-from zaphod_be.api.filters import UserFilter, UserAdminFilter
-from zaphod_be.api.serializers import UserSerializer, UserAdminSerializer
+from generic.api.filters import UserFilter, UserAdminFilter
+from generic.api.serializers import UserSerializer, UserAdminSerializer
 
 user_model = get_user_model()
 

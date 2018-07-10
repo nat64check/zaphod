@@ -1,6 +1,6 @@
 from django.http import HttpResponseForbidden, HttpResponseNotAllowed, HttpResponseNotFound, HttpResponseRedirect
 
-from zaphod_be.tasks import do_reload_uwsgi
+from generic.tasks import do_reload_uwsgi
 
 try:
     # noinspection PyPackageRequirements

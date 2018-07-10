@@ -1,0 +1,83 @@
+[
+  {
+    "model": "auth.group",
+    "fields": {
+      "name": "Trillians",
+      "permissions": [
+        ["report_back", "measurements", "instancerun"]
+      ]
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$100000$qmfbpCb1qzyJ$we7V+1cBPeiwWNrGPCImQP1mKYP6OW4Oi18kymM/Y+E=",
+      "last_login": "2017-11-07T10:18:31.131Z",
+      "is_superuser": true,
+      "username": "sander",
+      "first_name": "Sander",
+      "last_name": "Steffann",
+      "email": "sander@steffann.nl",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2017-11-05T19:43:30Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$100000$GGq5KiX5EWte$zjuzEqKEIJejDyGbGrURYtNV2d4D1aH4MiMFpavVMzU=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "jan",
+      "first_name": "Jan",
+      "last_name": "\u017dor\u017e",
+      "email": "jan@go6.si",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2017-11-05T19:48:13Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$100000$my6Qo4mnvNo7$bCgvBQ4kbtipLOjsp/8jsqa7jIHgpo1/NbIGkyZUbTw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "trillian_nl1",
+      "first_name": "Trillian",
+      "last_name": "Netherlands",
+      "email": "trillian@nat64check.org",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-10T17:10:56Z",
+      "groups": [
+        ["Trillians"]
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$100000$Hq76A415So91$oN53Xg6wvLAwkjEEOWWgBY82Z80vmncOE8xx8k3M2lg=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "trillian_si1",
+      "first_name": "Trillian",
+      "last_name": "Slovenia",
+      "email": "trillian@nat64check.org",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-10T17:10:56Z",
+      "groups": [
+        ["Trillians"]
+      ],
+      "user_permissions": []
+    }
+  }
+]
