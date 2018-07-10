@@ -19,6 +19,7 @@
         <form action="{% url 'reload_uwsgi' %}" method="post"
               style="display: inline-block; margin-left: 15px; margin-right: 15px">
             {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
             <input type="submit" value="Reload UWSGI" style="padding: 10% 15%">
         </form>
     {% endif %}
