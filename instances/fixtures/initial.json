@@ -1,39 +1,5 @@
 [
   {
-    "model": "auth.user",
-    "fields": {
-      "password": "pbkdf2_sha256$100000$jDOlTnnjuhmf$MCT5THfjOecVGFYvWkSo1HSNTlfQwygvU0bAepdoHNs=",
-      "last_login": "2017-11-07T10:18:31.131Z",
-      "is_superuser": true,
-      "username": "sander",
-      "first_name": "Sander",
-      "last_name": "Steffann",
-      "email": "sander@steffann.nl",
-      "is_staff": true,
-      "is_active": true,
-      "date_joined": "2017-11-05T19:43:30Z",
-      "groups": [],
-      "user_permissions": []
-    }
-  },
-  {
-    "model": "auth.user",
-    "fields": {
-      "password": "pbkdf2_sha256$100000$GGq5KiX5EWte$zjuzEqKEIJejDyGbGrURYtNV2d4D1aH4MiMFpavVMzU=",
-      "last_login": null,
-      "is_superuser": true,
-      "username": "jan",
-      "first_name": "Jan",
-      "last_name": "\u017dor\u017e",
-      "email": "jan@go6.si",
-      "is_staff": true,
-      "is_active": true,
-      "date_joined": "2017-11-05T19:48:13Z",
-      "groups": [],
-      "user_permissions": []
-    }
-  },
-  {
     "model": "instances.trillian",
     "fields": {
       "name": "SJM Steffann",
