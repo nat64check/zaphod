@@ -2,13 +2,27 @@
 {% load i18n %}
 {% load countries %}
 
-{% block title %}{{ title }} | {{ site_title|default:_('NAT64Check Zaphod admin') }}{% endblock %}
+{% block title %}
+    {{ title }} | {% blocktrans %}NAT64Check Zaphod {{ APP_VERSION }} admin{% endblocktrans %}
+{% endblock %}
 
 {% block branding %}
-    <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Zaphod administration') }}</a></h1>
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">
+            {% blocktrans %}Zaphod {{ APP_VERSION }} administration{% endblocktrans %}
+        </a>
+    </h1>
 {% endblock %}
 
 {% block userlinks %}
+    {% if request.user.is_superuser and UWSGI.enabled %}
+        <form action="{% url 'reload_uwsgi' %}" method="post"
+              style="display: inline-block; margin-left: 15px; margin-right: 15px">
+            {% csrf_token %}
+            <input type="submit" value="Reload UWSGI" style="padding: 10% 15%">
+        </form>
+    {% endif %}
+
     <form action="{% url 'set_language' %}" method="post"
           style="display: inline-block; margin-left: 15px; margin-right: 2px">
         {% csrf_token %}
@@ -18,7 +32,7 @@
         <select name="language" onchange="form.submit()" style="font-size: 11px; height: 20px">
             {% get_language_info_list for LANGUAGES as languages %}
             {% for language in languages %}
-                <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected{% endif %}>
                     {{ language.name_local }} ({{ language.code }})
                 </option>
             {% endfor %}

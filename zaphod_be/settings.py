@@ -84,7 +84,8 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'zaphod_be.context_processors.app_version'
+                'zaphod_be.context_processors.app_version',
+                'zaphod_be.context_processors.uwsgi_context',
             ],
         },
     },
