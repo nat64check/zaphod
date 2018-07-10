@@ -1,4 +1,4 @@
-from django.http import HttpResponseNotAllowed, HttpResponseNotFound, HttpResponseRedirect
+from django.http import HttpResponseForbidden, HttpResponseNotAllowed, HttpResponseNotFound, HttpResponseRedirect
 
 from zaphod_be.tasks import do_reload_uwsgi
 
@@ -10,11 +10,14 @@ except ImportError:
 
 
 def reload_uwsgi(request):
+    if not uwsgi:
+        return HttpResponseNotFound("Not running under UWSGI")
+
     if request.method != "POST":
         return HttpResponseNotAllowed(['POST'])
 
-    if not uwsgi:
-        return HttpResponseNotFound("Not running under UWSGI")
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("You are not allowed to restart UWSGI")
 
     do_reload_uwsgi()
     return HttpResponseRedirect(request.POST.get('next', '/admin/'))
