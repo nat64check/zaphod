@@ -151,6 +151,9 @@ class InstanceRun(models.Model):
         verbose_name = _('instance run')
         verbose_name_plural = _('instance runs')
         unique_together = (('testrun', 'trillian'),)
+        permissions = (
+            ("report_back", "Report back on progress"),
+        )
 
     def __str__(self):
         return _('{obj.testrun} on {obj.trillian}').format(obj=self)
