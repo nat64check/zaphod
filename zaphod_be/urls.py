@@ -31,11 +31,20 @@ router.register('users', UserViewSet, base_name='user')
 router.registry.extend(measurements_router.registry)
 router.registry.extend(instances_router.registry)
 
+# TODO: Consider OTP for Admin site
+# otp_admin_site = OTPAdminSite(OTPAdminSite.name)
+# for model_cls, model_admin in admin.site._registry.items():
+#     otp_admin_site.register(model_cls, model_admin.__class__)
+
 urlpatterns = [
     url(r'^swagger/$', get_swagger_view(title='NAT64Check Zaphod API')),
     url(r'^docs/', include_docs_urls(title='NAT64Check Zaphod API')),
 
     url(r'^admin/reload/$', reload_uwsgi, name='reload_uwsgi'),
+
+    # TODO: Consider OTP for Admin site
+    # url(r'^admin/', otp_admin_site.urls),
+
     url(r'^admin/', admin.site.urls),
     url(r'^i18n/', include('django.conf.urls.i18n')),
 

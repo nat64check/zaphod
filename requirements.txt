@@ -15,3 +15,7 @@ pytz
 requests
 requests-futures
 uwsgi_tasks
+
+# TODO: Consider OTP for Admin site
+# django_otp
+# qrcode
