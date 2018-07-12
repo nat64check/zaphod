@@ -21,13 +21,13 @@ from rest_framework.documentation import include_docs_urls
 from rest_framework.routers import DefaultRouter
 from rest_framework_swagger.views import get_swagger_view
 
-from generic.api.views import UserViewSet
+from generic.urls import generic_router
 from generic.views import reload_uwsgi
 from instances.urls import instances_router
 from measurements.urls import measurements_router
 
 router = DefaultRouter()
-router.register('users', UserViewSet, base_name='user')
+router.registry.extend(generic_router.registry)
 router.registry.extend(measurements_router.registry)
 router.registry.extend(instances_router.registry)
 
