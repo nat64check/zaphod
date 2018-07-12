@@ -10,10 +10,10 @@ user_model = get_user_model()
 
 
 class InfoViewSet(viewsets.ViewSet):
-    # noinspection PyUnusedLocal
     def list(self, request):
         return Response({
             "version": version.split('.'),
+            "you": UserAdminSerializer(request.user, context={'request': request}).data,
         })
 
 
