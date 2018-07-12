@@ -5,3 +5,7 @@ from django.utils.translation import gettext_lazy as _
 class InstancesConfig(AppConfig):
     name = 'instances'
     verbose_name = _('Test-cluster instances')
+
+    def ready(self):
+        # noinspection PyUnresolvedReferences
+        from . import tasks
