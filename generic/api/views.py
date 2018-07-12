@@ -1,10 +1,20 @@
 from django.contrib.auth import get_user_model
 from rest_framework import decorators, permissions, response, status, viewsets
+from rest_framework.response import Response
 
 from generic.api.filters import UserAdminFilter, UserFilter
 from generic.api.serializers import PasswordSerializer, UserAdminSerializer, UserSerializer
+from zaphod_be import __version__ as version
 
 user_model = get_user_model()
+
+
+class InfoViewSet(viewsets.ViewSet):
+    # noinspection PyUnusedLocal
+    def list(self, request):
+        return Response({
+            "version": version.split('.'),
+        })
 
 
 class UserViewSet(viewsets.ModelViewSet):
