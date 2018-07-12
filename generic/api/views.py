@@ -1,16 +1,10 @@
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext_lazy as _
-from rest_framework import viewsets, serializers, permissions, response, status, decorators
+from rest_framework import decorators, permissions, response, status, viewsets
 
-from generic.api.filters import UserFilter, UserAdminFilter
-from generic.api.serializers import UserSerializer, UserAdminSerializer
+from generic.api.filters import UserAdminFilter, UserFilter
+from generic.api.serializers import PasswordSerializer, UserAdminSerializer, UserSerializer
 
 user_model = get_user_model()
-
-
-# noinspection PyAbstractClass
-class PasswordSerializer(serializers.Serializer):
-    password = serializers.CharField(required=True, help_text=_('The new password for this user'))
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -70,9 +64,10 @@ class UserViewSet(viewsets.ModelViewSet):
             return user_model.objects.filter(is_active=True)
 
     # noinspection PyUnusedLocal
-    @decorators.detail_route(methods=['post'],
-                             permission_classes=[permissions.IsAdminUser],
-                             get_serializer_class=lambda: PasswordSerializer)
+    @decorators.action(detail=True,
+                       methods=['post'],
+                       permission_classes=[permissions.IsAdminUser],
+                       get_serializer_class=lambda: PasswordSerializer)
     def set_password(self, request, pk=None):
         user = self.get_object()
         serializer = PasswordSerializer(data=request.data)
