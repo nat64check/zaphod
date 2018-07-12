@@ -20,6 +20,7 @@ class Trillian(models.Model):
     hostname = models.CharField(_('hostname'), max_length=127, unique=True, validators=[
         RegexValidator(URLValidator.host_re, message=_("Please provide a valid host name"))
     ])
+    token = models.CharField(_("token"), max_length=40)
 
     first_seen = models.DateTimeField(_('first seen'), auto_now_add=True)
     last_seen = models.DateTimeField(_('last seen'))
