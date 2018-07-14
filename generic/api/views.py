@@ -10,6 +10,8 @@ user_model = get_user_model()
 
 
 class InfoViewSet(viewsets.ViewSet):
+    permission_classes = (permissions.AllowAny,)
+
     def list(self, request):
         return Response({
             "version": version.split('.'),
