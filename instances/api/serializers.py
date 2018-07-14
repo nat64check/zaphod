@@ -6,8 +6,8 @@ from instances.models import Marvin, Trillian
 class TrillianSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Trillian
-        fields = ('id', 'name', 'admin', 'admin_id',
-                  'hostname', 'is_active', 'version', 'country', 'location', 'marvins', 'marvin_ids',
+        fields = ('id', 'name', 'admins',
+                  'hostname', 'alive', 'version', 'country', 'location', 'marvins', 'marvin_ids',
                   'flag',
                   '_url')
 
