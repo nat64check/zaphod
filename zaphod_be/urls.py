@@ -49,7 +49,7 @@ urlpatterns = [
     url(r'^i18n/', include('django.conf.urls.i18n')),
 
     url(r'^api-auth/', include('rest_framework.urls')),
-    url(r'^api/v1/', include(router.urls)),
+    url(r'^api/v1/', include((router.urls, 'api'), namespace='v1')),
     url(r'^api/$', RedirectView.as_view(url='v1')),
 
     url(r'^$', RedirectView.as_view(url='api/')),
