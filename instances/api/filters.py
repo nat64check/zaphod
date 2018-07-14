@@ -4,7 +4,7 @@ from instances.models import Marvin, Trillian
 
 
 class TrillianFilter(django_filters.FilterSet):
-    having_admin = django_filters.Filter(name="admins", lookup_type='in')
+    having_admin = django_filters.Filter(name="admins", lookup_expr='in')
 
     class Meta:
         model = Trillian
