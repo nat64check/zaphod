@@ -1,9 +1,10 @@
 from django.db.models.query_utils import Q
-from rest_framework import viewsets
+from rest_framework import mixins, viewsets
+from rest_framework.exceptions import MethodNotAllowed
 
-from measurements.api.permissions import CreatePublicBasedPermission, OwnerBasedPermission
-from measurements.api.serializers import CreatePublicTestRunSerializer, CreateTestRunSerializer, InstanceRunSerializer, \
-    ScheduleSerializer, TestRunSerializer
+from measurements.api.permissions import CreatePublicBasedPermission, InstanceRunPermission, OwnerBasedPermission
+from measurements.api.serializers import (CreatePublicTestRunSerializer, CreateTestRunSerializer, InstanceRunSerializer,
+                                          ScheduleSerializer, TestRunSerializer)
 from measurements.models import InstanceRun, Schedule, TestRun
 
 
@@ -105,7 +106,7 @@ class TestRunViewSet(viewsets.ModelViewSet):
             return TestRun.objects.filter(Q(is_public=True) | Q(owner=self.request.user))
 
 
-class InstanceRunViewSet(viewsets.ReadOnlyModelViewSet):
+class InstanceRunViewSet(viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
     """
     list:
     Retrieve a list of instance runs.
@@ -113,7 +114,7 @@ class InstanceRunViewSet(viewsets.ReadOnlyModelViewSet):
     retrieve:
     Retrieve the details of a single instance run.
     """
-    permission_classes = (OwnerBasedPermission,)
+    permission_classes = (InstanceRunPermission,)
     serializer_class = InstanceRunSerializer
 
     def get_queryset(self):

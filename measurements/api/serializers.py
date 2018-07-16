@@ -1,5 +1,8 @@
+from django.utils import timezone
 from rest_framework import serializers
 
+from instances.api.serializers import NestedMarvinSerializer
+from instances.models import Marvin
 from measurements.models import InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun, TestRunMessage
 
 
@@ -54,6 +57,8 @@ class NestedInstanceRunMessageSerializer(serializers.HyperlinkedModelSerializer)
 
 
 class NestedInstanceRunResultsSerializer(serializers.HyperlinkedModelSerializer):
+    marvin = NestedMarvinSerializer()
+
     class Meta:
         model = InstanceRunResult
         fields = ('marvin', 'instance_type', 'when', 'ping_response', 'web_response')
@@ -61,7 +66,7 @@ class NestedInstanceRunResultsSerializer(serializers.HyperlinkedModelSerializer)
 
 class InstanceRunSerializer(serializers.HyperlinkedModelSerializer):
     messages = NestedInstanceRunMessageSerializer(many=True, read_only=True)
-    results = NestedInstanceRunResultsSerializer(many=True, read_only=True)
+    results = NestedInstanceRunResultsSerializer(many=True, required=False)
 
     class Meta:
         model = InstanceRun
@@ -73,3 +78,40 @@ class InstanceRunSerializer(serializers.HyperlinkedModelSerializer):
                   'overall_score', 'overall_feedback',
                   'messages', 'results',
                   '_url')
+
+        read_only_fields = ('testrun', 'trillian', 'trillian_url', 'requested',
+                            'image_score', 'image_feedback',
+                            'resource_score', 'resource_feedback',
+                            'overall_score', 'overall_feedback',
+                            'messages')
+
+    def update(self, instance, validated_data):
+        assert isinstance(instance, InstanceRun)
+
+        # If marked as finished don't update anymore
+        if instance.finished:
+            return instance
+
+        results = validated_data.pop('results', None)
+        for result in results:
+            try:
+                marvin, new_marvin = Marvin.objects.update_or_create(
+                    defaults=result['marvin'],
+                    trillian=instance.trillian,
+                    name=result['marvin']['name']
+                )
+            except KeyError:
+                # We need marvin to be able to store data
+                continue
+
+            InstanceRunResult.objects.update_or_create(
+                defaults={
+                    'when': result.get('when', timezone.now()),
+                    'ping_response': result.get('ping_response', {}),
+                    'web_response': result.get('web_response', {}),
+                },
+                instancerun=instance,
+                marvin=marvin
+            )
+
+        return super().update(instance, validated_data)
