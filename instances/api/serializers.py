@@ -7,7 +7,7 @@ class TrillianSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Trillian
         fields = ('id', 'name', 'admins',
-                  'hostname', 'alive', 'version', 'country', 'location', 'marvins', 'marvin_ids',
+                  'hostname', 'is_alive', 'version', 'country', 'location', 'marvins', 'marvin_ids',
                   'flag',
                   '_url')
 

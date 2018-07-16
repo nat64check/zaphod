@@ -11,7 +11,7 @@ class TrillianFilter(django_filters.FilterSet):
         fields = {
             'name': ['exact', 'contains'],
             'hostname': ['exact', 'contains'],
-            'alive': ['exact'],
+            'is_alive': ['exact'],
             'country': ['exact'],
         }
 

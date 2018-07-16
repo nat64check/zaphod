@@ -25,8 +25,8 @@ class TrillianAdminForm(ModelForm):
 class TrillianAdmin(SearchableGeoAdmin):
     form = TrillianAdminForm
     list_display = ('name', 'hostname', 'display_version', 'admin_country', 'admin_full_names',
-                    'last_seen_display', 'alive')
-    list_filter = (TrillianRegionFilter, 'alive')
+                    'last_seen_display', 'is_alive')
+    list_filter = (TrillianRegionFilter, 'is_alive')
     ordering = ('name',)
 
     def admin_country(self, trillian):

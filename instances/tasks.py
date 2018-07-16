@@ -29,8 +29,8 @@ def check_trillians(signal_nr):
         for trillian in trillians:
             if not trillian.token:
                 print("Skipping Trillian {trillian.name} ({trillian.hostname})".format(trillian=trillian))
-                if trillian.alive:
-                    trillian.alive = False
+                if trillian.is_alive:
+                    trillian.is_alive = False
                     trillian.save()
                 continue
 
@@ -49,10 +49,10 @@ def check_trillians(signal_nr):
     for trillian, response in info_responses.values():
         if response.status_code == requests.codes.ok:
             data = response.json()
-            trillian.alive = True
+            trillian.is_alive = True
             trillian.version = data['version']
             trillian.last_seen = timezone.now()
         else:
-            trillian.alive = False
+            trillian.is_alive = False
 
         trillian.save()
