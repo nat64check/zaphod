@@ -1,5 +1,14 @@
+import json
+from copy import copy
+
 from django.contrib import admin
+from django.contrib.postgres.fields import JSONField
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
+from prettyjson import PrettyJSONWidget
+from pygments import highlight
+from pygments.formatters.html import HtmlFormatter
+from pygments.lexers.data import JsonLexer
 
 from measurements.models import InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun, TestRunMessage
 
@@ -33,6 +42,62 @@ class InstanceRunMessageAdmin(admin.TabularInline):
     model = InstanceRunMessage
 
 
+class InlineInstanceRunResult(admin.TabularInline):
+    model = InstanceRunResult
+    fields = ('marvin', 'when', 'nice_ping_response', 'nice_web_response', 'data_image')
+    readonly_fields = ('marvin', 'when', 'nice_ping_response', 'nice_web_response', 'data_image')
+    extra = 0
+    can_delete = False
+    show_change_link = True
+
+    formfield_overrides = {
+        JSONField: {'widget': PrettyJSONWidget(attrs={'initial': 'parsed'})}
+    }
+
+    def has_add_permission(self, request):
+        return False
+
+    def nice_ping_response(self, instance):
+        # Convert the data to sorted, indented JSON
+        response = json.dumps(instance.ping_response, indent=2)
+        formatter = HtmlFormatter(style='colorful')
+        response = highlight(response, JsonLexer(), formatter)
+        style = "<style>" + formatter.get_style_defs() + "</style><br>"
+
+        # Safe the output
+        return mark_safe(style + response)
+
+    nice_ping_response.short_description = _('ping response')
+
+    def nice_web_response(self, instance):
+        # Convert the data to sorted, indented JSON
+        data = copy(instance.web_response)
+        if data:
+            if 'image' in data:
+                del data['image']
+            if 'resources' in data:
+                del data['resources']
+        response = json.dumps(data, indent=2)
+        formatter = HtmlFormatter(style='colorful')
+        response = highlight(response, JsonLexer(), formatter)
+        style = "<style>" + formatter.get_style_defs() + "</style><br>"
+
+        # Safe the output
+        return mark_safe(style + response)
+
+    nice_web_response.short_description = _('web response')
+
+    def data_image(self, instance):
+        try:
+            return mark_safe('<img style="width: 300px" src="data:image/png;base64,{}">'.format(
+                instance.web_response['image']
+            ))
+        except (KeyError, TypeError, AttributeError):
+            return '-'
+
+    data_image.short_description = _('image')
+
+
 @admin.register(InstanceRun)
 class InstanceRunAdmin(admin.ModelAdmin):
     list_display = ('testrun', 'trillian', 'trillian_url', 'requested', 'started', 'finished', 'analysed')
@@ -43,7 +108,7 @@ class InstanceRunAdmin(admin.ModelAdmin):
                      'testrun__schedule__name',
                      'trillian__name',)
     autocomplete_fields = ('testrun',)
-    inlines = (InstanceRunMessageAdmin,)
+    inlines = (InstanceRunMessageAdmin, InlineInstanceRunResult)
 
 
 @admin.register(InstanceRunResult)
