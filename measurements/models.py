@@ -211,6 +211,8 @@ class InstanceRunResult(models.Model):
                                     on_delete=models.CASCADE)
     marvin = models.ForeignKey(Marvin, verbose_name=_('Marvin'), on_delete=models.PROTECT)
 
+    when = models.DateTimeField()
+
     ping_response = JSONField()
     web_response = JSONField()
 

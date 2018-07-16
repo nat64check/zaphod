@@ -56,7 +56,7 @@ class NestedInstanceRunMessageSerializer(serializers.HyperlinkedModelSerializer)
 class NestedInstanceRunResultsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = InstanceRunResult
-        fields = ('marvin', 'marvin_id', 'instance_type', 'ping_response', 'web_response')
+        fields = ('marvin', 'instance_type', 'when', 'ping_response', 'web_response')
 
 
 class InstanceRunSerializer(serializers.HyperlinkedModelSerializer):
