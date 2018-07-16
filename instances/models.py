@@ -25,7 +25,7 @@ class Trillian(models.Model):
     first_seen = models.DateTimeField(_('first seen'), auto_now_add=True)
     last_seen = models.DateTimeField(_('last seen'))
 
-    alive = models.BooleanField(_('alive'), default=True)
+    is_alive = models.BooleanField(_('is alive'), default=True)
     version = ArrayField(models.PositiveSmallIntegerField(), verbose_name=_('version'))
 
     country = CountryField(_('country'), db_index=True)
@@ -86,20 +86,17 @@ class Marvin(models.Model):
     ])
     addresses = ArrayField(models.GenericIPAddressField(), verbose_name=_('addresses'), default=list)
 
-    first_seen = models.DateTimeField(_('first seen'), auto_now_add=True)
+    first_seen = models.DateTimeField(_('first seen'))
     last_seen = models.DateTimeField(_('last seen'))
-
-    alive = models.BooleanField(_('alive'), default=True)
 
     class Meta:
         unique_together = [('trillian', 'name')]
         ordering = ('trillian', 'name',)
 
     def __str__(self):
-        return _('{name} ({type}: {alive})').format(name=self.name,
-                                                    trillian=self.trillian,
-                                                    type=self.instance_type,
-                                                    alive=self.alive and _('alive') or _('dead'))
+        return _('{trillian.name}: {name} ({type})').format(name=self.name,
+                                                            trillian=self.trillian,
+                                                            type=self.instance_type)
 
     def natural_key(self):
         return self.trillian.name, self.name

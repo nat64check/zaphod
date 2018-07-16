@@ -12,10 +12,14 @@ class TrillianSerializer(serializers.HyperlinkedModelSerializer):
                   '_url')
 
 
-class MarvinSerializer(serializers.HyperlinkedModelSerializer):
+class NestedMarvinSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Marvin
-        fields = ('id', 'trillian', 'trillian_id',
-                  'name', 'hostname', 'type', 'version',
+        fields = ('name', 'hostname', 'type', 'version',
                   'browser_name', 'browser_version', 'instance_type', 'addresses',
-                  '_url')
+                  'first_seen', 'last_seen')
+
+
+class MarvinSerializer(NestedMarvinSerializer):
+    class Meta(NestedMarvinSerializer.Meta):
+        fields = ('id', 'trillian', 'trillian_id') + NestedMarvinSerializer.Meta.fields + ('_url',)
