@@ -27,7 +27,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
-ALLOWED_HOSTS = ['localhost', '::1', '127.0.0.1', '*']
+ALLOWED_HOSTS = ['localhost', '::1', '127.0.0.1']
+
+MY_HOSTNAME = os.environ.get('MY_HOSTNAME')
+if MY_HOSTNAME:
+    ALLOWED_HOSTS.insert(0, MY_HOSTNAME)
 
 INTERNAL_IPS = [
     '127.0.0.1',
