@@ -9,7 +9,6 @@ from django.utils.formats import date_format
 from django.utils.translation import gettext_lazy as _
 
 from instances.models import Marvin, Trillian
-from measurements.utils import generate_random_token
 
 severities = (
     (logging.CRITICAL, _('Critical')),
@@ -129,8 +128,7 @@ class InstanceRun(models.Model):
     testrun = models.ForeignKey(TestRun, verbose_name=_('test run'), related_name='instanceruns',
                                 on_delete=models.CASCADE)
     trillian = models.ForeignKey(Trillian, verbose_name=_('Trillian'), on_delete=models.PROTECT)
-    id_on_trillian = models.PositiveIntegerField(_('ID on Trillian'), blank=True, null=True)
-    callback_auth_code = models.CharField(_('callback auth code'), max_length=50, default=generate_random_token)
+    trillian_url = models.URLField(_('Trillian URL'))
 
     started = models.DateTimeField(_('started'), blank=True, null=True, db_index=True)
     finished = models.DateTimeField(_('finished'), blank=True, null=True, db_index=True)

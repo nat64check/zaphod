@@ -35,7 +35,7 @@ class InstanceRunMessageAdmin(admin.TabularInline):
 
 @admin.register(InstanceRun)
 class InstanceRunAdmin(admin.ModelAdmin):
-    list_display = ('testrun', 'trillian', 'id_on_trillian', 'requested', 'started', 'finished')
+    list_display = ('testrun', 'trillian', 'trillian_url', 'requested', 'started', 'finished', 'analysed')
     list_filter = (('trillian', admin.RelatedOnlyFieldListFilter),)
     date_hierarchy = 'testrun__requested'
     search_fields = ('testrun__url',

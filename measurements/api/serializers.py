@@ -65,7 +65,7 @@ class InstanceRunSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = InstanceRun
-        fields = ('id', 'testrun', 'testrun_id', 'trillian', 'trillian_id', 'id_on_trillian',
+        fields = ('id', 'testrun', 'testrun_id', 'trillian', 'trillian_id', 'trillian_url',
                   'requested', 'started', 'finished',
                   'dns_results',
                   'image_score', 'image_feedback',
