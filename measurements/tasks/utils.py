@@ -1,6 +1,19 @@
 import os
 
+import time
+from django.db.models import QuerySet
 from django.utils.termcolors import colorize
+
+
+def retry_get(qs: QuerySet, **kwargs):
+    for delay in (0.5, 1, 2, 4, None):
+        try:
+            return qs.get(**kwargs)
+        except qs.model.DoesNotExist:
+            if delay:
+                time.sleep(delay)
+            else:
+                raise
 
 
 def print_with_color(msg, **kwargs):

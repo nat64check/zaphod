@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from requests.auth import AuthBase
 from uwsgi_tasks import RetryTaskException, task
 
+from measurements.tasks.utils import retry_get
 from .utils import print_error, print_message, print_warning
 
 
@@ -24,7 +25,9 @@ def delegate_to_trillian(pk):
     from measurements.models import InstanceRun
 
     try:
-        run = InstanceRun.objects.get(pk=pk)
+        # Try to find the InstanceRun multiple times, in case of a race condition
+        run = retry_get(InstanceRun.objects.all(), pk=pk)
+
         if run.trillian_url:
             print_warning(_("Trillian URL already exists for InstanceRun {pk}").format(pk=pk))
             return
