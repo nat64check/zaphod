@@ -134,7 +134,7 @@ class InstanceRun(models.Model):
     testrun = models.ForeignKey(TestRun, verbose_name=_('test run'), related_name='instanceruns',
                                 on_delete=models.CASCADE)
     trillian = models.ForeignKey(Trillian, verbose_name=_('Trillian'), on_delete=models.PROTECT)
-    trillian_url = models.URLField(_('Trillian URL'))
+    trillian_url = models.URLField(_('Trillian URL'), blank=True)
 
     started = models.DateTimeField(_('started'), blank=True, null=True, db_index=True)
     finished = models.DateTimeField(_('finished'), blank=True, null=True, db_index=True)
