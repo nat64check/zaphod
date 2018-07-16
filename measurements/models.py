@@ -111,17 +111,23 @@ class TestRunMessage(models.Model):
     def __str__(self):
         return '{obj.testrun}: {obj.message} [{obj.severity}]'.format(obj=self)
 
-    @property
     def owner(self):
         return self.testrun.owner
 
-    @property
+    owner.short_description = _('owner')
+    owner = property(owner)
+
     def owner_id(self):
         return self.testrun.owner_id
 
-    @property
+    owner_id.short_description = _('owner ID')
+    owner_id = property(owner_id)
+
     def is_public(self):
         return self.testrun.is_public
+
+    is_public.short_description = _('is public')
+    is_public = property(is_public)
 
 
 class InstanceRun(models.Model):
@@ -156,25 +162,35 @@ class InstanceRun(models.Model):
     def __str__(self):
         return _('{obj.testrun} on {obj.trillian}').format(obj=self)
 
-    @property
     def requested(self):
         return self.testrun.requested
 
-    @property
+    requested.short_description = _('requested')
+    requested = property(requested)
+
     def owner(self):
         return self.testrun.owner
 
-    @property
+    owner.short_description = _('owner')
+    owner = property(owner)
+
     def owner_id(self):
         return self.testrun.owner_id
 
-    @property
+    owner_id.short_description = _('owner ID')
+    owner_id = property(owner_id)
+
     def url(self):
         return self.testrun.url
 
-    @property
+    url.short_description = _('URL')
+    url = property(url)
+
     def is_public(self):
         return self.testrun.is_public
+
+    is_public.short_description = _('is public')
+    is_public = property(is_public)
 
 
 class InstanceRunMessage(models.Model):
@@ -191,17 +207,23 @@ class InstanceRunMessage(models.Model):
     def __str__(self):
         return '{obj.instancerun}: {obj.message} [{obj.severity}]'.format(obj=self)
 
-    @property
     def owner(self):
         return self.instancerun.owner
 
-    @property
+    owner.short_description = _('owner')
+    owner = property(owner)
+
     def owner_id(self):
         return self.instancerun.owner_id
 
-    @property
+    owner_id.short_description = _('owner ID')
+    owner_id = property(owner_id)
+
     def is_public(self):
         return self.instancerun.is_public
+
+    is_public.short_description = _('is public')
+    is_public = property(is_public)
 
 
 class InstanceRunResult(models.Model):
@@ -221,18 +243,26 @@ class InstanceRunResult(models.Model):
     def __str__(self):
         return _('{obj.instancerun} on {obj.marvin}').format(obj=self)
 
-    @property
     def owner(self):
         return self.instancerun.owner
 
-    @property
+    owner.short_description = _('owner')
+    owner = property(owner)
+
     def owner_id(self):
         return self.instancerun.owner_id
 
-    @property
+    owner_id.short_description = _('owner ID')
+    owner_id = property(owner_id)
+
     def is_public(self):
         return self.instancerun.is_public
 
-    @property
+    is_public.short_description = _('is public')
+    is_public = property(is_public)
+
     def instance_type(self):
         return self.marvin.instance_type
+
+    instance_type.short_description = _('instance type')
+    instance_type = property(instance_type)
