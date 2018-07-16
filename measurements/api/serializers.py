@@ -85,9 +85,7 @@ class InstanceRunSerializer(serializers.HyperlinkedModelSerializer):
                             'overall_score', 'overall_feedback',
                             'messages')
 
-    def update(self, instance, validated_data):
-        assert isinstance(instance, InstanceRun)
-
+    def update(self, instance: InstanceRun, validated_data):
         # If marked as finished don't update anymore
         if instance.finished:
             return instance

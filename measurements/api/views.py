@@ -1,6 +1,5 @@
 from django.db.models.query_utils import Q
 from rest_framework import mixins, viewsets
-from rest_framework.exceptions import MethodNotAllowed
 
 from measurements.api.permissions import CreatePublicBasedPermission, InstanceRunPermission, OwnerBasedPermission
 from measurements.api.serializers import (CreatePublicTestRunSerializer, CreateTestRunSerializer, InstanceRunSerializer,
@@ -42,8 +41,7 @@ class ScheduleViewSet(viewsets.ModelViewSet):
         else:
             return Schedule.objects.filter(owner=self.request.user).prefetch_related('trillians')
 
-    def perform_destroy(self, instance):
-        assert isinstance(instance, Schedule)
+    def perform_destroy(self, instance: Schedule):
         if instance.testruns.exists():
             last_testrun_date = instance.testruns.order_by('-requested').values_list('requested', flat=True).first()
             instance.end = last_testrun_date.date()
