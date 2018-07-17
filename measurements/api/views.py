@@ -1,5 +1,6 @@
 from django.db.models.query_utils import Q
 from rest_framework import mixins, viewsets
+from rest_framework_serializer_extensions.views import SerializerExtensionsAPIViewMixin
 
 from measurements.api.permissions import CreatePublicBasedPermission, InstanceRunPermission, OwnerBasedPermission
 from measurements.api.serializers import (CreatePublicTestRunSerializer, CreateTestRunSerializer, InstanceRunSerializer,
@@ -104,7 +105,7 @@ class TestRunViewSet(viewsets.ModelViewSet):
             return TestRun.objects.filter(Q(is_public=True) | Q(owner=self.request.user))
 
 
-class InstanceRunViewSet(viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
+class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
     """
     list:
     Retrieve a list of instance runs.
@@ -114,6 +115,21 @@ class InstanceRunViewSet(viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin)
     """
     permission_classes = (InstanceRunPermission,)
     serializer_class = InstanceRunSerializer
+    extensions_expand_id_only = {'messages', 'results'}
+    extensions_exclude = {'results__id',
+                          'results__instancerun',
+                          'results__instancerun_id',
+                          'results___url',
+                          'results__marvin_id',
+                          'results__marvin__id',
+                          'results__marvin__trillian_id',
+                          'results__marvin___url'}
+
+    def get_extensions_mixin_context(self):
+        context = super().get_extensions_mixin_context()
+        if self.detail:
+            context['expand'] = {'messages', 'results__marvin'}
+        return context
 
     def get_queryset(self):
         if self.request.user.is_anonymous:

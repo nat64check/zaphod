@@ -1,25 +1,33 @@
-from rest_framework import serializers
+from rest_framework.serializers import HyperlinkedModelSerializer
+from rest_framework_serializer_extensions.serializers import SerializerExtensionsMixin
 
 from instances.models import Marvin, Trillian
 
 
-class TrillianSerializer(serializers.HyperlinkedModelSerializer):
+class TrillianSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
     class Meta:
         model = Trillian
         fields = ('id', 'name', 'admins',
-                  'hostname', 'is_alive', 'version', 'country', 'location', 'marvins', 'marvin_ids',
+                  'hostname', 'is_alive', 'version', 'country', 'location',
                   'flag',
                   '_url')
+        expandable_fields = dict(
+            trillian=dict(
+                serializer='instances.api.serializers.MarvinSerializer',
+                many=True,
+            )
+        )
 
 
-class NestedMarvinSerializer(serializers.HyperlinkedModelSerializer):
+class MarvinSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
     class Meta:
         model = Marvin
-        fields = ('name', 'hostname', 'type', 'version',
+        fields = ('id',
+                  'name', 'hostname', 'type', 'version',
                   'browser_name', 'browser_version', 'instance_type', 'addresses',
-                  'first_seen', 'last_seen')
+                  'first_seen', 'last_seen',
+                  '_url')
 
-
-class MarvinSerializer(NestedMarvinSerializer):
-    class Meta(NestedMarvinSerializer.Meta):
-        fields = ('id', 'trillian', 'trillian_id') + NestedMarvinSerializer.Meta.fields + ('_url',)
+        expandable_fields = dict(
+            trillian=TrillianSerializer,
+        )
