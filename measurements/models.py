@@ -196,6 +196,10 @@ class InstanceRun(models.Model):
 class InstanceRunMessage(models.Model):
     instancerun = models.ForeignKey(InstanceRun, verbose_name=_('instance run'), related_name='messages',
                                     on_delete=models.CASCADE)
+    source = models.CharField(_('source'), max_length=1, default='L', choices=(
+        ('L', 'Local'),
+        ('T', 'Trillian'),
+    ))
     severity = models.PositiveSmallIntegerField(_('severity'), choices=severities)
     message = models.CharField(_('message'), max_length=200)
 
