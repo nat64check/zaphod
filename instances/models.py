@@ -80,6 +80,7 @@ class Marvin(models.Model):
     browser_version = ArrayField(models.PositiveSmallIntegerField(), verbose_name=_('browser version'))
 
     instance_type = models.CharField(_('instance type'), max_length=10, choices=[
+        ('dual-stack', _('Dual-stack')),
         ('v4only', _('IPv4-only')),
         ('v6only', _('IPv6-only')),
         ('nat64', _('IPv6 with NAT64')),
