@@ -112,6 +112,12 @@ class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, viewsets.ReadOnlyMode
 
     retrieve:
     Retrieve the details of a single instance run.
+
+    update:
+    Update all the properties of an instance run.
+
+    partial_update:
+    Change one or more properties of an instance run.
     """
     permission_classes = (InstanceRunPermission,)
     serializer_class = InstanceRunSerializer
