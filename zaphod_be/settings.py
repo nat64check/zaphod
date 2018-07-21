@@ -26,6 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+FRONTEND_BASE_URL = os.environ.get('FRONTEND_BASE_URL')
 
 ALLOWED_HOSTS = ['localhost', '::1', '127.0.0.1']
 
