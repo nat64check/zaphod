@@ -1,7 +1,7 @@
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, SAFE_METHODS
 
 
-class OwnerBasedPermission(permissions.IsAuthenticatedOrReadOnly):
+class OwnerBasedPermission(IsAuthenticatedOrReadOnly):
     def has_permission(self, request, view):
         # Only available to authenticated users
         return not request.user.is_anonymous
@@ -15,13 +15,13 @@ class OwnerBasedPermission(permissions.IsAuthenticatedOrReadOnly):
         return obj.owner_id == request.user.id
 
 
-class OwnerOrPublicBasedPermission(permissions.IsAuthenticatedOrReadOnly):
+class OwnerOrPublicBasedPermission(IsAuthenticatedOrReadOnly):
     def has_object_permission(self, request, view, obj):
         if request.user.is_superuser:
             # Superuser always has access
             return True
 
-        if request.method in permissions.SAFE_METHODS:
+        if request.method in SAFE_METHODS:
             return (obj.owner_id == request.user.id) or obj.is_public
         else:
             return obj.owner_id == request.user.id
@@ -35,8 +35,8 @@ class InstanceRunPermission(OwnerOrPublicBasedPermission):
             return super().has_object_permission(request, view, obj)
 
 
-class CreatePublicBasedPermission(permissions.IsAuthenticatedOrReadOnly):
-    PUBLIC_METHODS = list(permissions.SAFE_METHODS) + ['POST']
+class CreatePublicBasedPermission(IsAuthenticatedOrReadOnly):
+    PUBLIC_METHODS = list(SAFE_METHODS) + ['POST']
 
     def has_permission(self, request, view):
         if request.user.is_superuser:
