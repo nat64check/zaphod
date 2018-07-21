@@ -11,6 +11,11 @@ class PasswordSerializer(Serializer):
     password = CharField(required=True, help_text=_('The new password for this user'))
 
 
+# noinspection PyAbstractClass
+class AuthCodeSerializer(Serializer):
+    code = CharField(required=True, help_text=_('The authentication code to activate this user'))
+
+
 class UserSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = user_model
@@ -23,3 +28,11 @@ class UserAdminSerializer(HyperlinkedModelSerializer):
         fields = ('id', 'username', 'first_name', 'last_name', 'email',
                   'is_active', 'date_joined', 'last_login',
                   '_url')
+
+
+class UserRegisterSerializer(ModelSerializer):
+    email = EmailField(required=True, max_length=128, help_text=_('email address'))
+
+    class Meta:
+        model = user_model
+        fields = ('username', 'first_name', 'last_name', 'email', 'password')
