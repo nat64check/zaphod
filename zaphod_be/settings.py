@@ -32,6 +32,8 @@ ALLOWED_HOSTS = ['localhost', '::1', '127.0.0.1']
 MY_HOSTNAME = os.environ.get('MY_HOSTNAME')
 if MY_HOSTNAME:
     ALLOWED_HOSTS.insert(0, MY_HOSTNAME)
+else:
+    MY_HOSTNAME = 'localhost'
 
 INTERNAL_IPS = [
     '127.0.0.1',
@@ -197,7 +199,20 @@ SWAGGER_SETTINGS = {
 }
 
 # Dump email to console for testing
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '') or None
+EMAIL_PORT = os.environ.get('EMAIL_PORT', '') or 25
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '') or None
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '') or None
+EMAIL_USE_TLS = os.environ.get('EMAIL_SECURITY', '').lower() == 'tls'
+EMAIL_USE_SSL = os.environ.get('EMAIL_SECURITY', '').lower() == 'ssl'
+DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_SENDER', '') or 'webmaster@{hostname}'.format(hostname=MY_HOSTNAME)
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+if EMAIL_HOST:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 EMAIL_TIMEOUT = 30
 EMAIL_SUBJECT_PREFIX = '[NAT64Check] '
 
