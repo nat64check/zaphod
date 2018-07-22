@@ -138,7 +138,9 @@ class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, viewsets.ReadOnlyMode
         return context
 
     def get_queryset(self):
-        if self.request.user.is_anonymous:
+        if self.request.user.has_perm('measurements.report_back'):
+            return InstanceRun.objects.all()
+        elif self.request.user.is_anonymous:
             return InstanceRun.objects.filter(testrun__is_public=True)
         elif self.request.user.is_superuser:
             return InstanceRun.objects.all()
