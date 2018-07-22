@@ -1,9 +1,16 @@
+from datetime import timedelta
+
+from django.db.transaction import atomic
 from django.utils import timezone
+from django.utils.translation import gettext as _
+from rest_framework.exceptions import ValidationError as RestValidationError
+from rest_framework.fields import CurrentUserDefault, HiddenField
+from rest_framework.relations import HyperlinkedRelatedField
 from rest_framework.serializers import HyperlinkedModelSerializer
 from rest_framework_serializer_extensions.serializers import SerializerExtensionsMixin
 
 from instances.api.serializers import MarvinSerializer, TrillianSerializer
-from instances.models import Marvin
+from instances.models import Marvin, Trillian
 from measurements.models import InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun, TestRunMessage
 
 
@@ -39,16 +46,54 @@ class TestRunSerializer(HyperlinkedModelSerializer):
         read_only_fields = ('owner',)
 
 
-class CreateTestRunSerializer(HyperlinkedModelSerializer):
-    class Meta:
-        model = TestRun
-        fields = ('id', 'url', 'is_public', '_url')
-
-
 class CreatePublicTestRunSerializer(HyperlinkedModelSerializer):
+    trillians = HyperlinkedRelatedField(view_name='trillian-detail',
+                                        many=True,
+                                        required=True,
+                                        queryset=Trillian.objects.filter(is_alive=True))
+
     class Meta:
         model = TestRun
-        fields = ('id', 'url', '_url')
+        fields = ('id', 'url', 'requested', 'trillians', '_url')
+
+    def validate_requested(self, value):
+        if value < timezone.now() - timedelta(minutes=1):
+            raise RestValidationError(_('You cannot create tests in the past'))
+
+        return value
+
+    def validate_trillians(self, value):
+        if not value:
+            raise RestValidationError(_('You must specify at least one location to test from'))
+
+        return value
+
+    @atomic
+    def create(self, validated_data):
+        # Force public for anonymous tests
+        owner = validated_data.get('owner', None)
+        if not owner:
+            validated_data['is_public'] = True
+
+        # Get the list of trillians out before creating, that's a read-only property
+        trillians = validated_data.pop('trillians', [])
+        instance = super().create(validated_data)
+
+        # Now create an instancerun for each trillian
+        for trillian in trillians:
+            InstanceRun.objects.create(
+                testrun=instance,
+                trillian=trillian,
+            )
+
+        return instance
+
+
+class CreateTestRunSerializer(CreatePublicTestRunSerializer):
+    owner = HiddenField(default=CurrentUserDefault())
+
+    class Meta(CreatePublicTestRunSerializer.Meta):
+        fields = list(CreatePublicTestRunSerializer.Meta.fields) + ['owner', 'is_public']
 
 
 class InstanceRunMessageSerializer(HyperlinkedModelSerializer):

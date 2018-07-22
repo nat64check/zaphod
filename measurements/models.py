@@ -97,6 +97,12 @@ class TestRun(models.Model):
             return _('{url} requested on {when}').format(url=self.url,
                                                          when=date_format(self.requested, 'DATETIME_FORMAT'))
 
+    def trillians(self):
+        return [instancerun.trillian for instancerun in self.instanceruns.all()]
+
+    trillians.short_description = _('trillians')
+    trillians = property(trillians)
+
 
 class TestRunMessage(models.Model):
     testrun = models.ForeignKey(TestRun, verbose_name=_('test run'), related_name='messages', on_delete=models.CASCADE)
