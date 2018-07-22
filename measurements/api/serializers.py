@@ -125,10 +125,6 @@ class InstanceRunSerializer(SerializerExtensionsMixin, HyperlinkedModelSerialize
                 marvin=marvin
             )
 
-        validated_data['messages'] = [
-            {'severity': 30,
-             'message': 'Two identical requests returned different results. Results are going to be unpredictable.'}
-        ]
         messages = {(message['severity'], message['message'])
                     for message in validated_data.pop('messages', [])
                     if 'severity' in message and 'message' in message}
