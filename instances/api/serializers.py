@@ -12,7 +12,7 @@ class TrillianSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
                   'flag',
                   '_url')
         expandable_fields = dict(
-            trillian=dict(
+            marvins=dict(
                 serializer='instances.api.serializers.MarvinSerializer',
                 many=True,
             )
