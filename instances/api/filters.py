@@ -13,6 +13,8 @@ class TrillianFilter(django_filters.FilterSet):
             'hostname': ['exact', 'contains'],
             'is_alive': ['exact'],
             'country': ['exact'],
+            'first_seen': ['gte', 'lte'],
+            'last_seen': ['gte', 'lte'],
         }
 
 
@@ -30,4 +32,6 @@ class MarvinFilter(django_filters.FilterSet):
             'name': ['exact', 'contains'],
             'hostname': ['exact', 'contains'],
             'type': ['exact'],
+            'first_seen': ['gte', 'lte'],
+            'last_seen': ['gte', 'lte'],
         }

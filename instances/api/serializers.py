@@ -9,9 +9,13 @@ class TrillianSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
         model = Trillian
         fields = ('id', 'name', 'admins',
                   'hostname', 'is_alive', 'version', 'country', 'location',
-                  'flag',
+                  'flag', 'marvins',
                   '_url')
         expandable_fields = dict(
+            admins=dict(
+                serializer='generic.api.serializers.UserSerializer',
+                many=True,
+            ),
             marvins=dict(
                 serializer='instances.api.serializers.MarvinSerializer',
                 many=True,

@@ -1,3 +1,4 @@
+from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework_serializer_extensions.views import SerializerExtensionsAPIViewMixin
 
@@ -14,7 +15,8 @@ class TrillianViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet):
     retrieve:
     Retrieve the details of a single Trillian.
     """
-    queryset = Trillian.objects.all().prefetch_related('marvins')
+    permission_classes = (AllowAny,)
+    queryset = Trillian.objects.all()
     serializer_class = TrillianSerializer
     filter_class = TrillianFilter
 
@@ -29,6 +31,7 @@ class MarvinViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet):
     retrieve:
     Retrieve the details of a single Marvin.
     """
-    queryset = Marvin.objects.all().prefetch_related('trillian')
+    permission_classes = (AllowAny,)
+    queryset = Marvin.objects.all()
     serializer_class = MarvinSerializer
     filter_class = MarvinFilter
