@@ -16,10 +16,27 @@ from instances.models import Marvin, Trillian
 from measurements.models import InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun, TestRunMessage
 
 
-class TestRunMessageSerializer(HyperlinkedModelSerializer):
+class ScheduleSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
+    owner = HiddenField(default=CurrentUserDefault())
+
     class Meta:
-        model = TestRunMessage
-        fields = ('severity', 'message')
+        model = Schedule
+        fields = ('id', 'owner', 'owner_id',
+                  'name', 'url', 'time', 'start', 'end', 'frequency', 'is_public',
+                  'trillians', 'testruns',
+                  '_url')
+        read_only_fields = ('owner', 'testruns')
+        expandable_fields = dict(
+            owner=UserSerializer,
+            trillians=dict(
+                serializer='instances.api.serializers.TrillianSerializer',
+                many=True,
+            ),
+            testruns=dict(
+                serializer='measurements.api.serializers.TestRunSerializer',
+                many=True,
+            ),
+        )
 
 
 class TestRunSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
@@ -44,34 +61,11 @@ class TestRunSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
                 many=True,
             ),
             messages=dict(
-                serializer=TestRunMessageSerializer,
+                serializer='measurements.api.serializers.TestRunMessageSerializer',
                 many=True,
             ),
             instanceruns=dict(
                 serializer='measurements.api.serializers.InstanceRunSerializer',
-                many=True,
-            ),
-        )
-
-
-class ScheduleSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
-    owner = HiddenField(default=CurrentUserDefault())
-
-    class Meta:
-        model = Schedule
-        fields = ('id', 'owner', 'owner_id',
-                  'name', 'url', 'time', 'start', 'end', 'frequency', 'is_public',
-                  'trillians', 'testruns',
-                  '_url')
-        read_only_fields = ('owner', 'testruns')
-        expandable_fields = dict(
-            owner=UserSerializer,
-            trillians=dict(
-                serializer='instances.api.serializers.TrillianSerializer',
-                many=True,
-            ),
-            testruns=dict(
-                serializer=TestRunSerializer,
                 many=True,
             ),
         )
@@ -127,32 +121,19 @@ class CreateTestRunSerializer(CreatePublicTestRunSerializer):
         fields = list(CreatePublicTestRunSerializer.Meta.fields) + ['owner', 'is_public']
 
 
-class InstanceRunMessageSerializer(HyperlinkedModelSerializer):
+class TestRunMessageSerializer(HyperlinkedModelSerializer):
     class Meta:
-        model = InstanceRunMessage
+        model = TestRunMessage
         fields = ('severity', 'message')
-
-
-class InstanceRunResultSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
-    web_response = SerializerExtensionsJSONField()
-    ping_response = SerializerExtensionsJSONField()
-
-    class Meta:
-        model = InstanceRunResult
-        fields = ('id', 'marvin', 'instancerun', 'instance_type', 'when', 'ping_response', 'web_response', '_url')
-        expandable_fields = dict(
-            marvin=MarvinSerializer,
-            instancerun="measurements.api.serializers.InstanceRunSerializer",
-        )
 
 
 class InstanceRunSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
     class Meta:
         model = InstanceRun
         fields = ('id',
-                  'trillian_url',
+                  'testrun', 'testrun_id', 'trillian', 'trillian_id', 'trillian_url',
                   'requested', 'started', 'finished', 'analysed',
-                  'dns_results',
+                  'dns_results', 'results', 'messages',
                   'image_score', 'image_feedback',
                   'resource_score', 'resource_feedback',
                   'overall_score', 'overall_feedback',
@@ -168,11 +149,11 @@ class InstanceRunSerializer(SerializerExtensionsMixin, HyperlinkedModelSerialize
             testrun=TestRunSerializer,
             trillian=TrillianSerializer,
             results=dict(
-                serializer=InstanceRunResultSerializer,
+                serializer='measurements.api.serializers.InstanceRunResultSerializer',
                 many=True,
             ),
             messages=dict(
-                serializer=InstanceRunMessageSerializer,
+                serializer='measurements.api.serializers.InstanceRunMessageSerializer',
                 many=True,
             ),
         )
@@ -224,3 +205,22 @@ class InstanceRunSerializer(SerializerExtensionsMixin, HyperlinkedModelSerialize
             InstanceRunMessage.objects.filter(severity=severity, message=message).delete()
 
         return super().update(instance, validated_data)
+
+
+class InstanceRunMessageSerializer(HyperlinkedModelSerializer):
+    class Meta:
+        model = InstanceRunMessage
+        fields = ('id', 'severity', 'message', '_url')
+
+
+class InstanceRunResultSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
+    web_response = SerializerExtensionsJSONField()
+    ping_response = SerializerExtensionsJSONField()
+
+    class Meta:
+        model = InstanceRunResult
+        fields = ('id', 'marvin', 'instancerun', 'instance_type', 'when', 'ping_response', 'web_response', '_url')
+        expandable_fields = dict(
+            marvin=MarvinSerializer,
+            instancerun="measurements.api.serializers.InstanceRunSerializer",
+        )

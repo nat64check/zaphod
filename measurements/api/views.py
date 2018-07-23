@@ -6,8 +6,8 @@ from rest_framework_serializer_extensions.views import SerializerExtensionsAPIVi
 from measurements.api.permissions import CreatePublicBasedPermission, InstanceRunPermission, OwnerBasedPermission, \
     OwnerOrPublicBasedPermission
 from measurements.api.serializers import (CreatePublicTestRunSerializer, CreateTestRunSerializer,
-                                          InstanceRunResultSerializer, InstanceRunSerializer, ScheduleSerializer,
-                                          TestRunSerializer)
+                                          InstanceRunMessageSerializer, InstanceRunResultSerializer,
+                                          InstanceRunSerializer, ScheduleSerializer, TestRunSerializer)
 from measurements.models import InstanceRun, InstanceRunResult, Schedule, TestRun
 
 
@@ -167,3 +167,8 @@ class InstanceRunResultViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelVi
         else:
             return InstanceRunResult.objects.filter(Q(instancerun__testrun__is_public=True) |
                                                     Q(instancerun__testrun__owner=self.request.user))
+
+
+class InstanceRunMessageViewSet(ReadOnlyModelViewSet):
+    permission_classes = (OwnerOrPublicBasedPermission,)
+    serializer_class = InstanceRunMessageSerializer
