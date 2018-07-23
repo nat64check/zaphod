@@ -27,10 +27,12 @@ class MarvinSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
     class Meta:
         model = Marvin
         fields = ('id',
+                  'trillian',
                   'name', 'hostname', 'type', 'version',
                   'browser_name', 'browser_version', 'instance_type', 'addresses',
                   'first_seen', 'last_seen',
                   '_url')
+        read_only_fields = ('trillian',)
 
         expandable_fields = dict(
             trillian=TrillianSerializer,

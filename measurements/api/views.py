@@ -90,12 +90,6 @@ class TestRunViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
             # Exposing all attributes when not creating
             return TestRunSerializer
 
-    def perform_create(self, serializer):
-        if self.request.user.is_anonymous:
-            serializer.save(owner=None, is_public=True)
-        else:
-            serializer.save(owner=self.request.user)
-
     def get_queryset(self):
         if self.request.user.is_anonymous:
             return TestRun.objects.filter(is_public=True)
@@ -123,14 +117,23 @@ class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet,
     serializer_class = InstanceRunSerializer
 
     def get_queryset(self):
-        if self.request.user.has_perm('measurements.report_back'):
+        if self.request.user.is_superuser or self.request.user.has_perm('measurements.report_back'):
             return InstanceRun.objects.all()
         elif self.request.user.is_anonymous:
             return InstanceRun.objects.filter(testrun__is_public=True)
-        elif self.request.user.is_superuser:
-            return InstanceRun.objects.all()
         else:
             return InstanceRun.objects.filter(Q(testrun__is_public=True) | Q(testrun__owner=self.request.user))
+
+    def get_extensions_mixin_context(self):
+        context = super().get_extensions_mixin_context()
+
+        if self.request.user.has_perm('measurements.report_back'):
+            # Trillians get the expanded view by default
+            expand = context.setdefault('expand', set())
+            expand.add('messages')
+            expand.add('results__marvin')
+
+        return context
 
 
 class InstanceRunResultViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet):

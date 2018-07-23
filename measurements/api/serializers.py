@@ -11,6 +11,7 @@ from rest_framework_serializer_extensions.serializers import SerializerExtension
 
 from generic.api.fields import SerializerExtensionsJSONField
 from generic.api.serializers import UserSerializer
+from generic.utils import print_warning
 from instances.api.serializers import MarvinSerializer, TrillianSerializer
 from instances.models import Marvin, Trillian
 from measurements.models import InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun, TestRunMessage
@@ -161,6 +162,7 @@ class InstanceRunSerializer(SerializerExtensionsMixin, HyperlinkedModelSerialize
     def update(self, instance: InstanceRun, validated_data):
         # If marked as finished don't update anymore
         if instance.finished:
+            print_warning("Instance already finished, not updating")
             return instance
 
         results = validated_data.pop('results', None)
@@ -220,6 +222,8 @@ class InstanceRunResultSerializer(SerializerExtensionsMixin, HyperlinkedModelSer
     class Meta:
         model = InstanceRunResult
         fields = ('id', 'marvin', 'instancerun', 'instance_type', 'when', 'ping_response', 'web_response', '_url')
+        read_only_fields = ('instancerun',)
+
         expandable_fields = dict(
             marvin=MarvinSerializer,
             instancerun="measurements.api.serializers.InstanceRunSerializer",
