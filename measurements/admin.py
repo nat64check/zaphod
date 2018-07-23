@@ -15,7 +15,11 @@ from measurements.models import InstanceRun, InstanceRunMessage, InstanceRunResu
 
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ('name', 'url', 'owner', 'time', 'start', 'end', 'frequency', 'admin_trillians', 'is_public')
+    list_display = ('name', 'url', 'owner',
+                    'time', 'start', 'end', 'frequency',
+                    'first_testrun', 'last_testrun', 'is_active',
+                    'admin_trillians', 'admin_testruns',
+                    'is_public')
     list_filter = (('owner', admin.RelatedOnlyFieldListFilter),)
     search_fields = ('url', 'owner__first_name', 'owner__last_name', 'owner__email', 'name')
 
@@ -23,6 +27,17 @@ class ScheduleAdmin(admin.ModelAdmin):
         return ', '.join([trillian.name for trillian in schedule.trillians.all()]) or '-'
 
     admin_trillians.short_description = _('Trillians')
+
+    def admin_testruns(self, schedule):
+        return schedule.testruns.count()
+
+    admin_testruns.short_description = _('Testruns')
+
+    def is_active(self, schedule):
+        return schedule.is_active
+
+    is_active.short_description = _('is active')
+    is_active.boolean = True
 
 
 class TestRunMessageAdmin(admin.TabularInline):
@@ -100,7 +115,7 @@ class InlineInstanceRunResult(admin.TabularInline):
 
 @admin.register(InstanceRun)
 class InstanceRunAdmin(admin.ModelAdmin):
-    list_display = ('testrun', 'trillian', 'trillian_url', 'requested', 'started', 'finished', 'analysed')
+    list_display = ('testrun', 'trillian', 'requested', 'started', 'finished', 'analysed')
     list_filter = (('trillian', admin.RelatedOnlyFieldListFilter),)
     date_hierarchy = 'testrun__requested'
     search_fields = ('testrun__url',

@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from django.conf import settings
@@ -53,11 +54,31 @@ class Schedule(models.Model):
     def __str__(self):
         return self.name
 
-    def trillian_ids(self):
-        return self.trillians.values_list('pk', flat=True)
+    def first_testrun(self):
+        return self.testruns.order_by('requested').values_list('requested', flat=True).first()
 
-    def testrun_ids(self):
-        return self.testruns.values_list('pk', flat=True)
+    first_testrun.short_description = _('first testrun')
+    first_testrun = property(first_testrun)
+
+    def last_testrun(self):
+        return self.testruns.order_by('-requested').values_list('requested', flat=True).first()
+
+    last_testrun.short_description = _('last testrun')
+    last_testrun = property(last_testrun)
+
+    def is_active(self):
+        # Check if it started already
+        if datetime.datetime.combine(self.start, self.time, timezone.utc) > timezone.now():
+            return False
+
+        # No end means it's still active
+        if not self.end:
+            return True
+
+        return datetime.datetime.combine(self.end, self.time, timezone.utc) >= timezone.now()
+
+    is_active.short_description = _('is active')
+    is_active = property(is_active)
 
 
 class TestRun(models.Model):
