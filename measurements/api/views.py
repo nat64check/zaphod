@@ -1,14 +1,17 @@
 from django.db.models.query_utils import Q
-from rest_framework import mixins, viewsets
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework_serializer_extensions.views import SerializerExtensionsAPIViewMixin
 
-from measurements.api.permissions import CreatePublicBasedPermission, InstanceRunPermission, OwnerBasedPermission
-from measurements.api.serializers import (CreatePublicTestRunSerializer, CreateTestRunSerializer, InstanceRunSerializer,
-                                          ScheduleSerializer, TestRunSerializer)
-from measurements.models import InstanceRun, Schedule, TestRun
+from measurements.api.permissions import CreatePublicBasedPermission, InstanceRunPermission, OwnerBasedPermission, \
+    OwnerOrPublicBasedPermission
+from measurements.api.serializers import (CreatePublicTestRunSerializer, CreateTestRunSerializer,
+                                          InstanceRunResultSerializer, InstanceRunSerializer, ScheduleSerializer,
+                                          TestRunSerializer)
+from measurements.models import InstanceRun, InstanceRunResult, Schedule, TestRun
 
 
-class ScheduleViewSet(viewsets.ModelViewSet):
+class ScheduleViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
     """
     list:
     Retrieve a list of scheduled recurring tests.
@@ -146,3 +149,24 @@ class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, viewsets.ReadOnlyMode
             return InstanceRun.objects.all()
         else:
             return InstanceRun.objects.filter(Q(testrun__is_public=True) | Q(testrun__owner=self.request.user))
+
+
+class InstanceRunResultViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet):
+    """
+    list:
+    Retrieve a list of instance run results.
+
+    retrieve:
+    Retrieve the details of a single instance run.
+    """
+    permission_classes = (OwnerOrPublicBasedPermission,)
+    serializer_class = InstanceRunResultSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return InstanceRunResult.objects.filter(instancerun__testrun__is_public=True)
+        elif self.request.user.is_superuser:
+            return InstanceRunResult.objects.all()
+        else:
+            return InstanceRunResult.objects.filter(Q(instancerun__testrun__is_public=True) |
+                                                    Q(instancerun__testrun__owner=self.request.user))
