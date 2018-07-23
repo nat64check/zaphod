@@ -3,6 +3,8 @@ import logging
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.datetime_safe import date
 from django.utils.formats import date_format
@@ -276,3 +278,19 @@ class InstanceRunResult(models.Model):
 
     instance_type.short_description = _('instance type')
     instance_type = property(instance_type)
+
+
+@receiver(post_save, sender=InstanceRun)
+def update_testrun_from_instancerun(sender, instance: InstanceRun, **kwargs):
+    updated = []
+    if instance.started and (not instance.testrun.started or instance.testrun.started > instance.started):
+        instance.testrun.started = instance.started
+        updated.append('started')
+
+    finished = list(instance.testrun.instanceruns.values_list('finished', flat=True))
+    if all(finished):
+        instance.testrun.finished = max(finished)
+        updated.append('finished')
+
+    if updated:
+        instance.testrun.save(update_fields=updated)
