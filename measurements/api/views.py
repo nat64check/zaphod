@@ -36,14 +36,11 @@ class ScheduleViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
     permission_classes = (OwnerBasedPermission,)
     serializer_class = ScheduleSerializer
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
     def get_queryset(self):
         if self.request.user.is_superuser:
             return Schedule.objects.all()
         else:
-            return Schedule.objects.filter(owner=self.request.user).prefetch_related('trillians')
+            return Schedule.objects.filter(owner=self.request.user)
 
     def perform_destroy(self, instance: Schedule):
         if instance.testruns.exists():
@@ -54,7 +51,7 @@ class ScheduleViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
             instance.delete()
 
 
-class TestRunViewSet(viewsets.ModelViewSet):
+class TestRunViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
     """
     list:
     Retrieve a list of test runs.
@@ -108,7 +105,7 @@ class TestRunViewSet(viewsets.ModelViewSet):
             return TestRun.objects.filter(Q(is_public=True) | Q(owner=self.request.user))
 
 
-class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, viewsets.ReadOnlyModelViewSet, mixins.UpdateModelMixin):
+class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet, UpdateModelMixin):
     """
     list:
     Retrieve a list of instance runs.
@@ -124,21 +121,21 @@ class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, viewsets.ReadOnlyMode
     """
     permission_classes = (InstanceRunPermission,)
     serializer_class = InstanceRunSerializer
-    extensions_expand_id_only = {'messages', 'results'}
-    extensions_exclude = {'results__id',
-                          'results__instancerun',
-                          'results__instancerun_id',
-                          'results___url',
-                          'results__marvin_id',
-                          'results__marvin__id',
-                          'results__marvin__trillian_id',
-                          'results__marvin___url'}
 
-    def get_extensions_mixin_context(self):
-        context = super().get_extensions_mixin_context()
-        if self.detail:
-            context['expand'] = {'messages', 'results__marvin'}
-        return context
+    # extensions_exclude = {'results__id',
+    #                       'results__instancerun',
+    #                       'results__instancerun_id',
+    #                       'results___url',
+    #                       'results__marvin_id',
+    #                       'results__marvin__id',
+    #                       'results__marvin__trillian_id',
+    #                       'results__marvin___url'}
+
+    # def get_extensions_mixin_context(self):
+    #     context = super().get_extensions_mixin_context()
+    #     if self.detail:
+    #         context['expand'] = {'messages', 'results__marvin'}
+    #     return context
 
     def get_queryset(self):
         if self.request.user.has_perm('measurements.report_back'):
