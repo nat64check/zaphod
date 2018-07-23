@@ -7,8 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from requests.auth import AuthBase
 from uwsgi_tasks import RetryTaskException, task
 
-from measurements.tasks.utils import retry_get
-from .utils import print_error, print_message, print_warning
+from generic.utils import print_error, print_message, print_warning, retry_get
 
 
 class TokenAuth(AuthBase):

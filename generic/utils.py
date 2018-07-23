@@ -24,7 +24,25 @@ def print_with_color(msg, **kwargs):
             opts.append('bold')
 
     pid = os.getpid()
-    print(colorize('[spooler {}] {}'.format(pid, msg), **kwargs))
+    try:
+        # noinspection PyPackageRequirements,PyUnresolvedReferences
+        import uwsgi
+        master = uwsgi.masterpid()
+        worker = uwsgi.worker_id()
+        mule = uwsgi.mule_id()
+    except ImportError:
+        master = 0
+        worker = 0
+        mule = 0
+
+    if mule:
+        print(colorize('[mule {}] {}'.format(mule, msg), **kwargs))
+    elif worker:
+        print(colorize('[worker {}] {}'.format(worker, msg), **kwargs))
+    elif pid == master:
+        print(colorize('[master] {}'.format(msg), **kwargs))
+    else:
+        print(colorize('[spooler {}] {}'.format(pid, msg), **kwargs))
 
 
 def print_success(msg):
