@@ -31,6 +31,7 @@ def print_with_color(msg, **kwargs):
         worker = uwsgi.worker_id()
         mule = uwsgi.mule_id()
     except ImportError:
+        uwsgi = None
         master = 0
         worker = 0
         mule = 0
@@ -41,8 +42,10 @@ def print_with_color(msg, **kwargs):
         print(colorize('[worker {}] {}'.format(worker, msg), **kwargs))
     elif pid == master:
         print(colorize('[master] {}'.format(msg), **kwargs))
-    else:
+    elif uwsgi:
         print(colorize('[spooler {}] {}'.format(pid, msg), **kwargs))
+    else:
+        print(colorize(msg, **kwargs))
 
 
 def print_success(msg):
