@@ -1,11 +1,12 @@
-from rest_framework import viewsets
+from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework_serializer_extensions.views import SerializerExtensionsAPIViewMixin
 
 from instances.api.filters import MarvinFilter, TrillianFilter
 from instances.api.serializers import MarvinSerializer, TrillianSerializer
 from instances.models import Marvin, Trillian
 
 
-class TrillianViewSet(viewsets.ReadOnlyModelViewSet):
+class TrillianViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet):
     """
     list:
     Retrieve a list of Trillians.
@@ -18,7 +19,7 @@ class TrillianViewSet(viewsets.ReadOnlyModelViewSet):
     filter_class = TrillianFilter
 
 
-class MarvinViewSet(viewsets.ReadOnlyModelViewSet):
+class MarvinViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet):
     """
     list:
     Retrieve a list of Marvins.

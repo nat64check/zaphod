@@ -122,21 +122,6 @@ class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet,
     permission_classes = (InstanceRunPermission,)
     serializer_class = InstanceRunSerializer
 
-    # extensions_exclude = {'results__id',
-    #                       'results__instancerun',
-    #                       'results__instancerun_id',
-    #                       'results___url',
-    #                       'results__marvin_id',
-    #                       'results__marvin__id',
-    #                       'results__marvin__trillian_id',
-    #                       'results__marvin___url'}
-
-    # def get_extensions_mixin_context(self):
-    #     context = super().get_extensions_mixin_context()
-    #     if self.detail:
-    #         context['expand'] = {'messages', 'results__marvin'}
-    #     return context
-
     def get_queryset(self):
         if self.request.user.has_perm('measurements.report_back'):
             return InstanceRun.objects.all()
@@ -154,7 +139,7 @@ class InstanceRunResultViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelVi
     Retrieve a list of instance run results.
 
     retrieve:
-    Retrieve the details of a single instance run.
+    Retrieve the details of a single instance run result.
     """
     permission_classes = (OwnerOrPublicBasedPermission,)
     serializer_class = InstanceRunResultSerializer
@@ -169,6 +154,22 @@ class InstanceRunResultViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelVi
                                                     Q(instancerun__testrun__owner=self.request.user))
 
 
-class InstanceRunMessageViewSet(ReadOnlyModelViewSet):
+class InstanceRunMessageViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet):
+    """
+    list:
+    Retrieve a list of instance run messages.
+
+    retrieve:
+    Retrieve the details of a single instance run message.
+    """
     permission_classes = (OwnerOrPublicBasedPermission,)
     serializer_class = InstanceRunMessageSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return InstanceRunResult.objects.filter(instancerun__testrun__is_public=True)
+        elif self.request.user.is_superuser:
+            return InstanceRunResult.objects.all()
+        else:
+            return InstanceRunResult.objects.filter(Q(instancerun__testrun__is_public=True) |
+                                                    Q(instancerun__testrun__owner=self.request.user))

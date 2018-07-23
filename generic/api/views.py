@@ -16,6 +16,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.viewsets import ModelViewSet, ViewSet
+from rest_framework_serializer_extensions.views import SerializerExtensionsAPIViewMixin
 
 from generic.api.filters import UserAdminFilter, UserFilter
 from generic.api.permissions import AllowSelf
@@ -26,7 +27,7 @@ from zaphod_be import __version__ as version
 user_model = get_user_model()
 
 
-class InfoViewSet(ViewSet):
+class InfoViewSet(SerializerExtensionsAPIViewMixin, ViewSet):
     """
     Generic information about this server.
 
@@ -42,7 +43,7 @@ class InfoViewSet(ViewSet):
         })
 
 
-class UserViewSet(ModelViewSet):
+class UserViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
     """
     Management of API users.
 
