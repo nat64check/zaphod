@@ -87,6 +87,7 @@ class TestRun(models.Model):
     class Meta:
         verbose_name = _('test run')
         verbose_name_plural = _('test runs')
+        ordering = ('requested',)
 
     def __str__(self):
         if self.finished:
