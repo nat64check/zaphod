@@ -6,6 +6,29 @@ from rest_framework_serializer_extensions.serializers import EXPAND_DELIMITER
 
 
 class SerializerExtensionsJSONField(JSONField):
+    def _get_serializer_hierarchy(self):
+        """
+        Return a string representing the given serializer's hierarchy position.
+
+        We match this hierarchy string against the "nested field names".
+
+        * For a root serializer we return an empty string
+        * For a child serializer, we return it's field name (e.g. 'foo')
+        * For nested child serializers, we __ delimit (e.g, 'foo__bar')
+
+        Returns:
+            (str) - The hierarchy
+        """
+        name = [self.field_name] if self.field_name else []
+        parent = self.parent
+
+        while parent:
+            if parent.field_name:
+                name.insert(0, parent.field_name)
+            parent = parent.parent
+
+        return name
+
     @staticmethod
     def _clean_up_filters(exclude, only):
         my_exclude = [item for item in exclude if item]
@@ -49,13 +72,14 @@ class SerializerExtensionsJSONField(JSONField):
         return out
 
     def to_representation(self, value):
+        my_place = self._get_serializer_hierarchy()
         try:
             exclude_set = self.context['exclude']
         except KeyError:
             exclude_set = set()
 
         exclude_components = [item.split(EXPAND_DELIMITER) for item in exclude_set]
-        my_exclude = [item[1:] for item in exclude_components if item[0] == self.field_name]
+        my_exclude = [item[len(my_place):] for item in exclude_components if item[:len(my_place)] == my_place]
 
         try:
             only_set = self.context['only']
@@ -63,7 +87,11 @@ class SerializerExtensionsJSONField(JSONField):
             only_set = None
 
         only_components = [item.split(EXPAND_DELIMITER) for item in only_set]
-        my_only = [item[1:] for item in only_components if item[0] == self.field_name] if only_set else None
+        my_only = [item[len(my_place):] for item in only_components
+                   if item[:len(my_place)] == my_place] if only_set else None
+        if not my_only and my_only is not None:
+            # There are only filters, and we're not in them...
+            return super().to_representation({})
 
         my_exclude, my_only = self._clean_up_filters(my_exclude, my_only)
         if my_exclude or my_only:
