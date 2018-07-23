@@ -31,7 +31,7 @@ class TestRunMessageAdmin(admin.TabularInline):
 
 @admin.register(TestRun)
 class TestRunAdmin(admin.ModelAdmin):
-    list_display = ('url', 'owner', 'schedule', 'requested', 'started', 'finished')
+    list_display = ('url', 'owner', 'schedule', 'requested', 'started', 'finished', 'analysed')
     list_filter = (('owner', admin.RelatedOnlyFieldListFilter),)
     date_hierarchy = 'requested'
     search_fields = ('url', 'owner__first_name', 'owner__last_name', 'owner__email', 'schedule__name')
