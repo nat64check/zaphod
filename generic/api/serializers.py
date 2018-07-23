@@ -13,7 +13,7 @@ class PasswordSerializer(Serializer):
 
 # noinspection PyAbstractClass
 class AuthCodeSerializer(Serializer):
-    code = CharField(required=True, help_text=_('The authentication code to activate this user'))
+    code = CharField(required=True, help_text=_('The authentication code to activate this account'))
 
 
 class UserSerializer(HyperlinkedModelSerializer):
