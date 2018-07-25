@@ -37,7 +37,10 @@ class ScheduleViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
     serializer_class = ScheduleSerializer
 
     def get_queryset(self):
-        if self.request.user.is_superuser:
+        if not self.request:
+            # Docs get the queryset without having a request
+            return Schedule.objects.none()
+        elif self.request.user.is_superuser:
             return Schedule.objects.all()
         else:
             return Schedule.objects.filter(owner=self.request.user)
@@ -78,7 +81,7 @@ class TestRunViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
             # Docs get the serializer without having a request
             return TestRunSerializer
 
-        if self.request.method == 'POST' and not self.request.user.is_superuser:
+        elif self.request.method == 'POST' and not self.request.user.is_superuser:
             # Special create serializers except for superusers, they can create anything
             if self.request.user.is_anonymous:
                 # Anonymous users can only create public tests
@@ -91,7 +94,10 @@ class TestRunViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
             return TestRunSerializer
 
     def get_queryset(self):
-        if self.request.user.is_anonymous:
+        if not self.request:
+            # Docs get the queryset without having a request
+            return TestRun.objects.none()
+        elif self.request.user.is_anonymous:
             return TestRun.objects.filter(is_public=True)
         elif self.request.user.is_superuser:
             return TestRun.objects.all()
@@ -119,7 +125,10 @@ class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet,
     ordering = ('started', 'id')
 
     def get_queryset(self):
-        if self.request.user.is_superuser or self.request.user.has_perm('measurements.report_back'):
+        if not self.request:
+            # Docs get the queryset without having a request
+            return InstanceRun.objects.none()
+        elif self.request.user.is_superuser or self.request.user.has_perm('measurements.report_back'):
             return InstanceRun.objects.all()
         elif self.request.user.is_anonymous:
             return InstanceRun.objects.filter(testrun__is_public=True)
@@ -128,6 +137,8 @@ class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet,
 
     def get_extensions_mixin_context(self):
         context = super().get_extensions_mixin_context()
+        if not self.request:
+            return context
 
         if self.request.user.has_perm('measurements.report_back') and not self.request.user.is_superuser:
             # Trillians get the expanded view by default, but save superusers from overload
@@ -152,7 +163,10 @@ class InstanceRunResultViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelVi
     ordering = ('instancerun__started', 'id')
 
     def get_queryset(self):
-        if self.request.user.is_anonymous:
+        if not self.request:
+            # Docs get the queryset without having a request
+            return InstanceRunResult.objects.none()
+        elif self.request.user.is_anonymous:
             return InstanceRunResult.objects.filter(instancerun__testrun__is_public=True)
         elif self.request.user.is_superuser:
             return InstanceRunResult.objects.all()
@@ -173,7 +187,10 @@ class InstanceRunMessageViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelV
     serializer_class = InstanceRunMessageSerializer
 
     def get_queryset(self):
-        if self.request.user.is_anonymous:
+        if not self.request:
+            # Docs get the queryset without having a request
+            return InstanceRunMessage.objects.none()
+        elif self.request.user.is_anonymous:
             return InstanceRunMessage.objects.filter(instancerun__testrun__is_public=True)
         elif self.request.user.is_superuser:
             return InstanceRunMessage.objects.all()

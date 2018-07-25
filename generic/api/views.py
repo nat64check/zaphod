@@ -79,6 +79,10 @@ class UserViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
 
     @property
     def filter_class(self):
+        if not self.request:
+            # Docs get the filter without having a request
+            return UserFilter
+
         if self.request.user.is_staff:
             # Admin can filter on many properties
             return UserAdminFilter
@@ -99,6 +103,10 @@ class UserViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
             return UserSerializer
 
     def get_queryset(self):
+        if not self.request:
+            # Docs get the queryset without having a request
+            return user_model.objects.none()
+
         if self.request.user.is_staff:
             # Admin sees all
             return user_model.objects.all()
