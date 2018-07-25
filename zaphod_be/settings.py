@@ -189,8 +189,11 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_FILTER_BACKENDS': (
         'rest_framework_filters.backends.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',
     ),
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
+    'DEFAULT_PAGINATION_CLASS': 'generic.api.pagination.MyLimitOffsetPagination',
+    'PAGE_SIZE': 25,
     'URL_FIELD_NAME': '_url',
     'SERIALIZER_EXTENSIONS': {
         'AUTO_OPTIMIZE': True,
