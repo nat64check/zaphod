@@ -221,7 +221,8 @@ class InstanceRunResultSerializer(SerializerExtensionsMixin, HyperlinkedModelSer
 
     class Meta:
         model = InstanceRunResult
-        fields = ('id', 'marvin', 'instancerun', 'instance_type', 'when', 'ping_response', 'web_response', '_url')
+        fields = ('id', 'marvin', 'marvin_id', 'instancerun', 'instancerun_id', 'instance_type',
+                  'when', 'ping_response', 'web_response', '_url')
         read_only_fields = ('instancerun',)
 
         expandable_fields = dict(
