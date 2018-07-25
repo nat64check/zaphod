@@ -3,12 +3,12 @@ from rest_framework.mixins import UpdateModelMixin
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework_serializer_extensions.views import SerializerExtensionsAPIViewMixin
 
-from measurements.api.permissions import CreatePublicBasedPermission, InstanceRunPermission, OwnerBasedPermission, \
-    OwnerOrPublicBasedPermission
+from measurements.api.permissions import (CreatePublicBasedPermission, InstanceRunPermission, OwnerBasedPermission,
+                                          OwnerOrPublicBasedPermission)
 from measurements.api.serializers import (CreatePublicTestRunSerializer, CreateTestRunSerializer,
                                           InstanceRunMessageSerializer, InstanceRunResultSerializer,
                                           InstanceRunSerializer, ScheduleSerializer, TestRunSerializer)
-from measurements.models import InstanceRun, InstanceRunResult, Schedule, TestRun
+from measurements.models import InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun
 
 
 class ScheduleViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
@@ -115,6 +115,8 @@ class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet,
     """
     permission_classes = (InstanceRunPermission,)
     serializer_class = InstanceRunSerializer
+    ordering_fields = ('id', 'started', 'finished', 'analysed', 'image_score', 'resource_score', 'overall_score')
+    ordering = ('started', 'id')
 
     def get_queryset(self):
         if self.request.user.is_superuser or self.request.user.has_perm('measurements.report_back'):
@@ -127,8 +129,8 @@ class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet,
     def get_extensions_mixin_context(self):
         context = super().get_extensions_mixin_context()
 
-        if self.request.user.has_perm('measurements.report_back'):
-            # Trillians get the expanded view by default
+        if self.request.user.has_perm('measurements.report_back') and not self.request.user.is_superuser:
+            # Trillians get the expanded view by default, but save superusers from overload
             expand = context.setdefault('expand', set())
             expand.add('messages')
             expand.add('results__marvin')
@@ -146,6 +148,8 @@ class InstanceRunResultViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelVi
     """
     permission_classes = (OwnerOrPublicBasedPermission,)
     serializer_class = InstanceRunResultSerializer
+    ordering_fields = ('id', 'when', 'instancerun__started', 'instancerun__finished', 'instancerun__analysed')
+    ordering = ('instancerun__started', 'id')
 
     def get_queryset(self):
         if self.request.user.is_anonymous:
@@ -170,9 +174,9 @@ class InstanceRunMessageViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelV
 
     def get_queryset(self):
         if self.request.user.is_anonymous:
-            return InstanceRunResult.objects.filter(instancerun__testrun__is_public=True)
+            return InstanceRunMessage.objects.filter(instancerun__testrun__is_public=True)
         elif self.request.user.is_superuser:
-            return InstanceRunResult.objects.all()
+            return InstanceRunMessage.objects.all()
         else:
-            return InstanceRunResult.objects.filter(Q(instancerun__testrun__is_public=True) |
-                                                    Q(instancerun__testrun__owner=self.request.user))
+            return InstanceRunMessage.objects.filter(Q(instancerun__testrun__is_public=True) |
+                                                     Q(instancerun__testrun__owner=self.request.user))
