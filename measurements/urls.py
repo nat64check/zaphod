@@ -1,8 +1,8 @@
 from django.conf.urls import include, url
 from rest_framework import routers
 
-from measurements.api.views import InstanceRunMessageViewSet, InstanceRunResultViewSet, InstanceRunViewSet, \
-    ScheduleViewSet, TestRunViewSet
+from measurements.api.views import (InstanceRunMessageViewSet, InstanceRunResultViewSet, InstanceRunViewSet,
+                                    ScheduleViewSet, TestRunViewSet)
 
 # Routers provide an easy way of automatically determining the URL conf.
 measurements_router = routers.SimpleRouter()

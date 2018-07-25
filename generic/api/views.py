@@ -20,8 +20,9 @@ from rest_framework_serializer_extensions.views import SerializerExtensionsAPIVi
 
 from generic.api.filters import UserAdminFilter, UserFilter
 from generic.api.permissions import AllowSelf
-from generic.api.serializers import AuthCodeSerializer, PasswordSerializer, UserAdminSerializer, UserRegisterSerializer, \
-    UserSerializer
+from generic.api.serializers import (AuthCodeSerializer, PasswordSerializer, UserAdminSerializer,
+                                     UserRegisterSerializer,
+                                     UserSerializer)
 from zaphod_be import __version__ as version
 
 user_model = get_user_model()
