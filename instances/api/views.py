@@ -19,6 +19,8 @@ class TrillianViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet):
     queryset = Trillian.objects.all()
     serializer_class = TrillianSerializer
     filter_class = TrillianFilter
+    ordering_fields = ('id', 'name', 'hostname', 'version', 'country', 'first_seen', 'last_seen')
+    ordering = ('name',)
 
 
 class MarvinViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet):
@@ -35,3 +37,5 @@ class MarvinViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet):
     queryset = Marvin.objects.all()
     serializer_class = MarvinSerializer
     filter_class = MarvinFilter
+    ordering_fields = ('id', 'name', 'hostname', 'version', 'first_seen', 'last_seen')
+    ordering = ('name',)

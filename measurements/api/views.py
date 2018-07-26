@@ -3,12 +3,14 @@ from rest_framework.mixins import UpdateModelMixin
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework_serializer_extensions.views import SerializerExtensionsAPIViewMixin
 
+from measurements.api.filters import ScheduleFilter
 from measurements.api.permissions import (CreatePublicBasedPermission, InstanceRunPermission, OwnerBasedPermission,
                                           OwnerOrPublicBasedPermission)
 from measurements.api.serializers import (CreatePublicTestRunSerializer, CreateTestRunSerializer,
                                           InstanceRunMessageSerializer, InstanceRunResultSerializer,
-                                          InstanceRunSerializer, ScheduleSerializer, TestRunSerializer)
-from measurements.models import InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun
+                                          InstanceRunSerializer, ScheduleSerializer, TestRunMessageSerializer,
+                                          TestRunSerializer)
+from measurements.models import InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun, TestRunMessage
 
 
 class ScheduleViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
@@ -35,6 +37,9 @@ class ScheduleViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
     """
     permission_classes = (OwnerBasedPermission,)
     serializer_class = ScheduleSerializer
+    filter_class = ScheduleFilter
+    ordering_fields = ('id', 'name', 'start', 'end')
+    ordering = ('start',)
 
     def get_queryset(self):
         if not self.request:
@@ -75,6 +80,23 @@ class TestRunViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
     Update all the settings of a test run.
     """
     permission_classes = (CreatePublicBasedPermission,)
+    filter_fields = {
+        'owner': ['exact'],
+        'schedule': ['exact'],
+        'url': ['exact', 'icontains'],
+        'requested': ['gte', 'lte'],
+        'started': ['gte', 'lte', 'isnull'],
+        'finished': ['gte', 'lte', 'isnull'],
+        'analysed': ['gte', 'lte', 'isnull'],
+        'is_public': ['exact'],
+        'image_score': ['gte', 'lte'],
+        'resource_score': ['gte', 'lte'],
+        'overall_score': ['gte', 'lte'],
+    }
+    ordering_fields = ('id', 'requested',
+                       'started', 'finished', 'analysed',
+                       'image_score', 'resource_score', 'overall_score')
+    ordering = ('requested',)
 
     def get_serializer_class(self):
         if not self.request:
@@ -105,6 +127,37 @@ class TestRunViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
             return TestRun.objects.filter(Q(is_public=True) | Q(owner=self.request.user))
 
 
+class TestRunMessageViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet):
+    """
+    list:
+    Retrieve a list of testrun messages.
+
+    retrieve:
+    Retrieve the details of a single testrun message.
+    """
+    permission_classes = (OwnerOrPublicBasedPermission,)
+    serializer_class = TestRunMessageSerializer
+    filter_fields = {
+        'testrun': ['exact'],
+        'severity': ['gte', 'lte', 'exact'],
+        'message': ['icontains'],
+    }
+    ordering_fields = ('id', 'severity')
+    ordering = ('id',)
+
+    def get_queryset(self):
+        if not self.request:
+            # Docs get the queryset without having a request
+            return TestRunMessage.objects.none()
+        elif self.request.user.is_anonymous:
+            return TestRunMessage.objects.filter(testrun__is_public=True)
+        elif self.request.user.is_superuser:
+            return TestRunMessage.objects.all()
+        else:
+            return TestRunMessage.objects.filter(Q(testrun__is_public=True) |
+                                                 Q(testrun__owner=self.request.user))
+
+
 class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet, UpdateModelMixin):
     """
     list:
@@ -121,6 +174,19 @@ class InstanceRunViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet,
     """
     permission_classes = (InstanceRunPermission,)
     serializer_class = InstanceRunSerializer
+    filter_fields = {
+        'testrun': ['exact'],
+        'trillian': ['exact'],
+        'testrun__owner': ['exact'],
+        'testrun__url': ['exact', 'icontains'],
+        'testrun__is_public': ['exact'],
+        'started': ['gte', 'lte', 'isnull'],
+        'finished': ['gte', 'lte', 'isnull'],
+        'analysed': ['gte', 'lte', 'isnull'],
+        'image_score': ['gte', 'lte'],
+        'resource_score': ['gte', 'lte'],
+        'overall_score': ['gte', 'lte'],
+    }
     ordering_fields = ('id', 'started', 'finished', 'analysed', 'image_score', 'resource_score', 'overall_score')
     ordering = ('started', 'id')
 
@@ -159,6 +225,11 @@ class InstanceRunResultViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelVi
     """
     permission_classes = (OwnerOrPublicBasedPermission,)
     serializer_class = InstanceRunResultSerializer
+    filter_fields = {
+        'instancerun': ['exact'],
+        'marvin': ['exact'],
+        'when': ['gte', 'lte'],
+    }
     ordering_fields = ('id', 'when', 'instancerun__started', 'instancerun__finished', 'instancerun__analysed')
     ordering = ('instancerun__started', 'id')
 
@@ -185,6 +256,13 @@ class InstanceRunMessageViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelV
     """
     permission_classes = (OwnerOrPublicBasedPermission,)
     serializer_class = InstanceRunMessageSerializer
+    filter_fields = {
+        'instancerun': ['exact'],
+        'severity': ['gte', 'lte', 'exact'],
+        'message': ['icontains'],
+    }
+    ordering_fields = ('id', 'severity')
+    ordering = ('id',)
 
     def get_queryset(self):
         if not self.request:

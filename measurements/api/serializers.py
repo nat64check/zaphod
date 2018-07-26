@@ -23,10 +23,10 @@ class ScheduleSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
     class Meta:
         model = Schedule
         fields = ('id', 'owner', 'owner_id',
-                  'name', 'url', 'time', 'start', 'end', 'frequency', 'is_public',
+                  'name', 'url', 'time', 'start', 'end', 'frequency', 'is_public', 'is_active',
                   'trillians', 'testruns',
                   '_url')
-        read_only_fields = ('owner', 'testruns')
+        read_only_fields = ('owner', 'testruns', 'is_active')
         expandable_fields = dict(
             owner=UserSerializer,
             trillians=dict(
@@ -125,7 +125,7 @@ class CreateTestRunSerializer(CreatePublicTestRunSerializer):
 class TestRunMessageSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = TestRunMessage
-        fields = ('severity', 'message')
+        fields = ('id', 'severity', 'message', '_url')
 
 
 class InstanceRunSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):

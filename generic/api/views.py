@@ -76,6 +76,8 @@ class UserViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
     Return the token for the provided username and password.
     """
     permission_classes = (DjangoModelPermissionsOrAnonReadOnly,)
+    ordering_fields = ('id', 'username', 'first_name', 'last_name', 'date_joined')
+    ordering = ('username',)
 
     @property
     def filter_class(self):
@@ -154,12 +156,13 @@ class UserViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
 
         return Response(status=201, data=UserAdminSerializer(user, context={'request': request}).data)
 
+    # noinspection PyUnusedLocal
     @action(detail=True,
             methods=['post'],
             permission_classes=[AllowAny],
             get_queryset=lambda: user_model.objects.all(),
             get_serializer_class=lambda: AuthCodeSerializer)
-    def authenticate(self, request, pk):
+    def authenticate(self, request, pk=None):
         user = self.get_object()
         serializer = AuthCodeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

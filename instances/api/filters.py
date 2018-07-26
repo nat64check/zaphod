@@ -1,16 +1,16 @@
-import django_filters
+from django_filters import BaseCSVFilter, CharFilter, Filter, FilterSet
 
 from instances.models import Marvin, Trillian
 
 
-class TrillianFilter(django_filters.FilterSet):
-    having_admin = django_filters.Filter(name="admins", lookup_expr='in')
+class TrillianFilter(FilterSet):
+    having_admin = Filter(name="admins", lookup_expr='in')
 
     class Meta:
         model = Trillian
         fields = {
-            'name': ['exact', 'contains'],
-            'hostname': ['exact', 'contains'],
+            'name': ['exact', 'icontains'],
+            'hostname': ['exact', 'icontains'],
             'is_alive': ['exact'],
             'country': ['exact'],
             'first_seen': ['gte', 'lte'],
@@ -18,19 +18,19 @@ class TrillianFilter(django_filters.FilterSet):
         }
 
 
-class CharArrayFilter(django_filters.BaseCSVFilter, django_filters.CharFilter):
+class CharArrayFilter(BaseCSVFilter, CharFilter):
     pass
 
 
-class MarvinFilter(django_filters.FilterSet):
-    address = CharArrayFilter(name='addresses', lookup_expr='contains')
+class MarvinFilter(FilterSet):
+    address = CharArrayFilter(name='addresses', lookup_expr='icontains')
 
     class Meta:
         model = Marvin
         fields = {
             'trillian': ['exact'],
-            'name': ['exact', 'contains'],
-            'hostname': ['exact', 'contains'],
+            'name': ['exact', 'icontains'],
+            'hostname': ['exact', 'icontains'],
             'type': ['exact'],
             'first_seen': ['gte', 'lte'],
             'last_seen': ['gte', 'lte'],

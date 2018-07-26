@@ -302,6 +302,7 @@ class InstanceRunResult(models.Model):
     instance_type = property(instance_type)
 
 
+# noinspection PyUnusedLocal
 @receiver(post_save, sender=InstanceRun)
 def update_testrun_from_instancerun(sender, instance: InstanceRun, **kwargs):
     updated = []
