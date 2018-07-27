@@ -4,12 +4,11 @@ import logging
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.datetime_safe import date
 from django.utils.formats import date_format
 from django.utils.translation import gettext_lazy as _
+from model_utils import FieldTracker
 
 from instances.models import Marvin, Trillian
 
@@ -105,6 +104,8 @@ class TestRun(models.Model):
     overall_score = models.FloatField(_('overall score'), blank=True, null=True, db_index=True)
     overall_feedback = models.TextField(_('overall feedback'), blank=True)
 
+    tracker = FieldTracker(fields=['started', 'finished', 'analysed'])
+
     class Meta:
         verbose_name = _('test run')
         verbose_name_plural = _('test runs')
@@ -180,6 +181,8 @@ class InstanceRun(models.Model):
 
     overall_score = models.FloatField(_('overall score'), blank=True, null=True, db_index=True)
     overall_feedback = models.TextField(_('overall feedback'), blank=True)
+
+    tracker = FieldTracker(fields=['started', 'finished', 'analysed'])
 
     class Meta:
         verbose_name = _('instance run')
