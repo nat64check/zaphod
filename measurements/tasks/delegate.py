@@ -23,11 +23,6 @@ def delegate_to_trillian(pk):
 
         print_message(_("Pushing InstanceRun {run.pk} ({run.url}) to {run.trillian.name}").format(run=run))
 
-        if settings.ALLOWED_HOSTS:
-            my_hostname = settings.ALLOWED_HOSTS[0]
-        else:
-            my_hostname = 'localhost'
-
         response = requests.request(
             method='POST',
             url='https://{hostname}/api/v1/instanceruns/'.format(hostname=run.trillian.hostname),
@@ -36,7 +31,7 @@ def delegate_to_trillian(pk):
             json={
                 'url': run.url,
                 'callback_url': 'https://{my_hostname}{path}'.format(
-                    my_hostname=my_hostname,
+                    my_hostname=settings.MY_HOSTNAME,
                     path=reverse('v1:instancerun-detail', kwargs={'pk': run.pk})
                 ),
                 'requested': run.testrun.requested.isoformat(),
