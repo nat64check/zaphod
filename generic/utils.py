@@ -18,6 +18,17 @@ def retry_get(qs: QuerySet, **kwargs):
                 raise
 
 
+def retry_all(qs: QuerySet):
+    for delay in (0.5, 1, 2, 4, None):
+        result = all(qs.all())
+        if result:
+            return result
+        elif delay:
+            time.sleep(delay)
+        else:
+            return False
+
+
 def print_with_color(msg, **kwargs):
     bold = kwargs.pop('bold', False)
     if bold:
@@ -55,7 +66,7 @@ def print_success(msg):
 
 
 def print_notice(msg):
-    print_with_color(msg, fg='yellow', bold=True)
+    print_with_color(msg, fg='cyan', bold=True)
 
 
 def print_message(msg):

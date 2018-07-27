@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-23 21:31+0000\n"
+"POT-Creation-Date: 2018-07-27 14:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,26 +24,26 @@ msgid "The new password for this user"
 msgstr ""
 
 #: generic/api/serializers.py:16
-msgid "The authentication code to activate this user"
+msgid "The authentication code to activate this account"
 msgstr ""
 
 #: generic/api/serializers.py:34
 msgid "email address"
 msgstr ""
 
-#: generic/api/views.py:121
+#: generic/api/views.py:132
 msgid "A user with this email address already exists."
 msgstr ""
 
-#: generic/api/views.py:165
+#: generic/api/views.py:177
 msgid "Account cannot be activated"
 msgstr ""
 
-#: generic/api/views.py:175
+#: generic/api/views.py:187
 msgid "Invalid authentication code, account not activated"
 msgstr ""
 
-#: generic/api/views.py:180
+#: generic/api/views.py:192
 msgid "Authentication code expired, account not activated"
 msgstr ""
 
@@ -65,7 +65,7 @@ msgstr ""
 msgid "Test-cluster instances"
 msgstr ""
 
-#: instances/models.py:18 instances/models.py:72 measurements/models.py:28
+#: instances/models.py:18 instances/models.py:72 measurements/models.py:29
 #: world/models.py:10
 msgid "name"
 msgstr ""
@@ -99,7 +99,7 @@ msgstr ""
 msgid "location"
 msgstr ""
 
-#: instances/models.py:70 measurements/models.py:166
+#: instances/models.py:70 measurements/models.py:175
 msgid "Trillian"
 msgstr ""
 
@@ -115,7 +115,7 @@ msgstr ""
 msgid "browser version"
 msgstr ""
 
-#: instances/models.py:82 measurements/models.py:301
+#: instances/models.py:82 measurements/models.py:345
 msgid "instance type"
 msgstr ""
 
@@ -156,7 +156,7 @@ msgstr ""
 msgid "Address"
 msgstr ""
 
-#: measurements/admin.py:29 measurements/models.py:31
+#: measurements/admin.py:29 measurements/models.py:32
 msgid "Trillians"
 msgstr ""
 
@@ -164,7 +164,8 @@ msgstr ""
 msgid "Testruns"
 msgstr ""
 
-#: measurements/admin.py:39 measurements/models.py:80
+#: measurements/admin.py:39 measurements/api/filters.py:10
+#: measurements/models.py:81
 msgid "is active"
 msgstr ""
 
@@ -180,6 +181,10 @@ msgstr ""
 msgid "image"
 msgstr ""
 
+#: measurements/admin.py:143 measurements/admin.py:180
+msgid "Analyse again"
+msgstr ""
+
 #: measurements/api/serializers.py:87
 msgid "You cannot create tests in the past"
 msgstr ""
@@ -192,291 +197,349 @@ msgstr ""
 msgid "Measurement data"
 msgstr ""
 
-#: measurements/models.py:17
+#: measurements/models.py:18
 msgid "Critical"
 msgstr ""
 
-#: measurements/models.py:18
+#: measurements/models.py:19
 msgid "Error"
 msgstr ""
 
-#: measurements/models.py:19
+#: measurements/models.py:20
 msgid "Warning"
 msgstr ""
 
-#: measurements/models.py:20
+#: measurements/models.py:21
 msgid "Info"
 msgstr ""
 
-#: measurements/models.py:21
+#: measurements/models.py:22
 msgid "Debug"
 msgstr ""
 
-#: measurements/models.py:26 measurements/models.py:85
-#: measurements/models.py:147 measurements/models.py:204
-#: measurements/models.py:247 measurements/models.py:283
+#: measurements/models.py:27 measurements/models.py:86
+#: measurements/models.py:156 measurements/models.py:215
+#: measurements/models.py:279 measurements/models.py:327
 msgid "owner"
 msgstr ""
 
-#: measurements/models.py:28
+#: measurements/models.py:29
 msgid "Name your test schedule, must be unique"
 msgstr ""
 
-#: measurements/models.py:29 measurements/models.py:90
-#: measurements/models.py:216
+#: measurements/models.py:30 measurements/models.py:91
+#: measurements/models.py:227
 msgid "URL"
 msgstr ""
 
-#: measurements/models.py:29
+#: measurements/models.py:30
 msgid "The URL you want to test"
 msgstr ""
 
-#: measurements/models.py:32
+#: measurements/models.py:33
 msgid "The data centres from where you want this URL to be tested"
 msgstr ""
 
-#: measurements/models.py:34
+#: measurements/models.py:35
 msgid "time"
 msgstr ""
 
-#: measurements/models.py:34
+#: measurements/models.py:35
 msgid "The time of day in UTC when you want the tests to be scheduled"
 msgstr ""
 
-#: measurements/models.py:35
+#: measurements/models.py:36
 msgid "start"
 msgstr ""
 
-#: measurements/models.py:36
+#: measurements/models.py:37
 msgid "The first day that you want the tests to be run"
 msgstr ""
 
-#: measurements/models.py:37
+#: measurements/models.py:38
 msgid "end"
 msgstr ""
 
-#: measurements/models.py:38
+#: measurements/models.py:39
 msgid "The last day that you want the tests to be run"
 msgstr ""
 
-#: measurements/models.py:39
+#: measurements/models.py:40
 msgid "frequency"
 msgstr ""
 
-#: measurements/models.py:40
+#: measurements/models.py:41
 msgid "Every day"
 msgstr ""
 
-#: measurements/models.py:41
+#: measurements/models.py:42
 msgid "Every week"
 msgstr ""
 
-#: measurements/models.py:42
+#: measurements/models.py:43
 msgid "Every month"
 msgstr ""
 
-#: measurements/models.py:43
+#: measurements/models.py:44
 msgid ""
 "Frequency to schedule the tests. Can be \"D\" (daily), \"W\" (weekly) or \"M"
 "\" (monthly)"
 msgstr ""
 
-#: measurements/models.py:45 measurements/models.py:97
-#: measurements/models.py:159 measurements/models.py:222
-#: measurements/models.py:259 measurements/models.py:295
+#: measurements/models.py:46 measurements/models.py:98
+#: measurements/models.py:168 measurements/models.py:233
+#: measurements/models.py:291 measurements/models.py:339
 msgid "is public"
 msgstr ""
 
-#: measurements/models.py:46
+#: measurements/models.py:47
 msgid "Whether the test results should be publicly visible"
 msgstr ""
 
-#: measurements/models.py:49 measurements/models.py:87
+#: measurements/models.py:50 measurements/models.py:88
 msgid "schedule"
 msgstr ""
 
-#: measurements/models.py:50
+#: measurements/models.py:51
 msgid "schedules"
 msgstr ""
 
-#: measurements/models.py:60
+#: measurements/models.py:61
 msgid "first testrun"
 msgstr ""
 
-#: measurements/models.py:66
+#: measurements/models.py:67
 msgid "last testrun"
 msgstr ""
 
-#: measurements/models.py:92 measurements/models.py:198
+#: measurements/models.py:93 measurements/models.py:209
 msgid "requested"
 msgstr ""
 
-#: measurements/models.py:93 measurements/models.py:169
+#: measurements/models.py:94 measurements/models.py:178
 msgid "started"
 msgstr ""
 
-#: measurements/models.py:94 measurements/models.py:170
+#: measurements/models.py:95 measurements/models.py:179
 msgid "finished"
 msgstr ""
 
-#: measurements/models.py:95 measurements/models.py:171
+#: measurements/models.py:96 measurements/models.py:180
+#: measurements/models.py:301
 msgid "analysed"
 msgstr ""
 
-#: measurements/models.py:99 measurements/models.py:175
+#: measurements/models.py:100 measurements/models.py:184
+#: measurements/models.py:306
 msgid "image score"
 msgstr ""
 
-#: measurements/models.py:100 measurements/models.py:176
+#: measurements/models.py:101 measurements/models.py:185
+#: measurements/models.py:307
 msgid "image feedback"
 msgstr ""
 
-#: measurements/models.py:102 measurements/models.py:178
+#: measurements/models.py:103 measurements/models.py:187
+#: measurements/models.py:309
 msgid "resource score"
 msgstr ""
 
-#: measurements/models.py:103 measurements/models.py:179
+#: measurements/models.py:104 measurements/models.py:188
+#: measurements/models.py:310
 msgid "resource feedback"
 msgstr ""
 
-#: measurements/models.py:105 measurements/models.py:181
+#: measurements/models.py:106 measurements/models.py:190
+#: measurements/models.py:312
 msgid "overall score"
 msgstr ""
 
-#: measurements/models.py:106 measurements/models.py:182
+#: measurements/models.py:107 measurements/models.py:191
+#: measurements/models.py:313
 msgid "overall feedback"
 msgstr ""
 
-#: measurements/models.py:109 measurements/models.py:132
-#: measurements/models.py:164
+#: measurements/models.py:112 measurements/models.py:141
+#: measurements/models.py:173
 msgid "test run"
 msgstr ""
 
-#: measurements/models.py:110
+#: measurements/models.py:113
 msgid "test runs"
-msgstr ""
-
-#: measurements/models.py:115
-#, python-brace-format
-msgid "{url} completed on {when}"
 msgstr ""
 
 #: measurements/models.py:118
 #, python-brace-format
-msgid "{url} started on {when}"
+msgid "{url} completed on {when}"
 msgstr ""
 
 #: measurements/models.py:121
 #, python-brace-format
+msgid "{url} started on {when}"
+msgstr ""
+
+#: measurements/models.py:124
+#, python-brace-format
 msgid "{url} requested on {when}"
 msgstr ""
 
-#: measurements/models.py:127
+#: measurements/models.py:130
 msgid "trillians"
 msgstr ""
 
-#: measurements/models.py:133 measurements/models.py:233
+#: measurements/models.py:142 measurements/models.py:265
 msgid "severity"
 msgstr ""
 
-#: measurements/models.py:134 measurements/models.py:234
+#: measurements/models.py:143 measurements/models.py:266
 msgid "message"
 msgstr ""
 
-#: measurements/models.py:137
+#: measurements/models.py:146
 msgid "test run message"
 msgstr ""
 
-#: measurements/models.py:138
+#: measurements/models.py:147
 msgid "test run messages"
 msgstr ""
 
-#: measurements/models.py:153 measurements/models.py:210
-#: measurements/models.py:253 measurements/models.py:289
+#: measurements/models.py:162 measurements/models.py:221
+#: measurements/models.py:285 measurements/models.py:333
 msgid "owner ID"
 msgstr ""
 
-#: measurements/models.py:167
+#: measurements/models.py:176
 msgid "Trillian URL"
 msgstr ""
 
-#: measurements/models.py:173
+#: measurements/models.py:182
 msgid "DNS results"
 msgstr ""
 
-#: measurements/models.py:185 measurements/models.py:227
-#: measurements/models.py:264
+#: measurements/models.py:196 measurements/models.py:259
+#: measurements/models.py:296
 msgid "instance run"
 msgstr ""
 
-#: measurements/models.py:186
+#: measurements/models.py:197
 msgid "instance runs"
 msgstr ""
 
-#: measurements/models.py:193
+#: measurements/models.py:204
 #, python-brace-format
 msgid "{obj.testrun} on {obj.trillian}"
 msgstr ""
 
-#: measurements/models.py:229
+#: measurements/models.py:243
+msgid "No dual-stack result found, impossible to analyse"
+msgstr ""
+
+#: measurements/models.py:261
 msgid "source"
 msgstr ""
 
-#: measurements/models.py:237
+#: measurements/models.py:269
 msgid "instance run message"
 msgstr ""
 
-#: measurements/models.py:238
+#: measurements/models.py:270
 msgid "instance run messages"
 msgstr ""
 
-#: measurements/models.py:266
+#: measurements/models.py:298
 msgid "Marvin"
 msgstr ""
 
-#: measurements/models.py:274
+#: measurements/models.py:300
+msgid "when"
+msgstr ""
+
+#: measurements/models.py:318
 msgid "instance run result"
 msgstr ""
 
-#: measurements/models.py:275
+#: measurements/models.py:319
 msgid "instance run results"
 msgstr ""
 
-#: measurements/models.py:278
+#: measurements/models.py:322
 #, python-brace-format
 msgid "{obj.instancerun} on {obj.marvin}"
 msgstr ""
 
-#: measurements/tasks/delegate.py:31
+#: measurements/tasks/analysis.py:19
+#, python-brace-format
+msgid "InstanceRunResult {pk} has already been analysed"
+msgstr ""
+
+#: measurements/tasks/analysis.py:22
+#, python-brace-format
+msgid ""
+"Analysing InstanceRunResult {result.pk} ({result.instance_type}: {result."
+"instancerun.url}) on {result.instancerun.trillian.name}"
+msgstr ""
+
+#: measurements/tasks/analysis.py:43
+#, python-brace-format
+msgid "InstanceRunResult {pk} does not exist anymore"
+msgstr ""
+
+#: measurements/tasks/analysis.py:47 measurements/tasks/analysis.py:80
+#: measurements/tasks/analysis.py:114 measurements/tasks/delegate.py:63
+#, python-brace-format
+msgid "{name} on line {line}: {msg}"
+msgstr ""
+
+#: measurements/tasks/analysis.py:64
+#, python-brace-format
+msgid "InstanceRun {pk} has already been analysed"
+msgstr ""
+
+#: measurements/tasks/analysis.py:67
+#, python-brace-format
+msgid "Analysing InstanceRun {run.pk} ({run.url}) on {run.trillian.name}"
+msgstr ""
+
+#: measurements/tasks/analysis.py:76 measurements/tasks/delegate.py:59
+#, python-brace-format
+msgid "InstanceRun {pk} does not exist anymore"
+msgstr ""
+
+#: measurements/tasks/analysis.py:98
+#, python-brace-format
+msgid "TestRun {pk} has already been analysed"
+msgstr ""
+
+#: measurements/tasks/analysis.py:101
+#, python-brace-format
+msgid "Analysing TestRun {run.pk} ({run.url})"
+msgstr ""
+
+#: measurements/tasks/analysis.py:110
+#, python-brace-format
+msgid "TestRun {pk} does not exist anymore"
+msgstr ""
+
+#: measurements/tasks/delegate.py:21
 #, python-brace-format
 msgid "Trillian URL already exists for InstanceRun {pk}"
 msgstr ""
 
-#: measurements/tasks/delegate.py:34
+#: measurements/tasks/delegate.py:24
 #, python-brace-format
 msgid "Pushing InstanceRun {run.pk} ({run.url}) to {run.trillian.name}"
 msgstr ""
 
-#: measurements/tasks/delegate.py:58
+#: measurements/tasks/delegate.py:43
 #, python-brace-format
 msgid ""
 "{run.trillian.name} didn't accept our request ({response.status_code}), "
 "retrying later"
 msgstr ""
 
-#: measurements/tasks/delegate.py:68
+#: measurements/tasks/delegate.py:53
 #, python-brace-format
 msgid "Trillian {run.trillian.name} accepted the task as {run.trillian_url}"
-msgstr ""
-
-#: measurements/tasks/delegate.py:74
-#, python-brace-format
-msgid "InstanceRun {pk} does not exist anymore"
-msgstr ""
-
-#: measurements/tasks/delegate.py:78
-#, python-brace-format
-msgid "{name} on line {line}: {msg}"
 msgstr ""
 
 #: templates/admin/base_site.html:6

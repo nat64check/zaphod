@@ -7,10 +7,12 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django.utils import timezone
 from django.utils.datetime_safe import date
 from django.utils.formats import date_format
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, gettext_noop
 from model_utils import FieldTracker
 
 from instances.models import Marvin, Trillian
+from measurements.tasks import analyse_instancerun, analyse_testrun
+from measurements.tasks.analysis import analyse_instancerunresult
 
 severities = (
     (logging.CRITICAL, _('Critical')),
@@ -128,6 +130,10 @@ class TestRun(models.Model):
     trillians.short_description = _('trillians')
     trillians = property(trillians)
 
+    def trigger_analysis(self):
+        if self.finished and not self.analysed:
+            analyse_testrun(self.pk)
+
 
 class TestRunMessage(models.Model):
     testrun = models.ForeignKey(TestRun, verbose_name=_('test run'), related_name='messages', on_delete=models.CASCADE)
@@ -225,6 +231,25 @@ class InstanceRun(models.Model):
     is_public.short_description = _('is public')
     is_public = property(is_public)
 
+    def get_baseline(self):
+        # We need a dual-stack result as the baseline
+        baseline = list(self.results.filter(marvin__instance_type='dual-stack'))
+
+        if not baseline:
+            self.messages.update_or_create(
+                severity=logging.CRITICAL,
+                message=gettext_noop('No dual-stack result found, impossible to analyse')
+            )
+
+        return baseline
+
+    def trigger_analysis(self):
+        if self.finished:
+            if not self.analysed:
+                analyse_instancerun(self.pk)
+            else:
+                self.testrun.trigger_analysis()
+
 
 class InstanceRunMessage(models.Model):
     instancerun = models.ForeignKey(InstanceRun, verbose_name=_('instance run'), related_name='messages',
@@ -268,10 +293,22 @@ class InstanceRunResult(models.Model):
                                     on_delete=models.CASCADE)
     marvin = models.ForeignKey(Marvin, verbose_name=_('Marvin'), on_delete=models.PROTECT)
 
-    when = models.DateTimeField()
+    when = models.DateTimeField(_('when'))
+    analysed = models.DateTimeField(_('analysed'), blank=True, null=True, db_index=True)
 
     ping_response = JSONField()
     web_response = JSONField()
+
+    image_score = models.FloatField(_('image score'), blank=True, null=True, db_index=True)
+    image_feedback = models.TextField(_('image feedback'), blank=True)
+
+    resource_score = models.FloatField(_('resource score'), blank=True, null=True, db_index=True)
+    resource_feedback = models.TextField(_('resource feedback'), blank=True)
+
+    overall_score = models.FloatField(_('overall score'), blank=True, null=True, db_index=True)
+    overall_feedback = models.TextField(_('overall feedback'), blank=True)
+
+    tracker = FieldTracker(fields=['when', 'analysed'])
 
     class Meta:
         verbose_name = _('instance run result')
@@ -303,3 +340,9 @@ class InstanceRunResult(models.Model):
 
     instance_type.short_description = _('instance type')
     instance_type = property(instance_type)
+
+    def trigger_analysis(self):
+        if not self.analysed:
+            analyse_instancerunresult(self.pk)
+        else:
+            self.instancerun.trigger_analysis()
