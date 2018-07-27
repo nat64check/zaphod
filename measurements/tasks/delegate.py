@@ -4,19 +4,9 @@ import requests
 from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from requests.auth import AuthBase
 from uwsgi_tasks import RetryTaskException, task
 
-from generic.utils import print_error, print_message, print_warning, retry_get
-
-
-class TokenAuth(AuthBase):
-    def __init__(self, token):
-        self.token = token
-
-    def __call__(self, req):
-        req.headers['Authorization'] = 'Token {}'.format(self.token)
-        return req
+from generic.utils import TokenAuth, print_error, print_message, print_warning, retry_get
 
 
 @task(retry_count=5, retry_timeout=300)

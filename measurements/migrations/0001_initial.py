@@ -6,7 +6,7 @@ import django.utils.timezone
 from django.conf import settings
 from django.db import migrations, models
 
-import measurements.utils
+import generic.utils
 
 
 class Migration(migrations.Migration):
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                     null=True,
                     verbose_name='ID on Trillian')),
                 ('callback_auth_code', models.CharField(
-                    default=measurements.utils.generate_random_token,
+                    default=generic.utils.generate_random_token,
                     max_length=50,
                     verbose_name='callback auth code')),
                 ('requested', models.DateTimeField(

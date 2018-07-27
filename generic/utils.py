@@ -2,7 +2,9 @@ import os
 
 import time
 from django.db.models import QuerySet
+from django.utils.crypto import get_random_string
 from django.utils.termcolors import colorize
+from requests.auth import AuthBase
 
 
 def retry_get(qs: QuerySet, **kwargs):
@@ -53,11 +55,11 @@ def print_success(msg):
 
 
 def print_notice(msg):
-    print_with_color(msg, fg='white', bold=True)
+    print_with_color(msg, fg='yellow', bold=True)
 
 
 def print_message(msg):
-    print_with_color(msg, fg='white')
+    print_with_color(msg, fg='white', bold=True)
 
 
 def print_warning(msg):
@@ -66,3 +68,16 @@ def print_warning(msg):
 
 def print_error(msg):
     print_with_color(msg, fg='red', bold=True)
+
+
+class TokenAuth(AuthBase):
+    def __init__(self, token):
+        self.token = token
+
+    def __call__(self, req):
+        req.headers['Authorization'] = 'Token {}'.format(self.token)
+        return req
+
+
+def generate_random_token():
+    return get_random_string(length=50)
