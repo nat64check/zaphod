@@ -13,3 +13,21 @@ def schedule_push(instance: InstanceRun, **kwargs):
         return
 
     delegate_to_trillian(instance.pk)
+
+
+# noinspection PyUnusedLocal
+@receiver(post_save, sender=InstanceRun, dispatch_uid='update_testrun_from_instancerun')
+def update_testrun_from_instancerun(sender, instance: InstanceRun, **kwargs):
+    updated = []
+    if instance.started and (not instance.testrun.started or instance.testrun.started > instance.started):
+        instance.testrun.started = instance.started
+        updated.append('started')
+
+    # Testrun finished depends on analysed of instanceruns
+    finished = list(instance.testrun.instanceruns.values_list('analysed', flat=True))
+    if all(finished):
+        instance.testrun.finished = max(finished)
+        updated.append('finished')
+
+    if updated:
+        instance.testrun.save(update_fields=updated)

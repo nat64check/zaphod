@@ -303,20 +303,3 @@ class InstanceRunResult(models.Model):
 
     instance_type.short_description = _('instance type')
     instance_type = property(instance_type)
-
-
-# noinspection PyUnusedLocal
-@receiver(post_save, sender=InstanceRun)
-def update_testrun_from_instancerun(sender, instance: InstanceRun, **kwargs):
-    updated = []
-    if instance.started and (not instance.testrun.started or instance.testrun.started > instance.started):
-        instance.testrun.started = instance.started
-        updated.append('started')
-
-    finished = list(instance.testrun.instanceruns.values_list('finished', flat=True))
-    if all(finished):
-        instance.testrun.finished = max(finished)
-        updated.append('finished')
-
-    if updated:
-        instance.testrun.save(update_fields=updated)
