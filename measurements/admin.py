@@ -86,8 +86,8 @@ class InstanceRunMessageAdmin(admin.TabularInline):
 
 class InlineInstanceRunResult(admin.TabularInline):
     model = InstanceRunResult
-    fields = ('marvin', 'when', 'nice_ping_response', 'nice_web_response', 'data_image')
-    readonly_fields = ('marvin', 'when', 'nice_ping_response', 'nice_web_response', 'data_image')
+    fields = ('marvin', 'when', 'nice_ping_response', 'nice_web_response', 'admin_scores', 'data_image')
+    readonly_fields = ('marvin', 'when', 'nice_ping_response', 'nice_web_response', 'admin_scores', 'data_image')
     extra = 0
     can_delete = False
     show_change_link = True
@@ -128,6 +128,19 @@ class InlineInstanceRunResult(admin.TabularInline):
         return mark_safe(style + response)
 
     nice_web_response.short_description = _('web response')
+
+    def admin_scores(self, testrun):
+        return mark_safe(
+            "<b>Image:</b><br>{image}<br>"
+            "<b>Resource:</b><br>{resource}<br>"
+            "<b>Overall:</b><br>{overall}".format(
+                image=colored_score(testrun.image_score, precision=5) or '-',
+                resource=colored_score(testrun.resource_score, precision=5) or '-',
+                overall=colored_score(testrun.overall_score, precision=5) or '-',
+            )
+        )
+
+    admin_scores.short_description = _('scores')
 
     def data_image(self, instance):
         try:

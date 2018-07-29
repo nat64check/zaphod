@@ -17,7 +17,7 @@ def compare_base64_images(img1_b64, img2_b64):
     return compare_ssim(img1, img2, multichannel=True)
 
 
-def colored_score(score):
+def colored_score(score, precision=2):
     if not score:
         return None
     elif score < 0.8:
@@ -27,4 +27,4 @@ def colored_score(score):
     else:
         color = "#1d803b"
 
-    return mark_safe('<span style="color: {}">{:.2f}</span>'.format(color, score))
+    return mark_safe(('<span style="color: {}">{:.' + str(precision) + 'f}</span>').format(color, score))
