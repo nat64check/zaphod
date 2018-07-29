@@ -103,7 +103,7 @@ class TestRunViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
             # Docs get the serializer without having a request
             return TestRunSerializer
 
-        elif self.request.method == 'POST' and not self.request.user.is_superuser:
+        elif self.request.method == 'POST':
             # Special create serializers except for superusers, they can create anything
             if self.request.user.is_anonymous:
                 # Anonymous users can only create public tests
