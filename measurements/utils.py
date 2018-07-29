@@ -18,8 +18,8 @@ def compare_base64_images(img1_b64, img2_b64):
 
 
 def colored_score(score, precision=2):
-    if not score:
-        return None
+    if score is None:
+        return '-'
     elif score < 0.8:
         color = "#d10003"
     elif score < 0.95:

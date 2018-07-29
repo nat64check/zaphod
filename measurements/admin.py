@@ -134,9 +134,9 @@ class InlineInstanceRunResult(admin.TabularInline):
             "<b>Image:</b><br>{image}<br>"
             "<b>Resource:</b><br>{resource}<br>"
             "<b>Overall:</b><br>{overall}".format(
-                image=colored_score(testrun.image_score, precision=5) or '-',
-                resource=colored_score(testrun.resource_score, precision=5) or '-',
-                overall=colored_score(testrun.overall_score, precision=5) or '-',
+                image=colored_score(testrun.image_score, precision=5),
+                resource=colored_score(testrun.resource_score, precision=5),
+                overall=colored_score(testrun.overall_score, precision=5),
             )
         )
 
@@ -235,6 +235,7 @@ class InstanceRunResultAdmin(admin.ModelAdmin):
         for result in queryset:
             result.analysed = None
             result.save()
+            result.trigger_analysis()
 
             instanceruns.add(result.instancerun)
 
@@ -242,11 +243,13 @@ class InstanceRunResultAdmin(admin.ModelAdmin):
         for instancerun in instanceruns:
             instancerun.analysed = None
             instancerun.save()
+            instancerun.trigger_analysis()
 
             testruns.add(instancerun.testrun)
 
         for testrun in testruns:
             testrun.analysed = None
             testrun.save()
+            testrun.trigger_analysis()
 
     analyse_again.short_description = _('Analyse again')
