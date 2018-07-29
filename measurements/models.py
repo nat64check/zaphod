@@ -10,6 +10,7 @@ from django.utils.formats import date_format
 from django.utils.translation import gettext_lazy as _, gettext_noop
 from model_utils import FieldTracker
 
+from generic.utils import retry_qs
 from instances.models import Marvin, Trillian
 from measurements.tasks import analyse_instancerun, analyse_testrun
 from measurements.tasks.analysis import analyse_instancerunresult
@@ -233,9 +234,9 @@ class InstanceRun(models.Model):
 
     def get_baseline(self):
         # We need a dual-stack result as the baseline
-        baseline = list(self.results.filter(marvin__instance_type='dual-stack'))
+        baseline = retry_qs(self.results.filter(marvin__instance_type='dual-stack'))
 
-        if not baseline:
+        if not baseline.exists():
             self.messages.update_or_create(
                 severity=logging.CRITICAL,
                 message=gettext_noop('No dual-stack result found, impossible to analyse')

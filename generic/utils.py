@@ -18,6 +18,18 @@ def retry_get(qs: QuerySet, **kwargs):
                 raise
 
 
+def retry_qs(qs: QuerySet, **kwargs):
+    for delay in (0.5, 1, 2, 4, None):
+        result = qs.filter(**kwargs)
+        if result.exists():
+            return result
+        else:
+            if delay:
+                time.sleep(delay)
+            else:
+                return qs.none()
+
+
 def retry_all(qs: QuerySet):
     for delay in (0.5, 1, 2, 4, None):
         result = all(qs.all())

@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from uwsgi_tasks import RetryTaskException, task
 
-from generic.utils import print_error, print_notice, print_warning, retry_all
+from generic.utils import print_error, print_notice, print_warning, retry_all, retry_get
 
 
 @task(retry_count=3, retry_timeout=15)
@@ -16,7 +16,7 @@ def analyse_instancerunresult(pk):
     from measurements.utils import compare_base64_images
 
     try:
-        result = InstanceRunResult.objects.select_for_update().get(pk=pk)
+        result = retry_get(InstanceRunResult.objects.select_for_update(), pk=pk)
         if result.analysed:
             return
 
