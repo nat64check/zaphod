@@ -2,6 +2,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import requests
 from django.utils import timezone
+from requests import ConnectionError
 from requests.auth import AuthBase
 from requests_futures.sessions import FuturesSession
 from uwsgi_tasks import timer
@@ -44,10 +45,13 @@ def check_trillians(signal_nr):
         # Wait for all the responses to come back in
         info_responses = {}
         for pk, (trillian, request) in info_requests.items():
-            info_responses[pk] = trillian, request.result()
+            try:
+                info_responses[pk] = trillian, request.result()
+            except ConnectionError:
+                info_responses[pk] = trillian, None
 
     for trillian, response in info_responses.values():
-        if response.status_code == requests.codes.ok:
+        if response and response.status_code == requests.codes.ok:
             data = response.json()
             trillian.is_alive = True
             trillian.version = data['version']
