@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import socket
 
 from django.utils.translation import ugettext_lazy as _
 
@@ -37,7 +38,9 @@ else:
     MY_HOSTNAME = 'localhost'
 
 INTERNAL_IPS = [
-    '127.0.0.1',
+    '2a02:a213:a301:1000::/64',
+    '46.44.175.146',
+    '127.0.0.0/8',
     '::1',
 ]
 
@@ -257,3 +260,7 @@ if DEBUG:
     MIDDLEWARE += [
         'debug_toolbar.middleware.DebugToolbarMiddleware',
     ]
+
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': 'zaphod_be.debug.allowed',
+    }
