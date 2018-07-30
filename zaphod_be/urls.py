@@ -21,6 +21,7 @@ from rest_framework.documentation import include_docs_urls
 from rest_framework.routers import DefaultRouter
 from rest_framework_swagger.views import get_swagger_view
 
+import self_test.urls
 from generic.urls import generic_router
 from generic.views import reload_uwsgi
 from instances.urls import instances_router
@@ -51,6 +52,8 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls')),
     url(r'^api/v1/', include((router.urls, 'api'), namespace='v1')),
     url(r'^api/$', RedirectView.as_view(url='v1')),
+
+    url(r'^self-test/', include(self_test.urls)),
 
     url(r'^$', RedirectView.as_view(url='api/')),
 ]

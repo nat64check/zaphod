@@ -34,8 +34,22 @@ ALLOWED_HOSTS = ['localhost', '::1', '127.0.0.1']
 MY_HOSTNAME = os.environ.get('MY_HOSTNAME')
 if MY_HOSTNAME:
     ALLOWED_HOSTS.insert(0, MY_HOSTNAME)
+    ALLOWED_HOSTS.insert(1, 'check.' + MY_HOSTNAME)
+    ALLOWED_HOSTS.insert(2, 'ds.' + MY_HOSTNAME)
+    ALLOWED_HOSTS.insert(3, 'v4.' + MY_HOSTNAME)
+    ALLOWED_HOSTS.insert(4, 'v6.' + MY_HOSTNAME)
+
+    info = socket.getaddrinfo(MY_HOSTNAME, port=80, proto=socket.IPPROTO_TCP)
+    addresses = {
+        4: [entry[4][0] for entry in info if entry[0] == socket.AF_INET],
+        6: [entry[4][0] for entry in info if entry[0] == socket.AF_INET6],
+    }
+    MY_IPV4 = addresses[4] and addresses[4][0] or '127.0.0.1'
+    MY_IPV6 = addresses[6] and addresses[6][0] or '::1'
 else:
     MY_HOSTNAME = 'localhost'
+    MY_IPV4 = '127.0.0.1'
+    MY_IPV6 = '::1'
 
 INTERNAL_IPS = [
     '2a02:a213:a301:1000::/64',
@@ -58,6 +72,7 @@ INSTALLED_APPS = [
     'generic',
     'instances',
     'measurements',
+    'self_test',
     'world',
 
     'prettyjson',
@@ -106,6 +121,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'generic.context_processors.uwsgi_context',
                 'zaphod_be.context_processors.app_version',
+                'zaphod_be.context_processors.my_hostname',
             ],
         },
     },

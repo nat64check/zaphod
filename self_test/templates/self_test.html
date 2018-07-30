@@ -1,0 +1,59 @@
+{% load static %}
+<html>
+<head>
+    <title>NAT64Check self-test page</title>
+    <link rel="stylesheet" href="//ds.{{ MY_HOSTNAME }}{% static 'self_test/css/test1.css' %}" type="text/css">
+    <link rel="stylesheet" href="//v4.{{ MY_HOSTNAME }}{% static 'self_test/css/test2.css' %}" type="text/css">
+    <link rel="stylesheet" href="//v6.{{ MY_HOSTNAME }}{% static 'self_test/css/test3.css' %}" type="text/css">
+    <link rel="stylesheet" href="//{{ MY_IPV4 }}{% static 'self_test/css/test4.css' %}" type="text/css">
+    <link rel="stylesheet" href="//[{{ MY_IPV6 }}]{% static 'self_test/css/test5.css' %}" type="text/css">
+
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .grid {
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            grid-template-areas: "one two three" "one four five";
+            justify-items: stretch;
+            align-items: stretch;
+            justify-content: stretch;
+            align-content: stretch;
+        }
+
+        .one {
+            grid-area: one;
+        }
+
+        .two {
+            grid-area: two;
+        }
+
+        .three {
+            grid-area: three;
+        }
+
+        .four {
+            grid-area: four;
+        }
+
+        .five {
+            grid-area: five;
+        }
+    </style>
+</head>
+<body>
+<div class="grid">
+    <div class="one test1"></div>
+    <div class="two test2"></div>
+    <div class="three test3"></div>
+    <div class="four test4"></div>
+    <div class="five test5"></div>
+</div>
+</body>
+</html>
