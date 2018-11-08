@@ -6,14 +6,12 @@ from django.contrib.gis.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.utils import timezone
 from django.utils.datetime_safe import date
-from django.utils.formats import date_format
 from django.utils.translation import gettext_lazy as _, gettext_noop
 from model_utils import FieldTracker
 
 from generic.utils import retry_qs
 from instances.models import Marvin, Trillian
-from measurements.tasks import analyse_instancerun, analyse_testrun
-from measurements.tasks.analysis import analyse_instancerunresult
+from measurements.tasks import analyse_instancerun, analyse_instancerunresult, analyse_testrun
 
 severities = (
     (logging.CRITICAL, _('Critical')),
@@ -115,15 +113,7 @@ class TestRun(models.Model):
         ordering = ('requested',)
 
     def __str__(self):
-        if self.finished:
-            return _('{url} completed on {when}').format(url=self.url,
-                                                         when=date_format(self.finished, 'DATETIME_FORMAT'))
-        elif self.started:
-            return _('{url} started on {when}').format(url=self.url,
-                                                       when=date_format(self.started, 'DATETIME_FORMAT'))
-        else:
-            return _('{url} requested on {when}').format(url=self.url,
-                                                         when=date_format(self.requested, 'DATETIME_FORMAT'))
+        return self.url
 
     def trillians(self):
         return [instancerun.trillian for instancerun in self.instanceruns.all()]
@@ -147,7 +137,7 @@ class TestRunMessage(models.Model):
         ordering = ('testrun', '-severity')
 
     def __str__(self):
-        return '{obj.testrun}: {obj.message} [{obj.severity}]'.format(obj=self)
+        return '[{obj.severity}] {obj.message}'.format(obj=self)
 
     def owner(self):
         return self.testrun.owner
@@ -268,7 +258,7 @@ class InstanceRunMessage(models.Model):
         ordering = ('instancerun', '-severity')
 
     def __str__(self):
-        return '{obj.instancerun}: {obj.message} [{obj.severity}]'.format(obj=self)
+        return '[{obj.severity}] {obj.message}'.format(obj=self)
 
     def owner(self):
         return self.instancerun.owner

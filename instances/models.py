@@ -95,9 +95,7 @@ class Marvin(models.Model):
         ordering = ('trillian', 'name',)
 
     def __str__(self):
-        return _('{trillian.name}: {name} ({type})').format(name=self.name,
-                                                            trillian=self.trillian,
-                                                            type=self.instance_type)
+        return _('{name} ({type})').format(name=self.name, type=self.instance_type)
 
     def natural_key(self):
         return self.trillian.name, self.name
