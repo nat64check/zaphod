@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
@@ -7,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.crypto import salted_hmac
 from django.utils.translation import gettext_lazy as _
+from requests import Session
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.decorators import action
@@ -40,7 +42,9 @@ class InfoViewSet(SerializerExtensionsAPIViewMixin, ViewSet):
     def list(self, request):
         return Response({
             "version": version.split('.'),
-            "you": UserAdminSerializer(request.user, context={'request': request}).data,
+            "you": UserAdminSerializer(request.user, context={
+                'request': request
+            }).data,
         })
 
 
@@ -68,6 +72,9 @@ class UserViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
 
     register:
     Register a new user.
+
+    authenticate:
+    Activate a user with the activation code.
 
     set_password:
     Set a new password for the specified user.
@@ -121,7 +128,9 @@ class UserViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
             permission_classes=[AllowAny],
             get_serializer_class=lambda: UserRegisterSerializer)
     def register(self, request: Request):
-        serializer = UserRegisterSerializer(data=request.data, context={'request': request})
+        serializer = UserRegisterSerializer(data=request.data, context={
+            'request': request
+        })
         serializer.is_valid()
 
         errors = serializer.errors
@@ -150,11 +159,26 @@ class UserViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
         code = hmac.hexdigest()
 
         try:
-            user.email_user("Confirmation code", "Your code is {code}".format(code=code))
+            session = Session()
+            session.request(
+                method='POST',
+                url='{}/wp-json/gui/v1/user/activation/'.format(settings.FRONTEND_BASE_URL),
+                json={
+                    "user_id": user.id,
+                    "username": user.username,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "email": user.email,
+                    "code": code,
+                },
+                timeout=(10, 30)
+            )
         except OSError:
             pass
 
-        return Response(status=201, data=UserAdminSerializer(user, context={'request': request}).data)
+        return Response(status=201, data=UserAdminSerializer(user, context={
+            'request': request
+        }).data)
 
     # noinspection PyUnusedLocal
     @action(detail=True,
@@ -169,7 +193,9 @@ class UserViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
 
         # Don't activate accounts that are already active, that's silly
         if user.is_active:
-            return Response({'status': 'account has already been activated'})
+            return Response({
+                'status': 'account has already been activated'
+            })
 
         # Don't reactivate accounts that have been used, we might have deactivated them for some other reason
         if user.last_login:
@@ -195,14 +221,18 @@ class UserViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
         user.is_active = True
         user.save(update_fields=['is_active'])
 
-        return Response({'status': 'account activated'})
+        return Response({
+            'status': 'account activated'
+        })
 
     @action(detail=False,
             methods=['post'],
             permission_classes=[AllowAny],
             get_serializer_class=lambda: AuthTokenSerializer)
     def get_token(self, request):
-        serializer = AuthTokenSerializer(data=request.data, context={'request': request})
+        serializer = AuthTokenSerializer(data=request.data, context={
+            'request': request
+        })
         serializer.is_valid(raise_exception=True)
 
         # Get the user and get/create their token
@@ -213,7 +243,9 @@ class UserViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
         user.last_login = timezone.now()
         user.save(update_fields=['last_login'])
 
-        return Response({'token': token.key})
+        return Response({
+            'token': token.key
+        })
 
     # noinspection PyUnusedLocal
     @action(detail=True,
@@ -227,7 +259,9 @@ class UserViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
 
         user.set_password(serializer.data['password'])
         user.save()
-        return Response({'status': 'password set'})
+        return Response({
+            'status': 'password set'
+        })
 
     def perform_destroy(self, instance):
         instance.is_active = False
