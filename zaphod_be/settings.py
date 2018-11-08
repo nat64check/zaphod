@@ -33,12 +33,6 @@ ALLOWED_HOSTS = ['localhost', '::1', '127.0.0.1']
 
 MY_HOSTNAME = os.environ.get('MY_HOSTNAME')
 if MY_HOSTNAME:
-    ALLOWED_HOSTS.insert(0, MY_HOSTNAME)
-    ALLOWED_HOSTS.insert(1, 'check.' + MY_HOSTNAME)
-    ALLOWED_HOSTS.insert(2, 'ds.' + MY_HOSTNAME)
-    ALLOWED_HOSTS.insert(3, 'v4.' + MY_HOSTNAME)
-    ALLOWED_HOSTS.insert(4, 'v6.' + MY_HOSTNAME)
-
     info = socket.getaddrinfo(MY_HOSTNAME, port=80, proto=socket.IPPROTO_TCP)
     addresses = {
         4: [entry[4][0] for entry in info if entry[0] == socket.AF_INET],
@@ -46,6 +40,14 @@ if MY_HOSTNAME:
     }
     MY_IPV4 = addresses[4] and addresses[4][0] or '127.0.0.1'
     MY_IPV6 = addresses[6] and addresses[6][0] or '::1'
+
+    ALLOWED_HOSTS.insert(0, MY_HOSTNAME)
+    ALLOWED_HOSTS.insert(1, 'check.' + MY_HOSTNAME)
+    ALLOWED_HOSTS.insert(2, 'ds.' + MY_HOSTNAME)
+    ALLOWED_HOSTS.insert(3, 'v4.' + MY_HOSTNAME)
+    ALLOWED_HOSTS.insert(4, 'v6.' + MY_HOSTNAME)
+    for address in addresses[4] + addresses[6]:
+        ALLOWED_HOSTS.append(address)
 else:
     MY_HOSTNAME = 'localhost'
     MY_IPV4 = '127.0.0.1'
