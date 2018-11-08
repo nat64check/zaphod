@@ -1,5 +1,6 @@
 import base64
 import io
+from collections import defaultdict
 
 import skimage.io
 from django.utils.safestring import mark_safe
@@ -15,6 +16,21 @@ def compare_base64_images(img1_b64, img2_b64):
     img2 = skimage.io.imread(io.BytesIO(img2_bytes))
 
     return compare_ssim(img1, img2, multichannel=True)
+
+
+def get_resource_stats(resources):
+    stats = defaultdict(lambda: {
+        'ok': 0,
+        'fail': 0
+    })
+
+    for resource in resources:
+        resource_type = resource['request']['resource_type']
+        category = resource['success'] and 'ok' or 'fail'
+        stats[resource_type][category] += 1
+        stats['total'][category] += 1
+
+    return stats
 
 
 def colored_score(score, precision=2):
