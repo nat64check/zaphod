@@ -1,6 +1,11 @@
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+#  Copyright (c) 2018, S.J.M. Steffann. This software is licensed under the BSD 3-Clause License. Please seel the LICENSE file in the project root directory.
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 import sys
 from statistics import mean
 
+from django.db.models import Avg
 from django.db.transaction import atomic
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -12,7 +17,8 @@ from generic.utils import print_error, print_notice, print_warning, retry_all
 @task(retry_count=3, retry_timeout=15)
 @atomic
 def analyse_testrun(pk):
-    from measurements.models import TestRun, InstanceRun
+    from measurements.models import (TestRun, InstanceRun, InstanceRunResult,
+                                     TestRunAverage)
 
     try:
         children_finished = retry_all(InstanceRun.objects
@@ -34,6 +40,20 @@ def analyse_testrun(pk):
         run.image_score = mean([score[0] for score in scores])
         run.resource_score = mean([score[1] for score in scores])
         run.overall_score = mean([score[2] for score in scores])
+
+        averages = InstanceRunResult.objects \
+            .filter(instancerun__testrun_id=pk) \
+            .values('marvin__instance_type') \
+            .annotate(image_score=Avg('image_score'),
+                      resource_score=Avg('resource_score'),
+                      overall_score=Avg('overall_score'))
+
+        for average in averages:
+            TestRunAverage.objects.update_or_create(defaults={
+                'image_score': average['image_score'],
+                'resource_score': average['resource_score'],
+                'overall_score': average['overall_score'],
+            }, testrun_id=pk, instance_type=average['marvin__instance_type'])
 
         run.analysed = timezone.now()
         run.save()

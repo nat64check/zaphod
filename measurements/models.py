@@ -1,3 +1,7 @@
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+#  Copyright (c) 2018, S.J.M. Steffann. This software is licensed under the BSD 3-Clause License. Please seel the LICENSE file in the project root directory.
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 import datetime
 import logging
 
@@ -10,8 +14,9 @@ from django.utils.translation import gettext_lazy as _, gettext_noop
 from model_utils import FieldTracker
 
 from generic.utils import retry_qs
-from instances.models import Marvin, Trillian
+from instances.models import Marvin, Trillian, instance_type_choices
 from measurements.tasks import analyse_instancerun, analyse_instancerunresult, analyse_testrun
+from measurements.tasks.cleanup import remove_from_trillian
 
 severities = (
     (logging.CRITICAL, _('Critical')),
@@ -124,6 +129,21 @@ class TestRun(models.Model):
     def trigger_analysis(self):
         if self.finished and not self.analysed:
             analyse_testrun(self.pk)
+
+
+class TestRunAverage(models.Model):
+    testrun = models.ForeignKey(TestRun, verbose_name=_('test run'), related_name='averages', on_delete=models.CASCADE)
+
+    instance_type = models.CharField(_('instance type'), max_length=10, choices=instance_type_choices)
+
+    image_score = models.FloatField(_('image score'), blank=True, null=True, db_index=True)
+    resource_score = models.FloatField(_('resource score'), blank=True, null=True, db_index=True)
+    overall_score = models.FloatField(_('overall score'), blank=True, null=True, db_index=True)
+
+    class Meta:
+        verbose_name = _('test run average')
+        verbose_name_plural = _('test run averages')
+        ordering = ('testrun', 'instance_type')
 
 
 class TestRunMessage(models.Model):
@@ -240,6 +260,9 @@ class InstanceRun(models.Model):
                 analyse_instancerun(self.pk)
             else:
                 self.testrun.trigger_analysis()
+
+    def trigger_cleanup(self):
+        remove_from_trillian(self.pk)
 
 
 class InstanceRunMessage(models.Model):

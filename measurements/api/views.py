@@ -1,16 +1,23 @@
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+#  Copyright (c) 2018, S.J.M. Steffann. This software is licensed under the BSD 3-Clause License. Please seel the LICENSE file in the project root directory.
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+from django.db.models import Avg
 from django.db.models.query_utils import Q
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework_serializer_extensions.views import SerializerExtensionsAPIViewMixin
 
-from measurements.api.filters import ScheduleFilter
+from instances.models import instance_type_choices
+from measurements.api.filters import ScheduleFilter, TestRunFilter, score_types
 from measurements.api.permissions import (CreatePublicBasedPermission, InstanceRunPermission, OwnerBasedPermission,
                                           OwnerOrPublicBasedPermission)
 from measurements.api.serializers import (CreatePublicTestRunSerializer, CreateTestRunSerializer,
                                           InstanceRunMessageSerializer, InstanceRunResultSerializer,
-                                          InstanceRunSerializer, ScheduleSerializer, TestRunMessageSerializer,
-                                          TestRunSerializer)
-from measurements.models import InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun, TestRunMessage
+                                          InstanceRunSerializer, ScheduleSerializer, TestRunAverageSerializer,
+                                          TestRunMessageSerializer, TestRunSerializer)
+from measurements.models import (InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun, TestRunAverage,
+                                 TestRunMessage)
 
 
 class ScheduleViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
@@ -80,22 +87,7 @@ class TestRunViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
     Update all the settings of a test run.
     """
     permission_classes = (CreatePublicBasedPermission,)
-    filter_fields = {
-        'owner': ['exact'],
-        'schedule': ['exact'],
-        'url': ['exact', 'icontains'],
-        'requested': ['gte', 'lte'],
-        'started': ['gte', 'lte', 'isnull'],
-        'finished': ['gte', 'lte', 'isnull'],
-        'analysed': ['gte', 'lte', 'isnull'],
-        'is_public': ['exact'],
-        'image_score': ['gte', 'lte'],
-        'resource_score': ['gte', 'lte'],
-        'overall_score': ['gte', 'lte'],
-    }
-    ordering_fields = ('id', 'requested',
-                       'started', 'finished', 'analysed',
-                       'image_score', 'resource_score', 'overall_score')
+    filter_class = TestRunFilter
     ordering = ('requested',)
 
     def get_serializer_class(self):
@@ -115,16 +107,40 @@ class TestRunViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
             # Exposing all attributes when not creating
             return TestRunSerializer
 
+    @property
+    def ordering_fields(self):
+        fields = ['id', 'requested',
+                  'started', 'finished', 'analysed',
+                  'image_score', 'resource_score', 'overall_score']
+
+        for instance_type in instance_type_choices:
+            for score_type in score_types:
+                field_name = str(instance_type[0]).replace('-', '_') + '_' + str(score_type[0])
+                fields.append(field_name)
+
+        return fields
+
     def get_queryset(self):
+        annotations = {}
+        for instance_type in instance_type_choices:
+            for score_type in score_types:
+                field_name = str(instance_type[0]) + '_' + str(score_type[0])
+                annotations[field_name] = Avg(
+                    'averages__{}'.format(score_type[0].replace('-', '_')),
+                    filter=Q(averages__instance_type=instance_type[0])
+                )
+
+        annotated = TestRun.objects.annotate(**annotations)
+
         if not self.request:
             # Docs get the queryset without having a request
-            return TestRun.objects.none()
+            return annotated.none()
         elif self.request.user.is_anonymous:
-            return TestRun.objects.filter(is_public=True)
+            return annotated.filter(is_public=True)
         elif self.request.user.is_superuser:
-            return TestRun.objects.all()
+            return annotated.all()
         else:
-            return TestRun.objects.filter(Q(is_public=True) | Q(owner=self.request.user))
+            return annotated.filter(Q(is_public=True) | Q(owner=self.request.user))
 
 
 class TestRunMessageViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet):
@@ -155,6 +171,39 @@ class TestRunMessageViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewS
             return TestRunMessage.objects.all()
         else:
             return TestRunMessage.objects.filter(Q(testrun__is_public=True) |
+                                                 Q(testrun__owner=self.request.user))
+
+
+class TestRunAverageViewSet(SerializerExtensionsAPIViewMixin, ReadOnlyModelViewSet):
+    """
+    list:
+    Retrieve a list of testrun averages.
+
+    retrieve:
+    Retrieve the details of a single testrun average.
+    """
+    permission_classes = (OwnerOrPublicBasedPermission,)
+    serializer_class = TestRunAverageSerializer
+    filter_fields = {
+        'testrun': ['exact'],
+        'instance_type': ['exact'],
+        'image_score': ['gt', 'gte', 'lt', 'lte', 'exact'],
+        'resource_score': ['gt', 'gte', 'lt', 'lte', 'exact'],
+        'overall_score': ['gt', 'gte', 'lt', 'lte', 'exact'],
+    }
+    ordering_fields = ('id', 'instance_type')
+    ordering = ('testrun', 'instance_type')
+
+    def get_queryset(self):
+        if not self.request:
+            # Docs get the queryset without having a request
+            return TestRunAverage.objects.none()
+        elif self.request.user.is_anonymous:
+            return TestRunAverage.objects.filter(testrun__is_public=True)
+        elif self.request.user.is_superuser:
+            return TestRunAverage.objects.all()
+        else:
+            return TestRunAverage.objects.filter(Q(testrun__is_public=True) |
                                                  Q(testrun__owner=self.request.user))
 
 

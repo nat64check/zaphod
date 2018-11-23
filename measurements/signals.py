@@ -1,3 +1,7 @@
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+#  Copyright (c) 2018, S.J.M. Steffann. This software is licensed under the BSD 3-Clause License. Please seel the LICENSE file in the project root directory.
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 from datetime import timedelta
 
 from django.db.models.signals import post_save
@@ -12,7 +16,7 @@ from measurements.tasks import delegate_to_trillian
 @receiver(post_save, sender=InstanceRun, dispatch_uid='schedule_push')
 def schedule_push(instance: InstanceRun, **kwargs):
     # Schedule push to Trillian in the spooler
-    if instance.trillian_url:
+    if instance.trillian_url or instance.finished:
         return
 
     delegate_to_trillian(instance.pk)
@@ -32,6 +36,13 @@ def schedule_instancerun_analysis(sender, instance: InstanceRun, **kwargs):
     if instance.tracker.has_changed('finished') or \
             (instance.finished and instance.finished < timezone.now() - timedelta(minutes=5)):
         instance.trigger_analysis()
+
+
+# noinspection PyUnusedLocal
+@receiver(post_save, sender=InstanceRun, dispatch_uid='schedule_instancerun_cleanup')
+def schedule_instancerun_cleanup(sender, instance: InstanceRun, **kwargs):
+    if instance.tracker.has_changed('analysed') and instance.analysed:
+        instance.trigger_cleanup()
 
 
 # noinspection PyUnusedLocal

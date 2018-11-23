@@ -1,10 +1,14 @@
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+#  Copyright (c) 2018, S.J.M. Steffann. This software is licensed under the BSD 3-Clause License. Please seel the LICENSE file in the project root directory.
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 from datetime import timedelta
 
 from django.db.transaction import atomic
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError as RestValidationError
-from rest_framework.fields import CurrentUserDefault, HiddenField
+from rest_framework.fields import CurrentUserDefault, FloatField, HiddenField
 from rest_framework.relations import HyperlinkedRelatedField
 from rest_framework.serializers import HyperlinkedModelSerializer
 from rest_framework_serializer_extensions.serializers import SerializerExtensionsMixin
@@ -13,8 +17,10 @@ from generic.api.fields import SerializerExtensionsJSONField
 from generic.api.serializers import UserSerializer
 from generic.utils import print_warning
 from instances.api.serializers import MarvinSerializer, TrillianSerializer
-from instances.models import Marvin, Trillian
-from measurements.models import InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun, TestRunMessage
+from instances.models import Marvin, Trillian, instance_type_choices
+from measurements.api.filters import score_types
+from measurements.models import (InstanceRun, InstanceRunMessage, InstanceRunResult, Schedule, TestRun, TestRunAverage,
+                                 TestRunMessage)
 
 
 class ScheduleSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
@@ -44,6 +50,14 @@ class TestRunSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
     trillians = HyperlinkedRelatedField(view_name='trillian-detail', many=True, read_only=True)
     messages = HyperlinkedRelatedField(view_name='testrunmessage-detail', many=True, read_only=True)
     instanceruns = HyperlinkedRelatedField(view_name='instancerun-detail', many=True, read_only=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for instance_type in instance_type_choices:
+            for score_type in score_types:
+                field_name = str(instance_type[0]).replace('-', '_') + '_' + str(score_type[0])
+                self.fields[field_name] = FloatField(read_only=True)
 
     class Meta:
         model = TestRun
@@ -126,6 +140,14 @@ class TestRunMessageSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = TestRunMessage
         fields = ('id', 'severity', 'message', '_url')
+
+
+class TestRunAverageSerializer(HyperlinkedModelSerializer):
+    class Meta:
+        model = TestRunAverage
+        fields = ('id', 'instance_type',
+                  'image_score', 'resource_score', 'overall_score',
+                  '_url')
 
 
 class InstanceRunSerializer(SerializerExtensionsMixin, HyperlinkedModelSerializer):
@@ -222,7 +244,12 @@ class InstanceRunResultSerializer(SerializerExtensionsMixin, HyperlinkedModelSer
     class Meta:
         model = InstanceRunResult
         fields = ('id', 'marvin', 'marvin_id', 'instancerun', 'instancerun_id', 'instance_type',
-                  'when', 'ping_response', 'web_response', '_url')
+                  'when', 'ping_response', 'web_response',
+                  'image_score', 'image_feedback',
+                  'resource_score', 'resource_feedback',
+                  'overall_score', 'overall_feedback',
+                  '_url')
+
         read_only_fields = ('instancerun',)
 
         expandable_fields = dict(

@@ -1,3 +1,8 @@
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+#  Copyright (c) 2018, S.J.M. Steffann. This software is licensed under the BSD 3-Clause License. Please seel the LICENSE file in the project root directory.
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
+import hashlib
 from datetime import timedelta
 
 from django.conf import settings
@@ -264,5 +269,9 @@ class UserViewSet(SerializerExtensionsAPIViewMixin, ModelViewSet):
         })
 
     def perform_destroy(self, instance):
+        instance.username = hashlib.sha1(instance.username).hexdigest()
+        instance.first_name = ''
+        instance.last_name = ''
+        instance.email = ''
         instance.is_active = False
         instance.save()

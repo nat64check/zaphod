@@ -1,3 +1,7 @@
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+#  Copyright (c) 2018, S.J.M. Steffann. This software is licensed under the BSD 3-Clause License. Please seel the LICENSE file in the project root directory.
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.humanize.templatetags.humanize import naturaltime
@@ -5,6 +9,15 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.validators import RegexValidator, URLValidator
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
+
+instance_type_choices = [
+    ('dual-stack', _('Dual-stack')),
+    ('v4only', _('IPv4-only')),
+    ('v6only', _('IPv6-only')),
+    ('nat64', _('IPv6 with NAT64')),
+]
+
+instance_types = dict(instance_type_choices)
 
 
 class TrillianManager(models.Manager):
@@ -79,12 +92,7 @@ class Marvin(models.Model):
     browser_name = models.CharField(_('browser name'), max_length=150)
     browser_version = ArrayField(models.PositiveSmallIntegerField(), verbose_name=_('browser version'))
 
-    instance_type = models.CharField(_('instance type'), max_length=10, choices=[
-        ('dual-stack', _('Dual-stack')),
-        ('v4only', _('IPv4-only')),
-        ('v6only', _('IPv6-only')),
-        ('nat64', _('IPv6 with NAT64')),
-    ])
+    instance_type = models.CharField(_('instance type'), max_length=10, choices=instance_type_choices)
     addresses = ArrayField(models.GenericIPAddressField(), verbose_name=_('addresses'), default=list)
 
     first_seen = models.DateTimeField(_('first seen'))

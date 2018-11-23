@@ -1,3 +1,7 @@
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+#  Copyright (c) 2018, S.J.M. Steffann. This software is licensed under the BSD 3-Clause License. Please seel the LICENSE file in the project root directory.
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 import sys
 from statistics import mean
 
@@ -22,7 +26,7 @@ def analyse_instancerun(pk):
             return
 
         run = InstanceRun.objects.select_for_update().get(pk=pk)
-        if run.analysed:
+        if run.analysed or not run.finished:
             return
 
         print_notice(_("Analysing InstanceRun {run.pk} ({run.url}) on {run.trillian.name}").format(run=run))

@@ -1,3 +1,7 @@
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+#  Copyright (c) 2018, S.J.M. Steffann. This software is licensed under the BSD 3-Clause License. Please seel the LICENSE file in the project root directory.
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 import os
 
 import time
@@ -30,7 +34,7 @@ def retry_qs(qs: QuerySet, **kwargs):
                 return qs.none()
 
 
-def retry_all(qs: QuerySet):
+def retry_all(qs: QuerySet) -> bool:
     for delay in (0.5, 1, 2, 4, None):
         result = all(qs.all())
         if result:
@@ -41,7 +45,7 @@ def retry_all(qs: QuerySet):
             return False
 
 
-def print_with_color(msg, **kwargs):
+def print_with_color(msg: str, **kwargs):
     bold = kwargs.pop('bold', False)
     if bold:
         opts = kwargs.setdefault('opts', [])
