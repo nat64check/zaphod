@@ -1,3 +1,8 @@
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+#  Copyright (c) 2018, S.J.M. Steffann. This software is licensed under the BSD
+#  3-Clause License. Please see the LICENSE file in the project root directory.
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+
 from django.http import HttpResponseForbidden, HttpResponseNotAllowed, HttpResponseNotFound, HttpResponseRedirect
 
 from generic.tasks import do_reload_uwsgi
