@@ -1,4 +1,4 @@
-Django>=2.0.10,<2.1
+Django>=2.0.10,<3.3
 django-countries
 django_debug_toolbar
 django_extensions
